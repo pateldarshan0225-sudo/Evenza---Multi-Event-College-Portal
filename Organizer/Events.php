@@ -1,104 +1,270 @@
 <?php
 /**
  * Organizer/Events.php
- * My College Events Management
+ * My College Events Management with Comprehensive AJAX Validation
  */
 include 'organizer_auth.php';
 include 'connection.php';
 
-$flash = null;
+/* =========================================================
+   SERVER-SIDE EVENT VALIDATION HELPER
+   ========================================================= */
+function validate_organizer_event(PDO $pdo, array $data, ?int $excludeId = null): array
+{
+    $errors = [];
 
-// Handle Form Actions (Create / Edit / Toggle Status / Delete)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $action = $_POST['form_action'] ?? '';
+    $category_id           = filter_var($data['category_id'] ?? null, FILTER_VALIDATE_INT);
+    $title                 = trim($data['title'] ?? '');
+    $description           = trim($data['description'] ?? '');
+    $event_type            = trim($data['event_type'] ?? 'solo');
+    $min_team_size         = filter_var($data['min_team_size'] ?? 1, FILTER_VALIDATE_INT);
+    $max_team_size         = filter_var($data['max_team_size'] ?? 1, FILTER_VALIDATE_INT);
+    $fee_type              = trim($data['fee_type'] ?? 'per_person');
+    $registration_fee      = filter_var($data['registration_fee'] ?? 0.00, FILTER_VALIDATE_FLOAT);
+    $registration_deadline = trim($data['registration_deadline'] ?? '');
+    $event_date            = trim($data['event_date'] ?? '');
+    $start_time            = trim($data['start_time'] ?? '');
+    $end_time              = trim($data['end_time'] ?? '');
+    $venue                 = trim($data['venue'] ?? '');
+    $dress_code            = trim($data['dress_code'] ?? '');
+    $status                = trim($data['status'] ?? 'published');
 
-    if ($action === 'create') {
-        $title          = trim($_POST['title'] ?? '');
-        $category_id    = (int)($_POST['category_id'] ?? 0);
-        $event_type     = $_POST['event_type'] ?? 'solo';
-        $min_team_size  = (int)($_POST['min_team_size'] ?? 1);
-        $max_team_size  = (int)($_POST['max_team_size'] ?? 1);
-        $venue          = trim($_POST['venue'] ?? '');
-        $event_date     = $_POST['event_date'] ?? date('Y-m-d');
-        $dress_code     = trim($_POST['dress_code'] ?? 'Formal / Casual');
-        $description    = trim($_POST['description'] ?? '');
-        $status         = $_POST['status'] ?? 'published';
+    // Category Validation
+    if (!$category_id) {
+        $errors[] = 'Please select a valid event category.';
+    } else {
+        $chk = $pdo->prepare('SELECT category_id FROM categories WHERE category_id = :id');
+        $chk->execute(['id' => $category_id]);
+        if (!$chk->fetch()) {
+            $errors[] = 'Selected category does not exist.';
+        }
+    }
 
-        if (!empty($title) && $category_id > 0 && !empty($venue)) {
-            try {
-                $stmt = $pdo->prepare("
-                    INSERT INTO events (college_id, category_id, title, description, event_type, min_team_size, max_team_size, venue, event_date, dress_code, status, created_at)
-                    VALUES (:cid, :cat, :title, :desc, :type, :min, :max, :venue, :edate, :dress, :status, NOW())
-                ");
-                $stmt->execute([
-                    'cid' => $college_id,
-                    'cat' => $category_id,
-                    'title' => $title,
-                    'desc' => $description,
-                    'type' => $event_type,
-                    'min' => $event_type === 'team' ? $min_team_size : 1,
-                    'max' => $event_type === 'team' ? $max_team_size : 1,
-                    'venue' => $venue,
-                    'edate' => $event_date,
-                    'dress' => $dress_code,
-                    'status' => $status
-                ]);
-                $flash = ['type' => 'success', 'message' => 'New event created successfully for your college!'];
-            } catch (PDOException $e) {
-                $flash = ['type' => 'danger', 'message' => 'Error creating event: ' . $e->getMessage()];
-            }
+    // Title Validation
+    if ($title === '' || mb_strlen($title) < 2) {
+        $errors[] = 'Event title must be at least 2 characters.';
+    } elseif (mb_strlen($title) > 150) {
+        $errors[] = 'Title cannot exceed 150 characters.';
+    }
+
+    // Description Validation
+    if ($description === '' || mb_strlen($description) < 10) {
+        $errors[] = 'Description is required (at least 10 characters).';
+    } elseif (mb_strlen($description) > 2000) {
+        $errors[] = 'Description cannot exceed 2000 characters.';
+    }
+
+    // Event Type & Team Size Validation
+    if (!in_array($event_type, ['solo', 'team'], true)) {
+        $errors[] = 'Select a valid event type.';
+    }
+
+    if ($event_type === 'team') {
+        if ($min_team_size === false || $min_team_size < 1) {
+            $errors[] = 'Minimum team size must be at least 1.';
+        }
+        if ($max_team_size === false || $max_team_size < 1) {
+            $errors[] = 'Maximum team size must be at least 1.';
+        }
+        if ($min_team_size !== false && $max_team_size !== false && $max_team_size < $min_team_size) {
+            $errors[] = 'Maximum team size cannot be less than minimum team size.';
+        }
+        if ($max_team_size !== false && $max_team_size > 100) {
+            $errors[] = 'Maximum team size cannot exceed 100.';
+        }
+    }
+
+    // Fee Validation
+    if (!in_array($fee_type, ['per_person', 'per_team'], true)) {
+        $errors[] = 'Select a valid fee type.';
+    }
+    if ($registration_fee === false || $registration_fee < 0) {
+        $errors[] = 'Enter a valid non-negative registration fee.';
+    }
+
+    // Date & Time Validation
+    $eventDateObj = null;
+    if ($event_date === '') {
+        $errors[] = 'Event date is required.';
+    } else {
+        $d = DateTime::createFromFormat('Y-m-d', $event_date);
+        if (!$d || $d->format('Y-m-d') !== $event_date) {
+            $errors[] = 'Enter a valid event date.';
         } else {
-            $flash = ['type' => 'danger', 'message' => 'Please fill in all required event fields.'];
+            $eventDateObj = $d;
         }
-    } elseif ($action === 'edit') {
-        $event_id       = (int)($_POST['event_id'] ?? 0);
-        $title          = trim($_POST['title'] ?? '');
-        $category_id    = (int)($_POST['category_id'] ?? 0);
-        $event_type     = $_POST['event_type'] ?? 'solo';
-        $min_team_size  = (int)($_POST['min_team_size'] ?? 1);
-        $max_team_size  = (int)($_POST['max_team_size'] ?? 1);
-        $venue          = trim($_POST['venue'] ?? '');
-        $event_date     = $_POST['event_date'] ?? date('Y-m-d');
-        $dress_code     = trim($_POST['dress_code'] ?? 'Formal / Casual');
-        $description    = trim($_POST['description'] ?? '');
-        $status         = $_POST['status'] ?? 'published';
+    }
 
-        if ($event_id > 0 && !empty($title)) {
-            try {
-                $stmt = $pdo->prepare("
-                    UPDATE events 
-                    SET category_id = :cat, title = :title, description = :desc, event_type = :type, 
-                        min_team_size = :min, max_team_size = :max, venue = :venue, event_date = :edate, 
-                        dress_code = :dress, status = :status
-                    WHERE event_id = :eid AND college_id = :cid
-                ");
-                $stmt->execute([
-                    'cat' => $category_id,
-                    'title' => $title,
-                    'desc' => $description,
-                    'type' => $event_type,
-                    'min' => $event_type === 'team' ? $min_team_size : 1,
-                    'max' => $event_type === 'team' ? $max_team_size : 1,
-                    'venue' => $venue,
-                    'edate' => $event_date,
-                    'dress' => $dress_code,
-                    'status' => $status,
-                    'eid' => $event_id,
-                    'cid' => $college_id
-                ]);
-                $flash = ['type' => 'success', 'message' => 'Event updated successfully!'];
-            } catch (PDOException $e) {
-                $flash = ['type' => 'danger', 'message' => 'Error updating event: ' . $e->getMessage()];
-            }
+    if ($start_time !== '' && $end_time !== '') {
+        $s = DateTime::createFromFormat('H:i', $start_time) ?: DateTime::createFromFormat('H:i:s', $start_time);
+        $e = DateTime::createFromFormat('H:i', $end_time) ?: DateTime::createFromFormat('H:i:s', $end_time);
+        if ($s && $e && $e <= $s) {
+            $errors[] = 'End time must be after start time.';
         }
-    } elseif ($action === 'toggle_status') {
-        $event_id   = (int)($_POST['event_id'] ?? 0);
-        $new_status = $_POST['new_status'] ?? 'published';
-        if ($event_id > 0) {
-            $stmt = $pdo->prepare("UPDATE events SET status = :st WHERE event_id = :eid AND college_id = :cid");
-            $stmt->execute(['st' => $new_status, 'eid' => $event_id, 'cid' => $college_id]);
-            $flash = ['type' => 'info', 'message' => 'Event status updated to ' . ucfirst($new_status) . '.'];
+    }
+
+    // Venue & Dress Code Validation
+    if ($venue === '' || mb_strlen($venue) < 3) {
+        $errors[] = 'Venue location is required (at least 3 characters).';
+    }
+    if ($dress_code === '') {
+        $errors[] = 'Dress code is required.';
+    }
+
+    if (!in_array($status, ['draft', 'published', 'completed', 'cancelled'], true)) {
+        $errors[] = 'Select a valid event status.';
+    }
+
+    return $errors;
+}
+
+/* =========================================================
+   AJAX ENDPOINTS
+   ========================================================= */
+
+// 1. AJAX: TOGGLE STATUS
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_GET['action'] ?? '') === 'toggle_status') {
+    header('Content-Type: application/json');
+    $body   = json_decode(file_get_contents('php://input'), true);
+    $id     = filter_var($body['id'] ?? null, FILTER_VALIDATE_INT);
+    $status = strtolower(trim($body['status'] ?? ''));
+
+    if (!$id || !in_array($status, ['draft', 'published', 'completed', 'cancelled'], true)) {
+        http_response_code(422);
+        echo json_encode(['success' => false, 'message' => 'Invalid parameters.']);
+        exit;
+    }
+
+    $check = $pdo->prepare('SELECT event_id FROM events WHERE event_id = :id AND college_id = :cid');
+    $check->execute(['id' => $id, 'cid' => $college_id]);
+    if (!$check->fetch()) {
+        http_response_code(404);
+        echo json_encode(['success' => false, 'message' => 'Event not found or unauthorized.']);
+        exit;
+    }
+
+    $stmt = $pdo->prepare('UPDATE events SET status = :status WHERE event_id = :id AND college_id = :cid');
+    $stmt->execute(['status' => $status, 'id' => $id, 'cid' => $college_id]);
+
+    echo json_encode(['success' => true, 'message' => 'Status updated to ' . ucfirst($status) . '.']);
+    exit;
+}
+
+// 2. AJAX: CREATE / EDIT EVENT
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && in_array($_GET['action'] ?? '', ['create', 'edit'], true)) {
+    header('Content-Type: application/json');
+    $action  = $_GET['action'];
+    $eventId = filter_input(INPUT_POST, 'event_id', FILTER_VALIDATE_INT) ?: null;
+
+    if ($action === 'edit' && !$eventId) {
+        http_response_code(422);
+        echo json_encode(['success' => false, 'errors' => ['Event ID is missing.']]);
+        exit;
+    }
+
+    if ($action === 'edit') {
+        $chk = $pdo->prepare('SELECT event_id FROM events WHERE event_id = :id AND college_id = :cid');
+        $chk->execute(['id' => $eventId, 'cid' => $college_id]);
+        if (!$chk->fetch()) {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'errors' => ['Event not found or access denied.']]);
+            exit;
         }
+    }
+
+    $errors = validate_organizer_event($pdo, $_POST, $eventId);
+    if (!empty($errors)) {
+        http_response_code(422);
+        echo json_encode(['success' => false, 'errors' => $errors]);
+        exit;
+    }
+
+    $category_id           = (int)$_POST['category_id'];
+    $title                 = trim($_POST['title']);
+    $description           = trim($_POST['description']);
+    $event_type            = $_POST['event_type'];
+    $min_team_size         = $event_type === 'team' ? (int)$_POST['min_team_size'] : 1;
+    $max_team_size         = $event_type === 'team' ? (int)$_POST['max_team_size'] : 1;
+    $fee_type              = $_POST['fee_type'] ?? 'per_person';
+    $registration_fee      = (float)($_POST['registration_fee'] ?? 0.00);
+    $registration_deadline = !empty($_POST['registration_deadline']) ? $_POST['registration_deadline'] : null;
+    $event_date            = $_POST['event_date'];
+    $start_time            = !empty($_POST['start_time']) ? $_POST['start_time'] : '09:00:00';
+    $end_time              = !empty($_POST['end_time']) ? $_POST['end_time'] : '17:00:00';
+    $venue                 = trim($_POST['venue']);
+    $dress_code            = trim($_POST['dress_code']);
+    $status                = $_POST['status'];
+
+    try {
+        if ($action === 'create') {
+            $stmt = $pdo->prepare("
+                INSERT INTO events (
+                    college_id, category_id, title, description, event_type, 
+                    min_team_size, max_team_size, fee_type, registration_fee, 
+                    registration_deadline, event_date, start_time, end_time, venue, dress_code, status
+                ) VALUES (
+                    :cid, :cat, :title, :desc, :type, 
+                    :min_team, :max_team, :fee_type, :reg_fee, 
+                    :reg_deadline, :edate, :stime, :etime, :venue, :dress, :status
+                )
+            ");
+            $stmt->execute([
+                'cid'          => $college_id,
+                'cat'          => $category_id,
+                'title'        => $title,
+                'desc'         => $description,
+                'type'         => $event_type,
+                'min_team'     => $min_team_size,
+                'max_team'     => $max_team_size,
+                'fee_type'     => $fee_type,
+                'reg_fee'      => $registration_fee,
+                'reg_deadline' => $registration_deadline,
+                'edate'        => $event_date,
+                'stime'        => $start_time,
+                'etime'        => $end_time,
+                'venue'        => $venue,
+                'dress'        => $dress_code,
+                'status'       => $status,
+            ]);
+            $message = "Event '{$title}' created successfully!";
+        } else {
+            $stmt = $pdo->prepare("
+                UPDATE events SET 
+                    category_id = :cat, title = :title, description = :desc, event_type = :type, 
+                    min_team_size = :min_team, max_team_size = :max_team, fee_type = :fee_type, 
+                    registration_fee = :reg_fee, registration_deadline = :reg_deadline, 
+                    event_date = :edate, start_time = :stime, end_time = :etime, 
+                    venue = :venue, dress_code = :dress, status = :status
+                WHERE event_id = :eid AND college_id = :cid
+            ");
+            $stmt->execute([
+                'cat'          => $category_id,
+                'title'        => $title,
+                'desc'         => $description,
+                'type'         => $event_type,
+                'min_team'     => $min_team_size,
+                'max_team'     => $max_team_size,
+                'fee_type'     => $fee_type,
+                'reg_fee'      => $registration_fee,
+                'reg_deadline' => $registration_deadline,
+                'edate'        => $event_date,
+                'stime'        => $start_time,
+                'etime'        => $end_time,
+                'venue'        => $venue,
+                'dress'        => $dress_code,
+                'status'       => $status,
+                'eid'          => $eventId,
+                'cid'          => $college_id,
+            ]);
+            $message = "Event '{$title}' updated successfully!";
+        }
+
+        echo json_encode(['success' => true, 'message' => $message]);
+        exit;
+    } catch (PDOException $e) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'errors' => ['Database error: ' . $e->getMessage()]]);
+        exit;
     }
 }
 
@@ -224,6 +390,17 @@ $events = $stmt->fetchAll();
         .berun-panel-title { font-size: 18px; font-weight: 700; margin: 0; }
         .berun-panel-sub   { font-size: 12px; color: #7c7d7e; margin: 2px 0 0 0; }
 
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .badge-success { background: #e6f7ed; color: #10b981; }
+        .badge-warning { background: #fef3c7; color: #d97706; }
+
         @media (max-width: 768px) {
             body { padding: 12px; }
             .berun-header { flex-direction: column; align-items: flex-start; gap: 14px; }
@@ -272,12 +449,7 @@ $events = $stmt->fetchAll();
             <!-- Main Content Grid -->
             <div class="berun-main-grid">
 
-                <?php if ($flash): ?>
-                    <div class="alert alert-<?= htmlspecialchars($flash['type']) ?> alert-dismissible fade show rounded-4 border-0 shadow-sm" role="alert">
-                        <i class="bi bi-info-circle me-2"></i> <?= htmlspecialchars($flash['message']) ?>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                <?php endif; ?>
+                <div id="pageAlertContainer"></div>
 
                 <!-- EVENTS LIST PANEL -->
                 <div class="berun-card-panel">
@@ -296,6 +468,7 @@ $events = $stmt->fetchAll();
                                     <th>Event Title</th>
                                     <th>Category</th>
                                     <th>Format</th>
+                                    <th>Fee</th>
                                     <th>Venue</th>
                                     <th>Event Date</th>
                                     <th>Registrations</th>
@@ -306,11 +479,11 @@ $events = $stmt->fetchAll();
                             <tbody>
                                 <?php if (empty($events)): ?>
                                     <tr>
-                                        <td colspan="9" class="text-center text-muted py-4">No events found for your college. Click "Create New Event" to publish one!</td>
+                                        <td colspan="10" class="text-center text-muted py-4">No events found for your college. Click "Create New Event" to publish one!</td>
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($events as $idx => $e): ?>
-                                        <tr>
+                                        <tr id="eventRow<?= $e['event_id'] ?>">
                                             <td class="ps-3 font-semibold text-muted"><?= $idx + 1 ?></td>
                                             <td class="fw-bold text-dark"><?= htmlspecialchars((string)$e['title']) ?></td>
                                             <td><span class="badge bg-light text-dark rounded-pill px-3 py-1 border"><?= htmlspecialchars((string)($e['category_name'] ?? 'General')) ?></span></td>
@@ -321,22 +494,18 @@ $events = $stmt->fetchAll();
                                                     <span class="badge bg-info-subtle text-info rounded-pill px-3 py-1" style="background:#e0f2fe; color:#0284c7;">Solo</span>
                                                 <?php endif; ?>
                                             </td>
+                                            <td class="fw-bold text-dark">₹<?= number_format((float)($e['registration_fee'] ?? 0), 2) ?></td>
                                             <td class="text-muted"><i class="bi bi-geo-alt me-1"></i><?= htmlspecialchars((string)$e['venue']) ?></td>
                                             <td class="text-muted"><?= date('d M Y', strtotime($e['event_date'])) ?></td>
                                             <td><span class="badge bg-primary-subtle text-primary rounded-pill px-3 py-1"><?= $e['reg_count'] ?> Signed Up</span></td>
                                             <td>
-                                                <form method="POST" class="d-inline">
-                                                    <input type="hidden" name="form_action" value="toggle_status">
-                                                    <input type="hidden" name="event_id" value="<?= $e['event_id'] ?>">
-                                                    <input type="hidden" name="new_status" value="<?= $e['status'] === 'published' ? 'draft' : 'published' ?>">
-                                                    <button type="submit" class="border-0 bg-transparent p-0">
-                                                        <?php if ($e['status'] === 'published'): ?>
-                                                            <span class="badge bg-success-subtle text-success rounded-pill px-3 py-1" style="cursor:pointer;"><i class="bi bi-check-circle-fill me-1"></i> Published</span>
-                                                        <?php else: ?>
-                                                            <span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-1" style="cursor:pointer;"><i class="bi bi-clock-history me-1"></i> Draft</span>
-                                                        <?php endif; ?>
-                                                    </button>
-                                                </form>
+                                                <button type="button" class="border-0 bg-transparent p-0 toggle-status-btn" data-id="<?= $e['event_id'] ?>" data-status="<?= $e['status'] === 'published' ? 'draft' : 'published' ?>">
+                                                    <?php if ($e['status'] === 'published'): ?>
+                                                        <span class="badge bg-success-subtle text-success rounded-pill px-3 py-1" style="cursor:pointer;"><i class="bi bi-check-circle-fill me-1"></i> Published</span>
+                                                    <?php else: ?>
+                                                        <span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-1" style="cursor:pointer;"><i class="bi bi-clock-history me-1"></i> Draft</span>
+                                                    <?php endif; ?>
+                                                </button>
                                             </td>
                                             <td class="pe-3 text-end">
                                                 <button type="button" class="btn btn-sm btn-light rounded-circle border" data-bs-toggle="modal" data-bs-target="#editModal<?= $e['event_id'] ?>" title="Edit Event">
@@ -349,18 +518,19 @@ $events = $stmt->fetchAll();
                                         <div class="modal fade" id="editModal<?= $e['event_id'] ?>" tabindex="-1" aria-hidden="true">
                                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                                 <div class="modal-content border-0 rounded-4 shadow">
-                                                    <form method="POST">
-                                                        <input type="hidden" name="form_action" value="edit">
+                                                    <form class="needs-validation ajax-event-form" data-action="edit" novalidate>
                                                         <input type="hidden" name="event_id" value="<?= $e['event_id'] ?>">
                                                         <div class="modal-header border-bottom">
                                                             <h5 class="modal-title font-bold text-dark"><i class="bi bi-pencil-square me-2 text-primary"></i> Edit Event: <?= htmlspecialchars((string)$e['title']) ?></h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                                         </div>
                                                         <div class="modal-body p-4">
+                                                            <div class="modal-alert-container"></div>
                                                             <div class="row g-3">
                                                                 <div class="col-md-6">
                                                                     <label class="form-label font-semibold text-xs text-uppercase text-muted">Event Title *</label>
-                                                                    <input type="text" class="form-control" name="title" value="<?= htmlspecialchars((string)$e['title']) ?>" required>
+                                                                    <input type="text" class="form-control" name="title" value="<?= htmlspecialchars((string)$e['title']) ?>" required minlength="2" maxlength="150">
+                                                                    <div class="invalid-feedback">Enter a valid title (2-150 chars).</div>
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <label class="form-label font-semibold text-xs text-uppercase text-muted">Category *</label>
@@ -369,33 +539,56 @@ $events = $stmt->fetchAll();
                                                                             <option value="<?= $cat['category_id'] ?>" <?= $cat['category_id'] == $e['category_id'] ? 'selected' : '' ?>><?= htmlspecialchars((string)$cat['name']) ?></option>
                                                                         <?php endforeach; ?>
                                                                     </select>
+                                                                    <div class="invalid-feedback">Select a category.</div>
                                                                 </div>
                                                                 <div class="col-md-4">
                                                                     <label class="form-label font-semibold text-xs text-uppercase text-muted">Format *</label>
-                                                                    <select class="form-select" name="event_type" required>
+                                                                    <select class="form-select event-type-select" name="event_type" required>
                                                                         <option value="solo" <?= $e['event_type'] === 'solo' ? 'selected' : '' ?>>Solo Event</option>
                                                                         <option value="team" <?= $e['event_type'] === 'team' ? 'selected' : '' ?>>Team Event</option>
                                                                     </select>
                                                                 </div>
-                                                                <div class="col-md-4">
+                                                                <div class="col-md-4 team-size-group <?= $e['event_type'] === 'solo' ? 'd-none' : '' ?>">
                                                                     <label class="form-label font-semibold text-xs text-uppercase text-muted">Min Team Size</label>
-                                                                    <input type="number" class="form-control" name="min_team_size" value="<?= $e['min_team_size'] ?>" min="1">
+                                                                    <input type="number" class="form-control" name="min_team_size" value="<?= $e['min_team_size'] ?>" min="1" max="100">
                                                                 </div>
-                                                                <div class="col-md-4">
+                                                                <div class="col-md-4 team-size-group <?= $e['event_type'] === 'solo' ? 'd-none' : '' ?>">
                                                                     <label class="form-label font-semibold text-xs text-uppercase text-muted">Max Team Size</label>
-                                                                    <input type="number" class="form-control" name="max_team_size" value="<?= $e['max_team_size'] ?>" min="1">
+                                                                    <input type="number" class="form-control" name="max_team_size" value="<?= $e['max_team_size'] ?>" min="1" max="100">
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label font-semibold text-xs text-uppercase text-muted">Fee Type *</label>
+                                                                    <select class="form-select" name="fee_type" required>
+                                                                        <option value="per_person" <?= ($e['fee_type'] ?? '') === 'per_person' ? 'selected' : '' ?>>Per Person</option>
+                                                                        <option value="per_team" <?= ($e['fee_type'] ?? '') === 'per_team' ? 'selected' : '' ?>>Per Team</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label font-semibold text-xs text-uppercase text-muted">Registration Fee (₹) *</label>
+                                                                    <input type="number" step="0.01" class="form-control" name="registration_fee" value="<?= htmlspecialchars((string)($e['registration_fee'] ?? '0.00')) ?>" min="0" required>
+                                                                    <div class="invalid-feedback">Enter a valid fee (>= 0).</div>
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <label class="form-label font-semibold text-xs text-uppercase text-muted">Venue Location *</label>
-                                                                    <input type="text" class="form-control" name="venue" value="<?= htmlspecialchars((string)$e['venue']) ?>" required>
+                                                                    <input type="text" class="form-control" name="venue" value="<?= htmlspecialchars((string)$e['venue']) ?>" minlength="3" required>
+                                                                    <div class="invalid-feedback">Enter venue location (min 3 chars).</div>
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <label class="form-label font-semibold text-xs text-uppercase text-muted">Event Date *</label>
                                                                     <input type="date" class="form-control" name="event_date" value="<?= $e['event_date'] ?>" required>
+                                                                    <div class="invalid-feedback">Select a valid event date.</div>
                                                                 </div>
                                                                 <div class="col-md-6">
-                                                                    <label class="form-label font-semibold text-xs text-uppercase text-muted">Dress Code</label>
-                                                                    <input type="text" class="form-control" name="dress_code" value="<?= htmlspecialchars((string)$e['dress_code']) ?>">
+                                                                    <label class="form-label font-semibold text-xs text-uppercase text-muted">Start Time</label>
+                                                                    <input type="time" class="form-control" name="start_time" value="<?= htmlspecialchars((string)($e['start_time'] ?? '09:00')) ?>">
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label font-semibold text-xs text-uppercase text-muted">End Time</label>
+                                                                    <input type="time" class="form-control" name="end_time" value="<?= htmlspecialchars((string)($e['end_time'] ?? '17:00')) ?>">
+                                                                </div>
+                                                                <div class="col-md-6">
+                                                                    <label class="form-label font-semibold text-xs text-uppercase text-muted">Dress Code *</label>
+                                                                    <input type="text" class="form-control" name="dress_code" value="<?= htmlspecialchars((string)$e['dress_code']) ?>" required>
                                                                 </div>
                                                                 <div class="col-md-6">
                                                                     <label class="form-label font-semibold text-xs text-uppercase text-muted">Publish Status</label>
@@ -405,14 +598,15 @@ $events = $stmt->fetchAll();
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-12">
-                                                                    <label class="form-label font-semibold text-xs text-uppercase text-muted">Event Description</label>
-                                                                    <textarea class="form-control" name="description" rows="3"><?= htmlspecialchars((string)$e['description']) ?></textarea>
+                                                                    <label class="form-label font-semibold text-xs text-uppercase text-muted">Event Description *</label>
+                                                                    <textarea class="form-control" name="description" rows="3" minlength="10" required><?= htmlspecialchars((string)$e['description']) ?></textarea>
+                                                                    <div class="invalid-feedback">Enter description (at least 10 chars).</div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer border-top">
                                                             <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
-                                                            <button type="submit" class="berun-btn-dark">Update Event</button>
+                                                            <button type="submit" class="berun-btn-dark btn-submit-event">Update Event</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -435,17 +629,18 @@ $events = $stmt->fetchAll();
     <div class="modal fade" id="createEventModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content border-0 rounded-4 shadow">
-                <form method="POST">
-                    <input type="hidden" name="form_action" value="create">
+                <form class="needs-validation ajax-event-form" data-action="create" novalidate>
                     <div class="modal-header border-bottom">
                         <h5 class="modal-title font-bold text-dark"><i class="bi bi-calendar-plus me-2 text-primary"></i> Create Event for <?= htmlspecialchars((string)$college_name) ?></h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body p-4">
+                        <div class="modal-alert-container"></div>
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label font-semibold text-xs text-uppercase text-muted">Event Title *</label>
-                                <input type="text" class="form-control" name="title" placeholder="e.g. Hackathon 2026" required>
+                                <input type="text" class="form-control" name="title" placeholder="e.g. Hackathon 2026" minlength="2" maxlength="150" required>
+                                <div class="invalid-feedback">Enter a valid title (2-150 chars).</div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label font-semibold text-xs text-uppercase text-muted">Category *</label>
@@ -455,33 +650,56 @@ $events = $stmt->fetchAll();
                                         <option value="<?= $cat['category_id'] ?>"><?= htmlspecialchars((string)$cat['name']) ?></option>
                                     <?php endforeach; ?>
                                 </select>
+                                <div class="invalid-feedback">Select a category.</div>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label font-semibold text-xs text-uppercase text-muted">Event Format *</label>
-                                <select class="form-select" name="event_type" required>
+                                <select class="form-select event-type-select" name="event_type" required>
                                     <option value="solo" selected>Solo Event</option>
                                     <option value="team">Team Event</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 team-size-group d-none">
                                 <label class="form-label font-semibold text-xs text-uppercase text-muted">Min Team Size</label>
-                                <input type="number" class="form-control" name="min_team_size" value="1" min="1">
+                                <input type="number" class="form-control" name="min_team_size" value="1" min="1" max="100">
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4 team-size-group d-none">
                                 <label class="form-label font-semibold text-xs text-uppercase text-muted">Max Team Size</label>
-                                <input type="number" class="form-control" name="max_team_size" value="4" min="1">
+                                <input type="number" class="form-control" name="max_team_size" value="4" min="1" max="100">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label font-semibold text-xs text-uppercase text-muted">Fee Type *</label>
+                                <select class="form-select" name="fee_type" required>
+                                    <option value="per_person" selected>Per Person</option>
+                                    <option value="per_team">Per Team</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label font-semibold text-xs text-uppercase text-muted">Registration Fee (₹) *</label>
+                                <input type="number" step="0.01" class="form-control" name="registration_fee" value="0.00" min="0" required>
+                                <div class="invalid-feedback">Enter a valid fee (>= 0).</div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label font-semibold text-xs text-uppercase text-muted">Venue Location *</label>
-                                <input type="text" class="form-control" name="venue" placeholder="e.g. Auditorium / Main Hall" required>
+                                <input type="text" class="form-control" name="venue" placeholder="e.g. Auditorium / Main Hall" minlength="3" required>
+                                <div class="invalid-feedback">Enter venue location (min 3 chars).</div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label font-semibold text-xs text-uppercase text-muted">Event Date *</label>
                                 <input type="date" class="form-control" name="event_date" value="<?= date('Y-m-d') ?>" required>
+                                <div class="invalid-feedback">Select a valid event date.</div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label font-semibold text-xs text-uppercase text-muted">Dress Code</label>
-                                <input type="text" class="form-control" name="dress_code" placeholder="e.g. Formal / College Uniform">
+                                <label class="form-label font-semibold text-xs text-uppercase text-muted">Start Time</label>
+                                <input type="time" class="form-control" name="start_time" value="09:00">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label font-semibold text-xs text-uppercase text-muted">End Time</label>
+                                <input type="time" class="form-control" name="end_time" value="17:00">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label font-semibold text-xs text-uppercase text-muted">Dress Code *</label>
+                                <input type="text" class="form-control" name="dress_code" placeholder="e.g. Formal / College Uniform" value="Formal / Casual" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label font-semibold text-xs text-uppercase text-muted">Publish Status</label>
@@ -491,14 +709,15 @@ $events = $stmt->fetchAll();
                                 </select>
                             </div>
                             <div class="col-12">
-                                <label class="form-label font-semibold text-xs text-uppercase text-muted">Event Description</label>
-                                <textarea class="form-control" name="description" rows="3" placeholder="Enter details about rules, rounds, prizes..."></textarea>
+                                <label class="form-label font-semibold text-xs text-uppercase text-muted">Event Description *</label>
+                                <textarea class="form-control" name="description" rows="3" placeholder="Enter details about rules, rounds, prizes..." minlength="10" required></textarea>
+                                <div class="invalid-feedback">Enter description (at least 10 chars).</div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer border-top">
                         <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="berun-btn-dark">Publish Event</button>
+                        <button type="submit" class="berun-btn-dark btn-submit-event">Publish Event</button>
                     </div>
                 </form>
             </div>
@@ -507,5 +726,98 @@ $events = $stmt->fetchAll();
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- AJAX Form Processing & Client Validation JS -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Dynamic Team Size Fields Toggle
+            document.querySelectorAll('.event-type-select').forEach(select => {
+                select.addEventListener('change', function () {
+                    const form = this.closest('form');
+                    const teamGroups = form.querySelectorAll('.team-size-group');
+                    if (this.value === 'team') {
+                        teamGroups.forEach(g => g.classList.remove('d-none'));
+                    } else {
+                        teamGroups.forEach(g => g.classList.add('d-none'));
+                    }
+                });
+            });
+
+            // AJAX Form Submission Handler
+            document.querySelectorAll('.ajax-event-form').forEach(form => {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    if (!this.checkValidity()) {
+                        e.stopPropagation();
+                        this.classList.add('was-validated');
+                        return;
+                    }
+
+                    const action = this.dataset.action;
+                    const submitBtn = this.querySelector('.btn-submit-event');
+                    const alertBox = this.querySelector('.modal-alert-container');
+                    const originalBtnText = submitBtn.innerHTML;
+
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>Saving...`;
+                    alertBox.innerHTML = '';
+
+                    const formData = new FormData(this);
+
+                    fetch(`Events.php?action=${action}`, {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+
+                        if (data.success) {
+                            alertBox.innerHTML = `<div class="alert alert-success rounded-3 border-0 py-2 px-3 text-xs mb-3"><i class="bi bi-check-circle-fill me-1"></i> ${data.message}</div>`;
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 800);
+                        } else {
+                            const errList = (data.errors || [data.message || 'An error occurred.'])
+                                .map(err => `<li>${err}</li>`).join('');
+                            alertBox.innerHTML = `<div class="alert alert-danger rounded-3 border-0 py-2 px-3 text-xs mb-3"><ul class="mb-0 ps-3">${errList}</ul></div>`;
+                        }
+                    })
+                    .catch(err => {
+                        submitBtn.disabled = false;
+                        submitBtn.innerHTML = originalBtnText;
+                        alertBox.innerHTML = `<div class="alert alert-danger rounded-3 border-0 py-2 px-3 text-xs mb-3"><i class="bi bi-exclamation-triangle-fill me-1"></i> Request failed. Please check network.</div>`;
+                    });
+                });
+            });
+
+            // AJAX Status Toggle Handler
+            document.querySelectorAll('.toggle-status-btn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const eventId = this.dataset.id;
+                    const newStatus = this.dataset.status;
+
+                    fetch('Events.php?action=toggle_status', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: eventId, status: newStatus })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            window.location.reload();
+                        } else {
+                            alert(data.message || 'Status toggle failed.');
+                        }
+                    })
+                    .catch(err => alert('Network error during status toggle.'));
+                });
+            });
+
+        });
+    </script>
 </body>
 </html>
