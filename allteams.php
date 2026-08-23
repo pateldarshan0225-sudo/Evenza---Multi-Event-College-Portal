@@ -948,11 +948,9 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                                 </nav>
                             </div>
                         </div>
-                    </div>
-
-                    <?php include 'Footer.php'; ?>
-
                 </div>
+
+                <?php include 'Footer.php'; ?>
 
             </div>
 

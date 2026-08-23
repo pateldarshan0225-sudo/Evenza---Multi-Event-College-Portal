@@ -1,5 +1,5 @@
-<footer class="berun-footer mt-4 pt-3 border-top" style="border-color: rgba(0,0,0,0.06) !important;">
-    <div class="d-flex flex-wrap justify-content-between align-items-center text-muted font-medium py-2" style="font-size: 13px;">
+<footer class="berun-footer mt-auto pt-4 pb-2">
+    <div class="d-flex flex-wrap justify-content-between align-items-center text-muted font-medium" style="font-size: 13px;">
         <div class="mb-2 mb-md-0">
             © <?php echo date('Y'); ?> <strong>Evenza</strong>. All Rights Reserved.
         </div>
