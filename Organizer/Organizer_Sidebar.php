@@ -113,7 +113,7 @@ $logo_src      = !empty($college_logo) ? '../uploads/colleges/' . htmlspecialcha
         <a href="Students.php" class="berun-nav-item <?= $current_page === 'students.php' ? 'active' : '' ?>" title="College Students">
             <i class="bi bi-people"></i>
         </a>
-        <a href="Profile.php" class="berun-nav-item <?= $current_page === 'profile.php' ? 'active' : '' ?>" title="College Profile">
+        <a href="Profile.php" class="berun-nav-item <?= $current_page === 'profile.php' || $current_page === 'change_password.php' ? 'active' : '' ?>" title="College Profile">
             <i class="bi bi-building"></i>
         </a>
     </div>
@@ -126,7 +126,7 @@ $logo_src      = !empty($college_logo) ? '../uploads/colleges/' . htmlspecialcha
                 <span class="text-muted text-xs"><?php echo htmlspecialchars((string)$college_email); ?></span>
             </li>
             <li><a class="dropdown-item rounded-3 py-2 text-xs mt-1" href="Profile.php"><i class="bi bi-building me-2"></i> College Profile</a></li>
-            <li><a class="dropdown-item rounded-3 py-2 text-xs text-dark" href="Change_Password.php"><i class="bi bi-lock me-2"></i> Change Password</a></li>
+            <li><a class="dropdown-item rounded-3 py-2 text-xs text-dark" href="Profile.php?tab=security"><i class="bi bi-shield-lock me-2"></i> Change Password</a></li>
             <li><a class="dropdown-item rounded-3 py-2 text-xs text-danger" href="Logout.php"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
         </ul>
     </div>
