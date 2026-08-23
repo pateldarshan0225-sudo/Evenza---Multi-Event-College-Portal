@@ -47,7 +47,7 @@ $stmt = $pdo->prepare("
     SELECT e.*, c.name AS category_name,
     (SELECT COUNT(*) FROM registrations r WHERE r.event_id = e.event_id) AS reg_count
     FROM events e
-    LEFT JOIN event_categories c ON e.category_id = c.category_id
+    LEFT JOIN categories c ON e.category_id = c.category_id
     WHERE e.college_id = :cid
     ORDER BY e.event_id DESC
 ");
