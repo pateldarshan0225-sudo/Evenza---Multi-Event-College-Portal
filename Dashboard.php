@@ -1503,7 +1503,6 @@ $registration_goal = max(100, (int)($total_regs * 1.25));
                             </div>
                         </div>
                     </div>
-                <?php include 'Footer.php'; ?>
 
             </div>
 

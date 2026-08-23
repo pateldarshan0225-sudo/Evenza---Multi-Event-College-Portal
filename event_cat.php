@@ -828,8 +828,6 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                         </div>
                 </div>
 
-                <?php include 'Footer.php'; ?>
-
             </div>
 
         </div>

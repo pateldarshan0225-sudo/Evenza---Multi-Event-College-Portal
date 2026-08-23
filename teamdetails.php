@@ -553,7 +553,6 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                     </div>
 
                 <?php endif; ?>
-                <?php include 'Footer.php'; ?>
 
             </div>
 
