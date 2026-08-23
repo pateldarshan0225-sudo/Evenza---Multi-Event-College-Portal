@@ -8,15 +8,17 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
     $email    = trim($_POST["email"]);
     $password = trim($_POST["password"]);
 
-    if ($email === "" || $password === "") {
-        $error = "Please enter both college email and password.";
+    if ($email === "" || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = "Please enter a valid college email address.";
+    } elseif ($password === "") {
+        $error = "Please enter your password.";
     } else {
         // Query college table
         $stmt = $pdo->prepare("SELECT * FROM colleges WHERE email = :email LIMIT 1");
         $stmt->execute(['email' => $email]);
         $college = $stmt->fetch();
 
-        // Note: Supports plain-text or password_verify fallback
+        // Supports plain-text or password_verify fallback
         if ($college && ($password === $college['password'] || (isset($college['password']) && password_verify($password, $college['password'])))) {
             if ($college['status'] !== 'active') {
                 $error = "Your college account is inactive. Please contact the administrator.";
@@ -163,12 +165,15 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
             padding: 4px 12px 4px 18px;
             transition: all 0.2s ease;
             box-shadow: 0 2px 8px rgba(0,0,0,0.015);
-            margin-bottom: 20px;
         }
 
         .berun-input-group:focus-within {
             border-color: var(--color-text-dark);
             box-shadow: 0 0 0 3px rgba(28, 32, 36, 0.08);
+        }
+
+        .was-validated .form-control:invalid ~ .input-icon {
+            color: #dc3545;
         }
 
         .berun-input-group .input-icon {
@@ -273,7 +278,7 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
 
     <div class="login-card">
 
-        <!-- Logo Brand -->
+        <!-- Logo Header -->
         <div class="text-center">
             <a href="Index.php" class="berun-logo-brand">
                 <div class="berun-logo-dots">
@@ -300,28 +305,30 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
             </div>
         <?php endif; ?>
 
-        <form method="POST" action="Index.php">
+        <form method="POST" action="Index.php" class="needs-validation" novalidate id="loginForm">
 
             <!-- Email Input -->
             <div class="mb-3">
-                <label class="form-label" for="email">College Email Address</label>
+                <label class="form-label" for="email">College Email Address *</label>
                 <div class="berun-input-group">
                     <i class="bi bi-envelope input-icon"></i>
                     <input type="email" name="email" id="email" class="form-control" placeholder="Enter college email" required
                         value="<?php echo isset($email) ? htmlspecialchars($email) : ''; ?>">
                 </div>
+                <div class="invalid-feedback text-xs ps-2 mt-1">Please enter a valid college email address.</div>
             </div>
 
             <!-- Password Input -->
             <div class="mb-3">
-                <label class="form-label" for="passwordField">Password</label>
+                <label class="form-label" for="passwordField">Password *</label>
                 <div class="berun-input-group">
                     <i class="bi bi-lock input-icon"></i>
-                    <input type="password" name="password" id="passwordField" class="form-control" placeholder="Enter password" required>
+                    <input type="password" name="password" id="passwordField" class="form-control" placeholder="Enter password" required minlength="1">
                     <button class="btn-eye" type="button" id="togglePassword" title="Toggle Visibility">
                         <i class="bi bi-eye"></i>
                     </button>
                 </div>
+                <div class="invalid-feedback text-xs ps-2 mt-1">Please enter your password.</div>
             </div>
 
             <!-- Submit Button -->
@@ -339,8 +346,20 @@ if (isset($_POST["email"]) && isset($_POST["password"])) {
 
     </div>
 
-    <!-- Toggle Password Visibility JS -->
+    <!-- Client-Side Form Validation & Toggle Password JS -->
     <script>
+        (function() {
+            'use strict';
+            const form = document.getElementById('loginForm');
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        })();
+
         const toggleBtn = document.getElementById('togglePassword');
         const passwordField = document.getElementById('passwordField');
 

@@ -1,19 +1,31 @@
 <?php
 /**
  * Organizer/Profile.php
- * College Profile & Settings
+ * College Profile & Settings with Full Control Validation
  */
 include 'organizer_auth.php';
 include 'connection.php';
 
-$flash = null;
+$errors = [];
+$flash  = null;
 
 // Handle College Profile Update
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $phone = trim($_POST['phone'] ?? '');
 
-    if (!empty($email) && !empty($phone)) {
+    // Server-Side Validation
+    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors['email'] = 'Please enter a valid contact email address.';
+    }
+
+    if ($phone === '') {
+        $errors['phone'] = 'Phone number is required.';
+    } elseif (!preg_match('/^[0-9+\-\s()]{7,20}$/', $phone)) {
+        $errors['phone'] = 'Please enter a valid phone number (7-20 digits).';
+    }
+
+    if (empty($errors)) {
         try {
             $stmt = $pdo->prepare("
                 UPDATE colleges 
@@ -31,8 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (PDOException $e) {
             $flash = ['type' => 'danger', 'message' => 'Error updating profile: ' . $e->getMessage()];
         }
-    } else {
-        $flash = ['type' => 'danger', 'message' => 'Please enter a valid email and phone number.'];
     }
 }
 
@@ -213,6 +223,19 @@ $college_data = $stmt->fetch();
                             </div>
                         <?php endif; ?>
 
+                        <?php if (!empty($errors)): ?>
+                            <div class="alert alert-danger alert-dismissible fade show rounded-4 border-0 shadow-sm mb-4" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                <strong>Please fix the errors below:</strong>
+                                <ul class="mb-0 mt-2 ps-3 text-xs">
+                                    <?php foreach ($errors as $err): ?>
+                                        <li><?= htmlspecialchars((string)$err) ?></li>
+                                    <?php endforeach; ?>
+                                </ul>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        <?php endif; ?>
+
                         <!-- COLLEGE PROFILE CARD -->
                         <div class="berun-card-panel">
                             <div class="d-flex align-items-center gap-3 pb-3 mb-4 border-bottom">
@@ -225,7 +248,7 @@ $college_data = $stmt->fetch();
                                 </div>
                             </div>
 
-                            <form method="POST">
+                            <form method="POST" class="needs-validation" novalidate id="profileForm">
                                 <div class="mb-4">
                                     <label class="form-label">College Name</label>
                                     <input type="text" class="form-control bg-light" value="<?= htmlspecialchars((string)$college_data['name']) ?>" readonly disabled>
@@ -234,12 +257,14 @@ $college_data = $stmt->fetch();
 
                                 <div class="mb-4">
                                     <label class="form-label" for="email">Contact Email Address *</label>
-                                    <input type="email" class="form-control" name="email" id="email" value="<?= htmlspecialchars((string)$college_data['email']) ?>" required>
+                                    <input type="email" class="form-control <?= isset($errors['email']) ? 'is-invalid' : '' ?>" name="email" id="email" value="<?= htmlspecialchars((string)($_POST['email'] ?? $college_data['email'])) ?>" required>
+                                    <div class="invalid-feedback text-xs ps-2 mt-1">Please enter a valid email address.</div>
                                 </div>
 
                                 <div class="mb-4">
                                     <label class="form-label" for="phone">Phone Number *</label>
-                                    <input type="text" class="form-control" name="phone" id="phone" value="<?= htmlspecialchars((string)$college_data['phone']) ?>" required>
+                                    <input type="tel" class="form-control <?= isset($errors['phone']) ? 'is-invalid' : '' ?>" name="phone" id="phone" value="<?= htmlspecialchars((string)($_POST['phone'] ?? $college_data['phone'])) ?>" required pattern="^[0-9+\-\s()]{7,20}$">
+                                    <div class="invalid-feedback text-xs ps-2 mt-1">Please enter a valid phone number (7-20 digits).</div>
                                 </div>
 
                                 <div class="mb-4">
@@ -273,5 +298,20 @@ $college_data = $stmt->fetch();
 
     <!-- Bootstrap 5 JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Client-Side Form Validation JS -->
+    <script>
+        (function() {
+            'use strict';
+            const form = document.getElementById('profileForm');
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        })();
+    </script>
 </body>
 </html>
