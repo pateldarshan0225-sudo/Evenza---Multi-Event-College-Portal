@@ -567,6 +567,8 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
 
                         </div>
 
+                        <?php include 'Footer.php'; ?>
+
                     </div>
                 </div>
 
