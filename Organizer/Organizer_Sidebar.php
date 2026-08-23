@@ -113,9 +113,6 @@ $logo_src      = !empty($college_logo) ? '../uploads/colleges/' . htmlspecialcha
         <a href="Students.php" class="berun-nav-item <?= $current_page === 'students.php' ? 'active' : '' ?>" title="College Students">
             <i class="bi bi-people"></i>
         </a>
-        <a href="Profile.php" class="berun-nav-item <?= $current_page === 'profile.php' || $current_page === 'change_password.php' ? 'active' : '' ?>" title="College Profile">
-            <i class="bi bi-building"></i>
-        </a>
     </div>
 
     <div class="dropdown">
