@@ -1,10 +1,42 @@
 <?php
 /**
  * Organizer/Dashboard.php
- * Premium Bespoke Dashboard for College Events & Organizer Analytics
+ * Premium Bespoke Dashboard for College Events & Organizer Analytics with Fixed Avatar Helper
  */
 include 'organizer_auth.php';
 include 'connection.php';
+
+// Helper for Student Avatar Image Path & Fallback
+function get_student_avatar_src(?string $photo, string $name, string $gender = 'male', int $id = 0): string {
+    $maleAvatars   = ['avatar-2.jpg', 'avatar-4.jpg', 'avatar-7.jpg', 'avatar-9.jpg'];
+    $femaleAvatars = ['avatar-1.jpg', 'avatar-3.jpg', 'avatar-5.jpg', 'avatar-6.jpg', 'avatar-8.jpg', 'avatar-10.jpg'];
+
+    $photoName = trim((string)$photo);
+
+    if (!empty($photoName) && file_exists(__DIR__ . '/../assets/images/user/' . $photoName)) {
+        return '../assets/images/user/' . htmlspecialchars($photoName);
+    }
+
+    if (!empty($photoName) && file_exists(__DIR__ . '/../uploads/students/' . $photoName)) {
+        return '../uploads/students/' . htmlspecialchars($photoName);
+    }
+
+    if (!empty($photoName) && (in_array($photoName, $maleAvatars, true) || in_array($photoName, $femaleAvatars, true))) {
+        return '../assets/images/user/' . htmlspecialchars($photoName);
+    }
+
+    if (strtolower($gender) === 'female') {
+        $assigned = $femaleAvatars[$id % count($femaleAvatars)];
+    } else {
+        $assigned = $maleAvatars[$id % count($maleAvatars)];
+    }
+
+    if (file_exists(__DIR__ . '/../assets/images/user/' . $assigned)) {
+        return '../assets/images/user/' . $assigned;
+    }
+
+    return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=1c2024&color=ffffff&bold=true';
+}
 
 // Fetch College Details & Affiliated University
 $stmt = $pdo->prepare("
@@ -63,7 +95,7 @@ $events = $stmt->fetchAll();
 // Fetch Recent Registrations
 $stmt = $pdo->prepare("
     SELECT r.*, e.title AS event_title, 
-           s.name AS student_name, s.email AS student_email, s.profile_photo,
+           s.name AS student_name, s.email AS student_email, s.gender, s.profile_photo,
            t.team_name, t.team_code,
            COALESCE(p.amount, e.registration_fee, 0) AS amount
     FROM registrations r
@@ -720,6 +752,10 @@ $recent_registrations = $stmt->fetchAll();
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($recent_registrations as $r): ?>
+                                        <?php 
+                                        $soloAvatar = get_student_avatar_src($r['profile_photo'] ?? null, $r['student_name'] ?? 'Student', $r['gender'] ?? 'male', (int)($r['student_id'] ?? 0));
+                                        $fallbackUiAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($r['student_name'] ?? 'Student') . '&background=1c2024&color=ffffff&bold=true';
+                                        ?>
                                         <tr>
                                             <td class="ps-3">
                                                 <?php if ($r['registration_type'] === 'team'): ?>
@@ -727,7 +763,7 @@ $recent_registrations = $stmt->fetchAll();
                                                     <small class="text-muted">Code: <?= htmlspecialchars((string)($r['team_code'] ?? 'N/A')) ?></small>
                                                 <?php else: ?>
                                                     <div class="d-flex align-items-center gap-2">
-                                                        <img src="<?= !empty($r['profile_photo']) ? '../uploads/students/' . htmlspecialchars($r['profile_photo']) : 'https://ui-avatars.com/api/?name=' . urlencode($r['student_name']) ?>" class="rounded-circle" width="30" height="30" style="object-fit:cover;">
+                                                        <img src="<?= $soloAvatar ?>" class="rounded-circle border" width="30" height="30" style="object-fit:cover;" onerror="this.onerror=null; this.src='<?= $fallbackUiAvatar ?>';">
                                                         <div>
                                                             <div class="fw-bold text-dark"><?= htmlspecialchars((string)($r['student_name'] ?? 'Student')) ?></div>
                                                             <small class="text-muted"><?= htmlspecialchars((string)($r['student_email'] ?? '')) ?></small>

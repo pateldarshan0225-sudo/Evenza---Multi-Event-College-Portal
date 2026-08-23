@@ -1,10 +1,42 @@
 <?php
 /**
  * Organizer/Registrations.php
- * Premium Bespoke Registrations Command Center & Roster Inspector
+ * Premium Bespoke Registrations Command Center & Roster Inspector with Fixed Avatar Helper
  */
 include 'organizer_auth.php';
 include 'connection.php';
+
+// Helper for Student Avatar Image Path & Fallback
+function get_student_avatar_src(?string $photo, string $name, string $gender = 'male', int $id = 0): string {
+    $maleAvatars   = ['avatar-2.jpg', 'avatar-4.jpg', 'avatar-7.jpg', 'avatar-9.jpg'];
+    $femaleAvatars = ['avatar-1.jpg', 'avatar-3.jpg', 'avatar-5.jpg', 'avatar-6.jpg', 'avatar-8.jpg', 'avatar-10.jpg'];
+
+    $photoName = trim((string)$photo);
+
+    if (!empty($photoName) && file_exists(__DIR__ . '/../assets/images/user/' . $photoName)) {
+        return '../assets/images/user/' . htmlspecialchars($photoName);
+    }
+
+    if (!empty($photoName) && file_exists(__DIR__ . '/../uploads/students/' . $photoName)) {
+        return '../uploads/students/' . htmlspecialchars($photoName);
+    }
+
+    if (!empty($photoName) && (in_array($photoName, $maleAvatars, true) || in_array($photoName, $femaleAvatars, true))) {
+        return '../assets/images/user/' . htmlspecialchars($photoName);
+    }
+
+    if (strtolower($gender) === 'female') {
+        $assigned = $femaleAvatars[$id % count($femaleAvatars)];
+    } else {
+        $assigned = $maleAvatars[$id % count($maleAvatars)];
+    }
+
+    if (file_exists(__DIR__ . '/../assets/images/user/' . $assigned)) {
+        return '../assets/images/user/' . $assigned;
+    }
+
+    return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=1c2024&color=ffffff&bold=true';
+}
 
 $flash = null;
 
@@ -33,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Fetch Registrations Scoped to This College's Hosted Events
 $stmt = $pdo->prepare("
     SELECT r.*, e.title AS event_title, e.event_type, 
-           s.name AS student_name, s.email AS student_email, s.phone AS student_phone, s.enrollment_no, s.semester, s.profile_photo,
+           s.name AS student_name, s.email AS student_email, s.phone AS student_phone, s.enrollment_no, s.semester, s.gender, s.profile_photo,
            t.team_name, t.team_code, t.leader_id,
            COALESCE(p.amount, e.registration_fee, 0) AS amount
     FROM registrations r
@@ -54,7 +86,7 @@ $teamMembersMap = [];
 if (!empty($team_ids)) {
     $inClause = implode(',', array_map('intval', array_unique($team_ids)));
     $stmtMap = $pdo->query("
-        SELECT tm.team_id, s.student_id, s.name, s.email, s.phone, s.enrollment_no, s.semester, s.profile_photo
+        SELECT tm.team_id, s.student_id, s.name, s.email, s.phone, s.enrollment_no, s.semester, s.gender, s.profile_photo
         FROM team_members tm
         INNER JOIN students s ON tm.student_id = s.student_id
         WHERE tm.team_id IN ($inClause)
@@ -113,7 +145,6 @@ $total_collected = array_reduce($registrations, fn($acc, $r) => strtolower($r['s
 
         .berun-window { width: 100%; position: relative; }
 
-        /* Header Navigation Area */
         .berun-header {
             display: flex;
             align-items: center;
@@ -233,7 +264,6 @@ $total_collected = array_reduce($registrations, fn($acc, $r) => strtolower($r['s
             cursor: pointer;
         }
 
-        /* Panel Container */
         .berun-card-panel {
             background: var(--bg-white);
             border-radius: var(--card-radius);
@@ -245,27 +275,6 @@ $total_collected = array_reduce($registrations, fn($acc, $r) => strtolower($r['s
         .berun-panel-title { font-size: 18px; font-weight: 800; color: #111827; margin: 0; letter-spacing: -0.3px; }
         .berun-panel-sub   { font-size: 12px; color: #6b7280; margin: 2px 0 0 0; font-weight: 500; }
 
-        /* Status Dot Indicator Pills */
-        .status-dot-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
-            border-radius: 9999px;
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .dot-green { background: #ecfdf5; color: #047857; }
-        .dot-green::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background-color: #10b981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.6); }
-
-        .dot-amber { background: #fffbeb; color: #b45309; }
-        .dot-amber::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background-color: #f59e0b; }
-
-        .dot-red { background: #fef2f2; color: #b91c1c; }
-        .dot-red::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background-color: #ef4444; }
-
-        /* Member Roster Styling */
         .leader-star-badge {
             background: #ecfdf5;
             color: #047857;
@@ -422,7 +431,11 @@ $total_collected = array_reduce($registrations, fn($acc, $r) => strtolower($r['s
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($registrations as $r): ?>
-                                        <?php $isTeam = $r['registration_type'] === 'team'; ?>
+                                        <?php 
+                                        $isTeam = $r['registration_type'] === 'team';
+                                        $soloAvatar = get_student_avatar_src($r['profile_photo'] ?? null, $r['student_name'] ?? 'Student', $r['gender'] ?? 'male', (int)($r['student_id'] ?? 0));
+                                        $fallbackUiAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($r['student_name'] ?? 'Student') . '&background=1c2024&color=ffffff&bold=true';
+                                        ?>
                                         <tr class="reg-table-row"
                                             data-regid="#reg-<?= str_pad((string)$r['registration_id'], 4, '0', STR_PAD_LEFT) ?>"
                                             data-participant="<?= htmlspecialchars(strtolower($isTeam ? ($r['team_name'] ?? '') : ($r['student_name'] ?? ''))) ?>"
@@ -437,7 +450,7 @@ $total_collected = array_reduce($registrations, fn($acc, $r) => strtolower($r['s
                                                     <small class="text-muted">Code: <strong><?= htmlspecialchars((string)($r['team_code'] ?? 'N/A')) ?></strong></small>
                                                 <?php else: ?>
                                                     <div class="d-flex align-items-center gap-2">
-                                                        <img src="<?= !empty($r['profile_photo']) ? '../uploads/students/' . htmlspecialchars($r['profile_photo']) : 'https://ui-avatars.com/api/?name=' . urlencode($r['student_name']) ?>" class="rounded-circle" width="30" height="30" style="object-fit:cover;">
+                                                        <img src="<?= $soloAvatar ?>" class="rounded-circle border" width="30" height="30" style="object-fit:cover;" onerror="this.onerror=null; this.src='<?= $fallbackUiAvatar ?>';">
                                                         <div>
                                                             <div class="fw-bold text-dark"><?= htmlspecialchars((string)($r['student_name'] ?? 'Student')) ?></div>
                                                             <small class="text-muted"><?= htmlspecialchars((string)($r['student_email'] ?? '')) ?></small>
@@ -522,11 +535,15 @@ $total_collected = array_reduce($registrations, fn($acc, $r) => strtolower($r['s
                                                                             <tr><td colspan="6" class="text-center text-muted py-4">No team member details found.</td></tr>
                                                                         <?php else: ?>
                                                                             <?php foreach ($mList as $mIdx => $tm): ?>
+                                                                                <?php 
+                                                                                $tmAvatar = get_student_avatar_src($tm['profile_photo'] ?? null, $tm['name'], $tm['gender'] ?? 'male', (int)$tm['student_id']);
+                                                                                $tmFallback = 'https://ui-avatars.com/api/?name=' . urlencode($tm['name']) . '&background=1c2024&color=ffffff&bold=true';
+                                                                                ?>
                                                                                 <tr>
                                                                                     <td class="ps-2 font-semibold text-muted"><?= $mIdx + 1 ?></td>
                                                                                     <td class="fw-bold text-dark">
                                                                                         <div class="d-flex align-items-center gap-2">
-                                                                                            <img src="<?= !empty($tm['profile_photo']) ? '../uploads/students/' . htmlspecialchars($tm['profile_photo']) : 'https://ui-avatars.com/api/?name=' . urlencode($tm['name']) ?>" class="rounded-circle" width="28" height="28" style="object-fit:cover;">
+                                                                                            <img src="<?= $tmAvatar ?>" class="rounded-circle border" width="28" height="28" style="object-fit:cover;" onerror="this.onerror=null; this.src='<?= $tmFallback ?>';">
                                                                                             <span><?= htmlspecialchars((string)$tm['name']) ?></span>
                                                                                         </div>
                                                                                     </td>
@@ -550,7 +567,7 @@ $total_collected = array_reduce($registrations, fn($acc, $r) => strtolower($r['s
                                                             <h6 class="fw-bold text-dark border-bottom pb-2 mb-3"><i class="bi bi-person-fill text-primary me-1"></i> Solo Participant Profile</h6>
                                                             <div class="p-3 bg-light rounded-4">
                                                                 <div class="d-flex align-items-center gap-3">
-                                                                    <img src="<?= !empty($r['profile_photo']) ? '../uploads/students/' . htmlspecialchars($r['profile_photo']) : 'https://ui-avatars.com/api/?name=' . urlencode($r['student_name']) ?>" class="rounded-circle" width="56" height="56" style="object-fit:cover;">
+                                                                    <img src="<?= $soloAvatar ?>" class="rounded-circle border" width="56" height="56" style="object-fit:cover;" onerror="this.onerror=null; this.src='<?= $fallbackUiAvatar ?>';">
                                                                     <div>
                                                                         <h6 class="fw-bold text-dark mb-0"><?= htmlspecialchars((string)$r['student_name']) ?></h6>
                                                                         <span class="text-muted text-xs"><?= htmlspecialchars((string)$r['student_email']) ?> | Phone: <?= htmlspecialchars((string)($r['student_phone'] ?? 'N/A')) ?></span>

@@ -1,10 +1,42 @@
 <?php
 /**
  * Organizer/Students.php
- * Premium Bespoke College Students Directory
+ * Premium Bespoke College Students Directory with Fixed Avatar Image Resolver
  */
 include 'organizer_auth.php';
 include 'connection.php';
+
+// Helper for Student Avatar Image Path & Fallback
+function get_student_avatar_src(?string $photo, string $name, string $gender = 'male', int $id = 0): string {
+    $maleAvatars   = ['avatar-2.jpg', 'avatar-4.jpg', 'avatar-7.jpg', 'avatar-9.jpg'];
+    $femaleAvatars = ['avatar-1.jpg', 'avatar-3.jpg', 'avatar-5.jpg', 'avatar-6.jpg', 'avatar-8.jpg', 'avatar-10.jpg'];
+
+    $photoName = trim((string)$photo);
+
+    if (!empty($photoName) && file_exists(__DIR__ . '/../assets/images/user/' . $photoName)) {
+        return '../assets/images/user/' . htmlspecialchars($photoName);
+    }
+
+    if (!empty($photoName) && file_exists(__DIR__ . '/../uploads/students/' . $photoName)) {
+        return '../uploads/students/' . htmlspecialchars($photoName);
+    }
+
+    if (!empty($photoName) && (in_array($photoName, $maleAvatars, true) || in_array($photoName, $femaleAvatars, true))) {
+        return '../assets/images/user/' . htmlspecialchars($photoName);
+    }
+
+    if (strtolower($gender) === 'female') {
+        $assigned = $femaleAvatars[$id % count($femaleAvatars)];
+    } else {
+        $assigned = $maleAvatars[$id % count($maleAvatars)];
+    }
+
+    if (file_exists(__DIR__ . '/../assets/images/user/' . $assigned)) {
+        return '../assets/images/user/' . $assigned;
+    }
+
+    return 'https://ui-avatars.com/api/?name=' . urlencode($name) . '&background=1c2024&color=ffffff&bold=true';
+}
 
 // Fetch Students Scoped to This College
 $stmt = $pdo->prepare("
@@ -319,6 +351,10 @@ $count_active = count(array_filter($students, fn($s) => ($s['account_status'] ??
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($students as $idx => $s): ?>
+                                        <?php 
+                                        $avatarSrc = get_student_avatar_src($s['profile_photo'] ?? null, $s['name'], $s['gender'] ?? 'male', (int)$s['student_id']); 
+                                        $fallbackUiAvatar = 'https://ui-avatars.com/api/?name=' . urlencode($s['name']) . '&background=1c2024&color=ffffff&bold=true';
+                                        ?>
                                         <tr class="student-table-row"
                                             data-name="<?= htmlspecialchars(strtolower($s['name'])) ?>"
                                             data-enrollment="<?= htmlspecialchars(strtolower($s['enrollment_no'] ?? '')) ?>"
@@ -328,7 +364,12 @@ $count_active = count(array_filter($students, fn($s) => ($s['account_status'] ??
                                             <td class="ps-3 font-semibold text-muted"><?= $idx + 1 ?></td>
                                             <td class="fw-bold text-dark">
                                                 <div class="d-flex align-items-center gap-2">
-                                                    <img src="<?= !empty($s['profile_photo']) ? '../uploads/students/' . htmlspecialchars($s['profile_photo']) : 'https://ui-avatars.com/api/?name=' . urlencode($s['name']) ?>" class="rounded-circle" width="32" height="32" style="object-fit:cover;">
+                                                    <img src="<?= $avatarSrc ?>" 
+                                                         class="rounded-circle border" 
+                                                         width="32" 
+                                                         height="32" 
+                                                         style="object-fit:cover;"
+                                                         onerror="this.onerror=null; this.src='<?= $fallbackUiAvatar ?>';">
                                                     <span><?= htmlspecialchars((string)$s['name']) ?></span>
                                                 </div>
                                             </td>
