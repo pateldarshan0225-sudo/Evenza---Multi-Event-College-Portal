@@ -28,10 +28,11 @@ $total_registrations = (int)($stmt->fetch()['total'] ?? 0);
 
 // 3. Revenue Collected for College Events
 $stmt = $pdo->prepare("
-    SELECT SUM(r.amount) AS total 
+    SELECT COALESCE(SUM(p.amount), SUM(e.registration_fee), 0) AS total 
     FROM registrations r 
     INNER JOIN events e ON r.event_id = e.event_id 
-    WHERE e.college_id = :cid AND r.status = 'Approved'
+    LEFT JOIN payments p ON r.registration_id = p.registration_id 
+    WHERE e.college_id = :cid AND (LOWER(r.status) = 'approved' OR LOWER(p.payment_status) = 'paid')
 ");
 $stmt->execute(['cid' => $college_id]);
 $total_revenue = (float)($stmt->fetch()['total'] ?? 0.0);
@@ -55,11 +56,15 @@ $events = $stmt->fetchAll();
 
 // Fetch Recent Registrations
 $stmt = $pdo->prepare("
-    SELECT r.*, e.title AS event_title, s.name AS student_name, s.email AS student_email, t.team_name, t.team_code
+    SELECT r.*, e.title AS event_title, 
+           s.name AS student_name, s.email AS student_email, 
+           t.team_name, t.team_code,
+           COALESCE(p.amount, e.registration_fee, 0) AS amount
     FROM registrations r
     INNER JOIN events e ON r.event_id = e.event_id
     LEFT JOIN students s ON r.student_id = s.student_id
     LEFT JOIN teams t ON r.team_id = t.team_id
+    LEFT JOIN payments p ON r.registration_id = p.registration_id
     WHERE e.college_id = :cid
     ORDER BY r.registration_id DESC
     LIMIT 6
@@ -466,15 +471,15 @@ $recent_registrations = $stmt->fetchAll();
                                             </td>
                                             <td class="fw-bold text-dark">₹<?= number_format((float)$r['amount'], 2) ?></td>
                                             <td>
-                                                <?php if ($r['status'] === 'Approved'): ?>
+                                                <?php if (strtolower($r['status']) === 'approved'): ?>
                                                     <span class="status-badge badge-success">Approved</span>
-                                                <?php elseif ($r['status'] === 'Pending Payment'): ?>
+                                                <?php elseif (strtolower($r['status']) === 'pending payment' || strtolower($r['status']) === 'pending'): ?>
                                                     <span class="status-badge badge-warning">Pending</span>
                                                 <?php else: ?>
                                                     <span class="status-badge badge-danger">Cancelled</span>
                                                 <?php endif; ?>
                                             </td>
-                                            <td class="text-muted"><?= date('d M Y, h:i A', strtotime($r['created_at'])) ?></td>
+                                            <td class="text-muted"><?= date('d M Y', strtotime($r['registered_at'] ?? 'now')) ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php endif; ?>

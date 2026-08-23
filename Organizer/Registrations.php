@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $reg_id  = (int)($_POST['registration_id'] ?? 0);
     $status  = $_POST['status'] ?? 'Approved';
 
-    if ($reg_id > 0 && in_array($status, ['Approved', 'Pending Payment', 'Cancelled'], true)) {
+    if ($reg_id > 0 && in_array(strtolower($status), ['approved', 'pending payment', 'cancelled'], true)) {
         try {
             $stmt = $pdo->prepare("
                 UPDATE registrations r
@@ -34,11 +34,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $stmt = $pdo->prepare("
     SELECT r.*, e.title AS event_title, e.event_type, 
            s.name AS student_name, s.email AS student_email, s.phone AS student_phone, s.enrollment_no, s.semester, s.profile_photo,
-           t.team_name, t.team_code, t.leader_id
+           t.team_name, t.team_code, t.leader_id,
+           COALESCE(p.amount, e.registration_fee, 0) AS amount
     FROM registrations r
     INNER JOIN events e ON r.event_id = e.event_id
     LEFT JOIN students s ON r.student_id = s.student_id
     LEFT JOIN teams t ON r.team_id = t.team_id
+    LEFT JOIN payments p ON r.registration_id = p.registration_id
     WHERE e.college_id = :cid
     ORDER BY r.registration_id DESC
 ");
@@ -163,13 +165,6 @@ if (!empty($team_ids)) {
         .badge-warning { background: #fef3c7; color: #d97706; }
         .badge-danger  { background: #fde8e8; color: #dc3545; }
 
-        .member-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
         @media (max-width: 768px) {
             body { padding: 12px; }
             .berun-header { flex-direction: column; align-items: flex-start; gap: 14px; }
@@ -271,13 +266,13 @@ if (!empty($team_ids)) {
                                                     <input type="hidden" name="form_action" value="update_status">
                                                     <input type="hidden" name="registration_id" value="<?= $r['registration_id'] ?>">
                                                     <select name="status" onchange="this.form.submit()" class="form-select form-select-sm rounded-pill font-semibold border-0" style="width: auto; font-size: 11px; cursor: pointer;">
-                                                        <option value="Approved" <?= $r['status'] === 'Approved' ? 'selected' : '' ?>>Approved</option>
-                                                        <option value="Pending Payment" <?= $r['status'] === 'Pending Payment' ? 'selected' : '' ?>>Pending</option>
-                                                        <option value="Cancelled" <?= $r['status'] === 'Cancelled' ? 'selected' : '' ?>>Cancelled</option>
+                                                        <option value="Approved" <?= strtolower($r['status']) === 'approved' ? 'selected' : '' ?>>Approved</option>
+                                                        <option value="Pending Payment" <?= strtolower($r['status']) === 'pending payment' || strtolower($r['status']) === 'pending' ? 'selected' : '' ?>>Pending</option>
+                                                        <option value="Cancelled" <?= strtolower($r['status']) === 'cancelled' ? 'selected' : '' ?>>Cancelled</option>
                                                     </select>
                                                 </form>
                                             </td>
-                                            <td class="text-muted"><?= date('d M Y', strtotime($r['created_at'])) ?></td>
+                                            <td class="text-muted"><?= date('d M Y', strtotime($r['registered_at'] ?? 'now')) ?></td>
                                             <td class="pe-3 text-end">
                                                 <button type="button" class="btn btn-sm btn-outline-dark rounded-pill px-3 py-1 text-xs" data-bs-toggle="modal" data-bs-target="#rosterModal<?= $r['registration_id'] ?>">
                                                     <i class="bi bi-eye me-1"></i> View Roster
