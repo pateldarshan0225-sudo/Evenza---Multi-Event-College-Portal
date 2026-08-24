@@ -1,39 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 50" width="240" height="50" fill="none">
-  <defs>
-    <linearGradient id="whiteSunGold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffd13b"/>
-      <stop offset="100%" stop-color="#ffe259"/>
-    </linearGradient>
-  </defs>
-
-  <g fill="#ffffff">
-    <!-- LUXURY EDITORIAL SERIF WORDMARK: "evenza" (White) -->
-    <!-- 'e' (1) -->
-    <path d="M 18 36 C 10.5 36 5 30.5 5 22 C 5 13.5 11 7 20 7 C 29 7 34 13.5 34 21.5 C 34 23 33.5 24 32 24 L 11 24 C 11.5 30.5 15 33.5 20.5 33.5 C 24 33.5 27 32 28.5 29.5 C 29 28.5 30 28.5 30.5 29 L 33 31.5 C 33.5 32 33 33 32.5 33.5 C 29 35.5 24 36 18 36 Z M 19 11.5 C 14.5 11.5 11.5 15.5 11 20.5 L 28 20.5 C 27.5 15.5 24 11.5 19 11.5 Z"/>
-
-    <!-- 'v' -->
-    <path d="M 37 8 L 43 8 C 44 8 44.5 8.5 45 9.5 L 53 29 L 61 9.5 C 61.5 8.5 62 8 63 8 L 69 8 C 70 8 70.5 8.5 70 9 L 57 35 C 56.5 36 55.5 36.5 54.5 36.5 L 52.5 36.5 C 51.5 36.5 50.5 36 50 35 L 36.5 9 C 36 8.5 36.5 8 37 8 Z"/>
-
-    <!-- 'e' (2) -->
-    <path d="M 85 36 C 77.5 36 72 30.5 72 22 C 72 13.5 78 7 87 7 C 96 7 101 13.5 101 21.5 C 101 23 100.5 24 99 24 L 78 24 C 78.5 30.5 82 33.5 87.5 33.5 C 91 33.5 94 32 95.5 29.5 C 96 28.5 97 28.5 97.5 29 L 100 31.5 C 100.5 32 100 33 99.5 33.5 C 96 35.5 91 36 85 36 Z M 86 11.5 C 81.5 11.5 78.5 15.5 78 20.5 L 95 20.5 C 94.5 15.5 91 11.5 86 11.5 Z"/>
-    <path d="M 76 22 Q 86.5 13 97 22" stroke="#ffffff" stroke-width="1" fill="none" opacity="0.75"/>
-
-    <!-- 'n' -->
-    <path d="M 106 8 L 112 8 C 113 8 113.5 8.5 113.5 9.5 L 113.5 13.5 C 116.5 9 121.5 7 127 7 C 133.5 7 137.5 11 137.5 19 L 137.5 35 C 137.5 36 137 36.5 136 36.5 L 131 36.5 C 130 36.5 129.5 36 129.5 35 L 129.5 20 C 129.5 14.5 126.5 11.5 122 11.5 C 117 11.5 113.5 15.5 113.5 22.5 L 113.5 35 C 113.5 36 113 36.5 112 36.5 L 107 36.5 C 106 36.5 105.5 36 105.5 35 L 105.5 9.5 C 105.5 8.5 106 8 106 8 Z"/>
-
-    <!-- 'z' -->
-    <path d="M 143 8 L 166 8 C 167 8 167.5 8.5 167 9.5 L 148 33.5 L 167 33.5 C 168 33.5 168.5 34 168.5 35 L 168.5 36.5 C 168.5 36.5 168 36.5 167 36.5 L 142 36.5 C 141 36.5 140.5 36 141 35 L 160 11 L 143 11 C 142 11 141.5 10.5 141.5 9.5 L 141.5 8.5 C 141.5 8 142 8 143 8 Z"/>
-
-    <!-- 'a' -->
-    <path d="M 183 36 C 175.5 36 170 30.5 170 22.5 C 170 13.5 176.5 7 184.5 7 C 188 7 191 8.5 193 11 L 193 4.5 C 193 3.5 193.5 3 194.5 3 L 199.5 3 C 200.5 3 201 3.5 201 4.5 L 201 35 C 201 36 200.5 36.5 199.5 36.5 L 195 36.5 C 194 36.5 193.5 36 193.5 35 L 193.5 31.5 C 191 34.5 187.5 36 183 36 Z M 186.5 31.5 C 191 31.5 194 27.5 194 21.5 C 194 15.5 191 11.5 186 11.5 C 181 11.5 178 15.5 178 21.5 C 178 27.5 181 31.5 186.5 31.5 Z"/>
-    <path d="M 175 22 Q 185.5 13 196 22" stroke="#ffffff" stroke-width="1" fill="none" opacity="0.75"/>
-
-    <!-- Sun Gold Accent Dot -->
-    <circle cx="209" cy="33" r="3.5" fill="url(#whiteSunGold)"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 48" width="220" height="48" fill="none">
+  <!-- BESPOKE HANDCRAFTED BRAND MARK (White Theme) -->
+  <g transform="translate(4, 4)">
+    <rect x="0" y="0" width="40" height="40" rx="12" fill="#ffffff" opacity="0.12" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    
+    <rect x="10" y="10" width="20" height="5" rx="2.5" fill="#ffd13b"/>
+    <rect x="10" y="17.5" width="14" height="5" rx="2.5" fill="#ffffff"/>
+    <rect x="10" y="25" width="20" height="5" rx="2.5" fill="#ffd13b"/>
+    <rect x="10" y="10" width="5" height="20" rx="2.5" fill="#ffd13b"/>
   </g>
 
-  <!-- Clean Uppercase Sub-headline -->
-  <text x="120" y="47" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-weight="700" font-size="7.5" letter-spacing="0.32em" fill="#ffffff" opacity="0.85" text-anchor="middle">
-    COLLEGE EVENT PORTAL
+  <!-- HAND-KERNED TYPOGRAPHY (White) -->
+  <text x="56" y="31" font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="25" letter-spacing="-0.03em" fill="#ffffff">
+    Even<tspan fill="#ffd13b">za</tspan>
   </text>
+
+  <!-- Minimalist Status Dot -->
+  <circle cx="168" cy="18" r="3.5" fill="#10b981"/>
 </svg>
