@@ -356,6 +356,34 @@ $events = $pdo->query("
         border-radius: 9999px;
     }
 
+    /* Clean Multi-line Truncation for Description (No Half-Cut Text) */
+    .event-desc-clamp {
+        font-size: 13px;
+        line-height: 1.55;
+        color: #64748b;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-height: 40px;
+        margin-bottom: 18px;
+    }
+
+    .event-title-clamp {
+        font-size: 19px;
+        font-weight: 800;
+        color: #14171a;
+        line-height: 1.35;
+        letter-spacing: -0.3px;
+        min-height: 52px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin-bottom: 8px;
+    }
+
     /* HOW IT WORKS SECTION */
     .how-it-works-section {
         background-color: #ffffff;
@@ -610,12 +638,12 @@ $events = $pdo->query("
                                     </span>
                                 </div>
 
-                                <h5 class="fw-black text-dark mb-2" style="font-size: 19px; line-height: 1.35; letter-spacing: -0.3px;">
+                                <h5 class="event-title-clamp">
                                     <?= htmlspecialchars((string)$e['title']) ?>
                                 </h5>
 
-                                <p class="text-muted text-xs mb-4" style="line-height: 1.6; height: 38px; overflow: hidden;">
-                                    <?= htmlspecialchars(mb_strimwidth((string)$e['description'], 0, 95, '...')) ?>
+                                <p class="event-desc-clamp">
+                                    <?= htmlspecialchars((string)$e['description']) ?>
                                 </p>
 
                                 <div class="p-3 bg-light rounded-4 mb-4 d-flex align-items-center justify-content-between text-xs text-secondary">
