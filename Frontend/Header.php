@@ -131,6 +131,40 @@ $current_page = strtolower(basename($_SERVER['PHP_SELF']));
             background-color: var(--color-text-dark);
             color: #ffffff !important;
         }
+
+        .btn-signup-luxury {
+            background-color: #14171a;
+            color: #ffffff !important;
+            border: 2px solid #14171a;
+            border-radius: 9999px;
+            padding: 8px 20px;
+            font-size: 13.5px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 3px 3px 0px #ffd13b;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+        }
+        .btn-signup-luxury:hover, .btn-signup-luxury:focus, .show > .btn-signup-luxury {
+            background-color: #ffd13b;
+            color: #14171a !important;
+            border-color: #14171a;
+            transform: translateY(-2px);
+            box-shadow: 4px 4px 0px #14171a;
+        }
+
+        .signup-menu-card {
+            border-radius: 14px;
+            padding: 10px 12px;
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        .signup-menu-card:hover {
+            background: #fffdf7;
+            border-color: #14171a;
+            box-shadow: 3px 3px 0px #ffd13b;
+            transform: translateX(3px);
+        }
     </style>
 </head>
 <body>
@@ -182,44 +216,47 @@ $current_page = strtolower(basename($_SERVER['PHP_SELF']));
                         
                         <!-- SIGN UP DROPDOWN MENU (STUDENT, COLLEGE, UNIVERSITY) -->
                         <div class="dropdown">
-                            <button class="btn-capsule-outline dropdown-toggle d-inline-flex align-items-center gap-1" type="button" id="signUpDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                Sign Up <i class="bi bi-chevron-down text-xs opacity-75 ms-1"></i>
+                            <button class="btn-signup-luxury dropdown-toggle d-inline-flex align-items-center" type="button" id="signUpDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-plus-fill text-warning me-1"></i> Sign Up <i class="bi bi-chevron-down text-xs ms-1.5 opacity-80"></i>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-2 border-dark rounded-4 p-2 mt-2" aria-labelledby="signUpDropdown" style="min-width: 290px; box-shadow: 0 14px 35px rgba(0,0,0,0.14) !important;">
-                                <li class="px-3 py-2 border-bottom mb-1">
-                                    <span class="fw-black text-dark text-xs text-uppercase tracking-wider d-block">Create An Account</span>
-                                    <span class="text-muted" style="font-size: 11px;">Select registration profile type</span>
+                            <ul class="dropdown-menu dropdown-menu-end border-2 border-dark rounded-4 p-2 mt-2 shadow-lg" aria-labelledby="signUpDropdown" style="min-width: 310px; box-shadow: 6px 6px 0px #14171a !important;">
+                                <li class="px-3 py-2 border-bottom mb-2">
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span class="fw-black text-dark text-xs text-uppercase tracking-wider">Create Account</span>
+                                        <span class="badge bg-warning text-dark font-bold text-xs border border-dark rounded-pill">3 Gateways</span>
+                                    </div>
+                                    <small class="text-muted d-block mt-0.5" style="font-size: 11px;">Select your registration role type</small>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item rounded-3 p-2.5 d-flex align-items-center gap-3" href="register.php">
-                                        <div class="rounded-circle bg-warning text-dark border border-dark d-flex align-items-center justify-content-center flex-shrink-0" style="width: 36px; height: 36px;">
+                                    <a class="dropdown-item signup-menu-card p-2.5 d-flex align-items-center gap-3" href="register.php">
+                                        <div class="rounded-circle bg-warning text-dark border border-dark d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px;">
                                             <i class="bi bi-mortarboard-fill fs-6"></i>
                                         </div>
                                         <div>
                                             <div class="fw-bold text-dark text-xs">Student Registration</div>
-                                            <small class="text-muted d-block" style="font-size: 11px;">Join fests & claim digital passes</small>
+                                            <small class="text-muted d-block" style="font-size: 11px;">Join fests & claim digital entry passes</small>
                                         </div>
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item rounded-3 p-2.5 d-flex align-items-center gap-3" href="register_college.php">
-                                        <div class="rounded-circle bg-warning text-dark border border-dark d-flex align-items-center justify-content-center flex-shrink-0" style="width: 36px; height: 36px;">
+                                    <a class="dropdown-item signup-menu-card p-2.5 d-flex align-items-center gap-3" href="register_college.php">
+                                        <div class="rounded-circle bg-warning text-dark border border-dark d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px;">
                                             <i class="bi bi-building-fill fs-6"></i>
                                         </div>
                                         <div>
                                             <div class="fw-bold text-dark text-xs">College Registration</div>
-                                            <small class="text-muted d-block" style="font-size: 11px;">Host campus events & QR entry</small>
+                                            <small class="text-muted d-block" style="font-size: 11px;">Host campus events & QR gate entry</small>
                                         </div>
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item rounded-3 p-2.5 d-flex align-items-center gap-3" href="register_university.php">
-                                        <div class="rounded-circle bg-warning text-dark border border-dark d-flex align-items-center justify-content-center flex-shrink-0" style="width: 36px; height: 36px;">
+                                    <a class="dropdown-item signup-menu-card p-2.5 d-flex align-items-center gap-3" href="register_university.php">
+                                        <div class="rounded-circle bg-warning text-dark border border-dark d-flex align-items-center justify-content-center flex-shrink-0" style="width: 38px; height: 38px;">
                                             <i class="bi bi-bank2 fs-6"></i>
                                         </div>
                                         <div>
                                             <div class="fw-bold text-dark text-xs">University Registration</div>
-                                            <small class="text-muted d-block" style="font-size: 11px;">Govern multi-college network</small>
+                                            <small class="text-muted d-block" style="font-size: 11px;">Govern & accredit multi-college network</small>
                                         </div>
                                     </a>
                                 </li>
