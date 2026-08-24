@@ -22,7 +22,30 @@ $admin_name  = isset($_SESSION['admin_name'])
         document.documentElement.setAttribute('data-theme', theme);
       } catch (e) {}
     })();
-  </script>
+  <style>
+    .btn-visit-website-luxury {
+        background: #ffffff;
+        color: #14171a !important;
+        border: 2px solid #14171a;
+        border-radius: 9999px;
+        padding: 7px 18px;
+        font-size: 12px;
+        font-weight: 800;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 3px 3px 0px #14171a;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        white-space: nowrap;
+    }
+    .btn-visit-website-luxury:hover {
+        background: #ffd13b;
+        color: #14171a !important;
+        transform: translateY(-2px);
+        box-shadow: 5px 5px 0px #14171a;
+    }
+  </style>
 </head>
 <body>
 
@@ -48,8 +71,8 @@ $admin_name  = isset($_SESSION['admin_name'])
 
     <div class="ms-auto d-flex align-items-center">
       <!-- Visit Main Website Button -->
-      <a href="../Frontend/index.php" class="btn btn-warning rounded-pill px-3 py-1.5 text-xs font-bold text-dark text-nowrap me-3 d-inline-flex align-items-center gap-1.5 shadow-sm" style="text-decoration: none;">
-        <i class="bi bi-globe"></i> Visit Website
+      <a href="../Frontend/index.php" class="btn-visit-website-luxury me-3">
+        <i class="bi bi-globe2 text-warning"></i> Visit Main Website <i class="bi bi-arrow-up-right text-muted opacity-60"></i>
       </a>
 
       <ul class="inline-flex *:min-h-header-height *:inline-flex *:items-center">

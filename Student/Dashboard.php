@@ -169,6 +169,30 @@ $recent_registrations = $stmt->fetchAll();
             gap: 6px;
         }
 
+        .btn-visit-website-luxury {
+            background: #ffffff;
+            color: #14171a !important;
+            border: 2px solid #14171a;
+            border-radius: 9999px;
+            padding: 9px 20px;
+            font-size: 12px;
+            font-weight: 800;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 3px 3px 0px #14171a;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            white-space: nowrap;
+        }
+
+        .btn-visit-website-luxury:hover {
+            background: #ffd13b;
+            color: #14171a !important;
+            transform: translateY(-2px);
+            box-shadow: 5px 5px 0px #14171a;
+        }
+
         .berun-btn-dark {
             background-color: var(--bg-dark);
             color: #ffffff !important;
@@ -391,8 +415,8 @@ $recent_registrations = $stmt->fetchAll();
             </div>
 
             <div class="d-flex align-items-center gap-3">
-                <a href="../Frontend/index.php" class="btn btn-warning rounded-pill px-3 py-2 text-xs font-bold text-dark text-nowrap d-inline-flex align-items-center gap-1.5 shadow-sm" style="text-decoration: none;">
-                    <i class="bi bi-globe"></i> Visit Main Website
+                <a href="../Frontend/index.php" class="btn-visit-website-luxury">
+                    <i class="bi bi-globe2 text-warning"></i> Visit Main Website <i class="bi bi-arrow-up-right text-muted opacity-60"></i>
                 </a>
                 <a href="../Frontend/events.php" class="berun-btn-dark">
                     <i class="bi bi-search"></i> Explore Competitions
