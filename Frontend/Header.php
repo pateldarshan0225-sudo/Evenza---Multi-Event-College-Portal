@@ -174,7 +174,7 @@ $current_page = strtolower(basename($_SERVER['PHP_SELF']));
                                 <?php elseif ($user_role === 'organizer'): ?>
                                     <li><a class="dropdown-item rounded-3 py-2 text-xs" href="../Organizer/Dashboard.php"><i class="bi bi-building me-2"></i> Organizer Command Center</a></li>
                                 <?php else: ?>
-                                    <li><a class="dropdown-item rounded-3 py-2 text-xs" href="dashboard.php"><i class="bi bi-journal-bookmark me-2"></i> Student Portal</a></li>
+                                    <li><a class="dropdown-item rounded-3 py-2 text-xs" href="../Student/Dashboard.php"><i class="bi bi-journal-bookmark me-2"></i> Student Portal</a></li>
                                 <?php endif; ?>
                                 <li><a class="dropdown-item rounded-3 py-2 text-xs text-danger" href="logout.php"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
                             </ul>

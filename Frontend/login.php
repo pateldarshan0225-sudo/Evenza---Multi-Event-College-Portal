@@ -16,7 +16,7 @@ if ($is_logged_in) {
         header('Location: ../Organizer/Dashboard.php');
         exit;
     } else {
-        header('Location: dashboard.php');
+        header('Location: ../Student/Dashboard.php');
         exit;
     }
 }
@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['student_email']     = $student['email'];
             $_SESSION['college_id']        = $student['college_id'];
             $_SESSION['student_logged_in'] = true;
-            header('Location: dashboard.php');
+            header('Location: ../Student/Dashboard.php');
             exit;
         }
 
