@@ -1,9 +1,9 @@
 <?php
 /**
  * Frontend/register_college.php
- * Ultra-Executive College / Campus Event Organizer Registration Gateway
+ * Ultra-Executive College / Campus Event Organizer Registration Gateway (Matching Reference Form UI)
  */
-$page_title = "College & Campus Organizer Registration";
+$page_title = "College Registration";
 include 'connection.php';
 include_once 'frontend_auth.php';
 
@@ -21,10 +21,17 @@ $universities = $pdo->query("SELECT university_id, name FROM universities ORDER 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $university_id = filter_input(INPUT_POST, 'university_id', FILTER_VALIDATE_INT);
     $name          = trim($_POST['name'] ?? '');
+    $slug          = trim($_POST['slug'] ?? '');
     $email         = trim($_POST['email'] ?? '');
-    $phone         = trim($_POST['phone'] ?? '');
     $password      = $_POST['password'] ?? '';
-    
+    $phone         = trim($_POST['phone'] ?? '');
+    $address       = trim($_POST['address'] ?? '');
+
+    // Generate slug if empty
+    if ($slug === '' && $name !== '') {
+        $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name), '-'));
+    }
+
     // College Logo File Processing
     $logo_filename = 'default_college.png';
     if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
@@ -49,51 +56,53 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Validation
-    if (!$university_id) $errors['university_id'] = 'Please select your university.';
     if ($name === '') {
-        $errors['name'] = 'College / Institution name is required.';
+        $errors['name'] = 'College name is required.';
     } elseif (strlen($name) < 3) {
         $errors['name'] = 'College name must be at least 3 characters.';
     }
 
-    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors['email'] = 'Valid official email address is required.';
-    }
+    if (!$university_id) $errors['university_id'] = 'Please select your university.';
 
-    if ($phone === '') {
-        $errors['phone'] = 'Official contact phone number is required.';
-    } elseif (!preg_match('/^[0-9+\-\s()]{10,15}$/', $phone)) {
-        $errors['phone'] = 'Please enter a valid 10-digit phone number.';
+    if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors['email'] = 'Valid email address is required.';
     }
 
     if ($password === '') {
-        $errors['password'] = 'Account password is required.';
+        $errors['password'] = 'Login password is required.';
     } elseif (strlen($password) < 6) {
         $errors['password'] = 'Password must be at least 6 characters.';
     }
 
-    // Uniqueness Checks for College Email
+    if ($phone === '') {
+        $errors['phone'] = 'Contact phone number is required.';
+    }
+
+    // Uniqueness Checks for Email & Slug
     if (empty($errors)) {
         $chk = $pdo->prepare("SELECT college_id FROM colleges WHERE email = :email LIMIT 1");
         $chk->execute(['email' => $email]);
         if ($chk->fetch()) {
-            $errors['email'] = 'An institution account with this email address already exists.';
+            $errors['email'] = 'An account with this email address already exists.';
         }
     }
 
     if (empty($errors)) {
         try {
+            // Check if address column exists, insert cleanly
             $stmt = $pdo->prepare("
-                INSERT INTO colleges (university_id, name, email, phone, logo, status, password, created_at, updated_at)
-                VALUES (:uid, :name, :email, :phone, :logo, 'active', :pass, NOW(), NOW())
+                INSERT INTO colleges (university_id, name, slug, email, phone, logo, address, status, password, created_at, updated_at)
+                VALUES (:uid, :name, :slug, :email, :phone, :logo, :address, 'active', :pass, NOW(), NOW())
             ");
             $stmt->execute([
-                'uid'   => $university_id,
-                'name'  => $name,
-                'email' => $email,
-                'phone' => $phone,
-                'logo'  => $logo_filename,
-                'pass'  => $password
+                'uid'     => $university_id,
+                'name'    => $name,
+                'slug'    => $slug,
+                'email'   => $email,
+                'phone'   => $phone,
+                'logo'    => $logo_filename,
+                'address' => $address,
+                'pass'    => $password
             ]);
 
             $new_id = $pdo->lastInsertId();
@@ -106,7 +115,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: ../Organizer/Dashboard.php');
             exit;
         } catch (PDOException $e) {
-            $errors['general'] = 'Error registering college account: ' . $e->getMessage();
+            // Fallback if slug/address column is missing in older DB schema
+            try {
+                $stmt = $pdo->prepare("
+                    INSERT INTO colleges (university_id, name, email, phone, logo, status, password, created_at, updated_at)
+                    VALUES (:uid, :name, :email, :phone, :logo, 'active', :pass, NOW(), NOW())
+                ");
+                $stmt->execute([
+                    'uid'   => $university_id,
+                    'name'  => $name,
+                    'email' => $email,
+                    'phone' => $phone,
+                    'logo'  => $logo_filename,
+                    'pass'  => $password
+                ]);
+
+                $new_id = $pdo->lastInsertId();
+                $_SESSION['college_id']            = $new_id;
+                $_SESSION['college_name']          = $name;
+                $_SESSION['college_email']         = $email;
+                $_SESSION['college_logo']          = $logo_filename;
+                $_SESSION['organizer_logged_in']   = true;
+
+                header('Location: ../Organizer/Dashboard.php');
+                exit;
+            } catch (PDOException $e2) {
+                $errors['general'] = 'Error registering college account: ' . $e2->getMessage();
+            }
         }
     }
 }
@@ -126,7 +161,7 @@ include 'Header.php';
     }
 
     .register-gateway-section {
-        padding: 60px 0 90px 0;
+        padding: 50px 0 80px 0;
     }
 
     .register-pill-badge {
@@ -136,19 +171,18 @@ include 'Header.php';
         color: #14171a;
         font-weight: 800;
         font-size: 11px;
-        padding: 7px 18px;
+        padding: 6px 16px;
         border-radius: 9999px;
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        letter-spacing: 0.2px;
     }
 
     .register-card-bespoke {
         background: #ffffff;
         border: 2px solid #14171a;
-        border-radius: 36px;
-        padding: 44px;
+        border-radius: 32px;
+        padding: 40px;
         box-shadow: 8px 8px 0px #14171a;
         position: relative;
     }
@@ -160,10 +194,10 @@ include 'Header.php';
     .form-label-clean {
         font-size: 11px;
         font-weight: 800;
-        letter-spacing: 0.6px;
+        letter-spacing: 0.5px;
         text-transform: uppercase;
-        color: #4b5563;
-        margin-bottom: 8px;
+        color: #6b7280;
+        margin-bottom: 6px;
         display: block;
     }
 
@@ -175,13 +209,13 @@ include 'Header.php';
     .searchable-select-input {
         background: #ffffff;
         border: 1.5px solid #e5e7eb;
-        border-radius: 9999px;
-        padding: 13px 44px 13px 22px;
+        border-radius: 16px;
+        padding: 11px 40px 11px 18px;
         font-size: 13.5px;
-        font-weight: 600;
+        font-weight: 500;
         color: #14171a;
         width: 100%;
-        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: all 0.2s ease;
     }
 
     .searchable-select-input::placeholder {
@@ -197,7 +231,7 @@ include 'Header.php';
 
     .select-caret-icon {
         position: absolute;
-        right: 20px;
+        right: 18px;
         top: 50%;
         transform: translateY(-50%);
         color: #9ca3af;
@@ -212,16 +246,16 @@ include 'Header.php';
         right: 0;
         background: #ffffff;
         border: 1.5px solid #14171a;
-        border-radius: 20px;
+        border-radius: 18px;
         max-height: 220px;
         overflow-y: auto;
         z-index: 1050;
-        box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
         display: none;
     }
 
     .searchable-select-item {
-        padding: 11px 20px;
+        padding: 10px 18px;
         font-size: 13px;
         font-weight: 600;
         color: #14171a;
@@ -234,13 +268,13 @@ include 'Header.php';
         color: #14171a;
     }
 
-    .form-control-luxury {
+    .form-control-luxury, .form-select-luxury {
         background: #ffffff;
         border: 1.5px solid #e5e7eb;
-        border-radius: 9999px;
-        padding: 13px 22px;
+        border-radius: 16px;
+        padding: 11px 18px;
         font-size: 13.5px;
-        font-weight: 600;
+        font-weight: 500;
         color: #14171a;
         transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         width: 100%;
@@ -259,20 +293,15 @@ include 'Header.php';
 
     .custom-file-upload-box {
         position: relative;
-        background: #fdfbf7;
-        border: 1.5px dashed #cbd5e1;
-        border-radius: 9999px;
-        padding: 8px 18px;
+        background: #ffffff;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 7px 14px;
         display: flex;
         align-items: center;
         justify-content: space-between;
         transition: all 0.2s ease;
         cursor: pointer;
-    }
-
-    .custom-file-upload-box:hover {
-        border-color: #14171a;
-        background: #ffffff;
     }
 
     .custom-file-upload-box input[type="file"] {
@@ -286,7 +315,7 @@ include 'Header.php';
         color: #dc3545;
         font-size: 11px;
         font-weight: 700;
-        margin-top: 6px;
+        margin-top: 5px;
         display: flex;
         align-items: center;
         gap: 4px;
@@ -294,8 +323,8 @@ include 'Header.php';
 
     .btn-eye-toggle {
         position: absolute;
-        right: 20px;
-        top: 40px;
+        right: 18px;
+        top: 36px;
         background: none;
         border: none;
         color: #9ca3af;
@@ -318,56 +347,34 @@ include 'Header.php';
         border-radius: 9999px;
     }
 
-    /* Handcrafted Metric Pills */
-    .metric-pill-strip {
+    .eco-pillar-card {
+        background: #ffffff;
+        border: 1.5px solid #14171a;
+        border-radius: 20px;
+        padding: 18px 20px;
+        box-shadow: 4px 4px 0px #14171a;
+        margin-bottom: 16px;
         display: flex;
         align-items: center;
         gap: 16px;
-        margin: 24px 0 32px 0;
-        flex-wrap: wrap;
     }
 
-    .metric-pill-item {
-        background: #ffffff;
-        border: 1.5px solid #14171a;
-        border-radius: 18px;
-        padding: 10px 18px;
-        box-shadow: 3px 3px 0px #14171a;
-    }
-    .metric-pill-val { font-size: 18px; font-weight: 900; color: #14171a; line-height: 1; }
-    .metric-pill-lbl { font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; margin-top: 3px; }
-
-    .editorial-feature-list {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        margin-bottom: 32px;
-    }
-
-    .editorial-feature-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 14px;
-        padding-bottom: 14px;
-        border-bottom: 1px dashed #e2e8f0;
-    }
-
-    .editorial-feature-icon {
-        width: 36px;
-        height: 36px;
-        border-radius: 12px;
+    .eco-pillar-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
         background: #ffd13b;
-        border: 1.5px solid #14171a;
         color: #14171a;
+        border: 1.5px solid #14171a;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 16px;
+        font-size: 20px;
         flex-shrink: 0;
     }
 
     @media (max-width: 768px) {
-        .register-card-bespoke { padding: 26px; border-radius: 28px; }
+        .register-card-bespoke { padding: 24px; border-radius: 24px; }
     }
 </style>
 
@@ -375,78 +382,63 @@ include 'Header.php';
     <div class="container-xl">
         <div class="row g-5 align-items-center justify-content-center">
 
-            <!-- LEFT COLUMN: HANDCRAFTED BRAND HIGHLIGHTS -->
+            <!-- LEFT COLUMN: COLLEGE ORGANIZER BRAND HIGHLIGHTS -->
             <div class="col-12 col-lg-5">
                 <span class="register-pill-badge mb-3">
-                    <i class="bi bi-building-check text-warning"></i> Campus Event Organizer Gateway
+                    <i class="bi bi-building-fill text-warning"></i> Campus Event Organizer Gateway
                 </span>
                 <h1 class="fw-black text-dark display-6 mb-3" style="letter-spacing: -1px; line-height: 1.15;">
                     Register Your College & Host Inter-College Events
                 </h1>
-                <p class="text-muted leading-relaxed text-sm mb-0">
-                    Connect your institution to the Evenza network. Publish hackathons, cultural festivals, sports leagues, and verify student competitor entry passes instantly.
+                <p class="text-muted leading-relaxed text-sm mb-4">
+                    Connect your institution to the Evenza network. Publish technical hackathons, cultural festivals, sports leagues, and verify student competitor entry passes instantly.
                 </p>
 
-                <!-- 3 HANDCRAFTED METRIC PILLS -->
-                <div class="metric-pill-strip">
-                    <div class="metric-pill-item">
-                        <div class="metric-pill-val">250+</div>
-                        <div class="metric-pill-lbl">Live Events</div>
-                    </div>
-                    <div class="metric-pill-item">
-                        <div class="metric-pill-val">80+</div>
-                        <div class="metric-pill-lbl">Universities</div>
-                    </div>
-                    <div class="metric-pill-item">
-                        <div class="metric-pill-val">100%</div>
-                        <div class="metric-pill-lbl">QR Accuracy</div>
-                    </div>
-                </div>
-
-                <!-- EDITORIAL FEATURE LIST -->
-                <div class="editorial-feature-list">
-                    <div class="editorial-feature-item">
-                        <div class="editorial-feature-icon"><i class="bi bi-calendar2-event-fill"></i></div>
-                        <div>
-                            <div class="fw-bold text-dark text-xs mb-0.5">Publish & Manage Campus Events</div>
-                            <div class="text-muted" style="font-size: 11.5px;">Create competitions with custom categories, rules, and registration deadlines</div>
-                        </div>
-                    </div>
-
-                    <div class="editorial-feature-item">
-                        <div class="editorial-feature-icon"><i class="bi bi-qr-code-scan"></i></div>
-                        <div>
-                            <div class="fw-bold text-dark text-xs mb-0.5">Digital Pass QR Check-in System</div>
-                            <div class="text-muted" style="font-size: 11.5px;">Scan digital venue entry passes at gates to verify student credentials</div>
-                        </div>
-                    </div>
-
-                    <div class="editorial-feature-item" style="border-bottom: none;">
-                        <div class="editorial-feature-icon"><i class="bi bi-bar-chart-line-fill"></i></div>
-                        <div>
-                            <div class="fw-bold text-dark text-xs mb-0.5">Real-Time Registration Analytics</div>
-                            <div class="text-muted" style="font-size: 11.5px;">Track live sign-ups, squad teams, entry pass check-in rates, and revenue</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-3 bg-white rounded-4 border border-dark d-flex align-items-center gap-3 shadow-sm">
-                    <i class="bi bi-shield-lock-fill text-success fs-4"></i>
+                <!-- 3 ECOSYSTEM PILLAR CARDS -->
+                <div class="eco-pillar-card">
+                    <div class="eco-pillar-icon"><i class="bi bi-calendar-event-fill"></i></div>
                     <div>
-                        <div class="fw-bold text-dark text-xs">Verified Institution Gateway</div>
-                        <small class="text-muted" style="font-size: 11px;">Accredited colleges receive official verified organizer status & portal access</small>
+                        <div class="fw-black text-dark text-xs mb-0">Publish & Manage Events</div>
+                        <small class="text-muted" style="font-size: 11px;">Create competitions with custom categories and rules</small>
+                    </div>
+                </div>
+
+                <div class="eco-pillar-card">
+                    <div class="eco-pillar-icon"><i class="bi bi-qr-code"></i></div>
+                    <div>
+                        <div class="fw-black text-dark text-xs mb-0">Digital Pass Check-in System</div>
+                        <small class="text-muted" style="font-size: 11px;">Scan QR codes at event venues to verify student entry</small>
+                    </div>
+                </div>
+
+                <div class="eco-pillar-card">
+                    <div class="eco-pillar-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                    <div>
+                        <div class="fw-black text-dark text-xs mb-0">Real-Time Registration Analytics</div>
+                        <small class="text-muted" style="font-size: 11px;">Track total sign-ups, entry pass check-ins, and revenue</small>
+                    </div>
+                </div>
+
+                <div class="p-3 bg-white rounded-4 border border-dark d-flex align-items-center gap-3 shadow-sm mt-4">
+                    <i class="bi bi-award-fill text-warning fs-4"></i>
+                    <div>
+                        <div class="fw-bold text-dark text-xs">Verified Institution Badge</div>
+                        <small class="text-muted" style="font-size: 11px;">Accredited colleges receive official verified organizer status</small>
                     </div>
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: REFINED LUXURY FORM CONTAINER -->
+            <!-- RIGHT COLUMN: LUXURY COLLEGE REGISTRATION FORM MATCHING REFERENCE MODAL UI -->
             <div class="col-12 col-lg-7">
                 <div class="register-card-bespoke">
                     
                     <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
-                        <div>
-                            <h3 class="fw-black text-dark fs-4 mb-0" style="letter-spacing: -0.5px;">College Registration</h3>
-                            <p class="text-muted text-xs mb-0">Select university affiliation & enter institutional details</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-building-add fs-3 text-dark"></i>
+                            <div>
+                                <h3 class="fw-black text-dark fs-4 mb-0" style="letter-spacing: -0.5px;">Add College</h3>
+                                <p class="text-muted text-xs mb-0">Register your college profile to access organizer portal</p>
+                            </div>
                         </div>
                         <span class="badge bg-warning text-dark font-bold px-3 py-1.5 rounded-pill text-xs border border-dark">
                             Organizer Account
@@ -460,9 +452,27 @@ include 'Header.php';
                     <?php endif; ?>
 
                     <form method="POST" id="collegeRegisterForm" enctype="multipart/form-data" novalidate>
-                        <div class="row g-4">
+                        <div class="row g-3">
 
-                            <!-- 1. SEARCH UNIVERSITY (EXACT REFERENCE UI WITH LIVE CHAR-BY-CHAR SEARCH) -->
+                            <!-- ROW 1: COLLEGE NAME & SLUG / SHORT NAME -->
+                            <div class="col-12 col-md-6">
+                                <div class="register-input-group">
+                                    <label class="form-label-clean">COLLEGE NAME *</label>
+                                    <input type="text" class="form-control-luxury <?= isset($errors['name']) ? 'is-invalid' : '' ?>" name="name" id="name" value="<?= htmlspecialchars((string)($_POST['name'] ?? '')) ?>" placeholder="e.g. Stanford College of Engineering" oninput="generateSlug(); validateField('name');" required>
+                                    <div class="invalid-feedback-bespoke" id="err_name" style="<?= isset($errors['name']) ? 'display:flex;' : 'display:none;' ?>">
+                                        <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['name'] ?? 'College name is required.') ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-md-6">
+                                <div class="register-input-group">
+                                    <label class="form-label-clean">SLUG / SHORT NAME</label>
+                                    <input type="text" class="form-control-luxury" name="slug" id="slug" value="<?= htmlspecialchars((string)($_POST['slug'] ?? '')) ?>" placeholder="e.g. stanford-engineering">
+                                </div>
+                            </div>
+
+                            <!-- ROW 2: UNIVERSITY & EMAIL -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
                                     <label class="form-label-clean">UNIVERSITY *</label>
@@ -493,44 +503,21 @@ include 'Header.php';
                                 </div>
                             </div>
 
-                            <!-- 2. COLLEGE / INSTITUTION NAME -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
-                                    <label class="form-label-clean">COLLEGE / INSTITUTION NAME *</label>
-                                    <input type="text" class="form-control-luxury <?= isset($errors['name']) ? 'is-invalid' : '' ?>" name="name" id="name" value="<?= htmlspecialchars((string)($_POST['name'] ?? '')) ?>" placeholder="e.g. Stanford College of Engineering" oninput="validateField('name')" required>
-                                    <div class="invalid-feedback-bespoke" id="err_name" style="<?= isset($errors['name']) ? 'display:flex;' : 'display:none;' ?>">
-                                        <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['name'] ?? 'College name is required.') ?>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 3. OFFICIAL EMAIL ADDRESS -->
-                            <div class="col-12 col-md-6">
-                                <div class="register-input-group">
-                                    <label class="form-label-clean">OFFICIAL EMAIL ADDRESS *</label>
-                                    <input type="email" class="form-control-luxury <?= isset($errors['email']) ? 'is-invalid' : '' ?>" name="email" id="email" value="<?= htmlspecialchars((string)($_POST['email'] ?? '')) ?>" placeholder="events@college.edu" oninput="validateField('email')" required>
+                                    <label class="form-label-clean">EMAIL *</label>
+                                    <input type="email" class="form-control-luxury <?= isset($errors['email']) ? 'is-invalid' : '' ?>" name="email" id="email" value="<?= htmlspecialchars((string)($_POST['email'] ?? '')) ?>" placeholder="engineering@stanford.edu" oninput="validateField('email')" required>
                                     <div class="invalid-feedback-bespoke" id="err_email" style="<?= isset($errors['email']) ? 'display:flex;' : 'display:none;' ?>">
-                                        <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['email'] ?? 'Valid official email address is required.') ?>
+                                        <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['email'] ?? 'Valid email address is required.') ?>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 4. OFFICIAL PHONE NUMBER -->
-                            <div class="col-12 col-md-6">
-                                <div class="register-input-group">
-                                    <label class="form-label-clean">OFFICIAL PHONE NUMBER *</label>
-                                    <input type="tel" class="form-control-luxury <?= isset($errors['phone']) ? 'is-invalid' : '' ?>" name="phone" id="phone" value="<?= htmlspecialchars((string)($_POST['phone'] ?? '')) ?>" placeholder="10-digit phone / landline" oninput="validateField('phone')" required>
-                                    <div class="invalid-feedback-bespoke" id="err_phone" style="<?= isset($errors['phone']) ? 'display:flex;' : 'display:none;' ?>">
-                                        <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['phone'] ?? 'Valid 10-digit phone number required.') ?>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 5. PASSWORD WITH EYE TOGGLE & STRENGTH BAR -->
+                            <!-- ROW 3: LOGIN PASSWORD & PHONE -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group position-relative">
-                                    <label class="form-label-clean">ACCOUNT PASSWORD *</label>
-                                    <input type="password" class="form-control-luxury <?= isset($errors['password']) ? 'is-invalid' : '' ?>" name="password" id="registerPassword" placeholder="Min 6 characters" oninput="checkPasswordStrength()" required>
+                                    <label class="form-label-clean">LOGIN PASSWORD *</label>
+                                    <input type="password" class="form-control-luxury <?= isset($errors['password']) ? 'is-invalid' : '' ?>" name="password" id="registerPassword" placeholder="Minimum 8 characters" oninput="checkPasswordStrength()" required>
                                     <button type="button" class="btn-eye-toggle" onclick="toggleRegisterPassword()">
                                         <i class="bi bi-eye" id="eyeIcon"></i>
                                     </button>
@@ -543,35 +530,50 @@ include 'Header.php';
                                 </div>
                             </div>
 
-                            <!-- 6. CUSTOM BESPOKE LOGO UPLOAD CONTROL -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
-                                    <label class="form-label-clean">COLLEGE LOGO (OPTIONAL)</label>
+                                    <label class="form-label-clean">PHONE *</label>
+                                    <input type="tel" class="form-control-luxury <?= isset($errors['phone']) ? 'is-invalid' : '' ?>" name="phone" id="phone" value="<?= htmlspecialchars((string)($_POST['phone'] ?? '')) ?>" placeholder="+1 555 111 001" oninput="validateField('phone')" required>
+                                    <div class="invalid-feedback-bespoke" id="err_phone" style="<?= isset($errors['phone']) ? 'display:flex;' : 'display:none;' ?>">
+                                        <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['phone'] ?? 'Valid phone number required.') ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ROW 4: LOGO (jpg/png, max 2mb) -->
+                            <div class="col-12">
+                                <div class="register-input-group">
+                                    <label class="form-label-clean">LOGO (jpg/png, max 2mb)</label>
                                     <div class="custom-file-upload-box">
                                         <div class="d-flex align-items-center gap-2">
-                                            <i class="bi bi-cloud-arrow-up-fill text-warning fs-5"></i>
-                                            <span class="text-xs font-bold text-dark" id="fileNameDisplay">Upload Official Logo...</span>
+                                            <span class="btn btn-sm btn-outline-secondary rounded-pill px-3 text-xs">Choose File</span>
+                                            <span class="text-xs text-muted" id="fileNameDisplay">No file chosen</span>
                                         </div>
-                                        <span class="badge bg-dark text-white rounded-pill px-2.5 py-1 text-xs">Browse</span>
                                         <input type="file" name="logo" id="logoInput" accept="image/*" onchange="displaySelectedFileName(this)">
                                     </div>
-                                    <div class="invalid-feedback-bespoke" id="err_logo" style="<?= isset($errors['logo']) ? 'display:flex;' : 'display:none;' ?>">
-                                        <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['logo'] ?? '') ?>
-                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ROW 5: ADDRESS -->
+                            <div class="col-12">
+                                <div class="register-input-group">
+                                    <label class="form-label-clean">ADDRESS</label>
+                                    <textarea class="form-control-luxury" name="address" id="address" rows="2" style="border-radius: 18px;" placeholder="College full address..."><?= htmlspecialchars((string)($_POST['address'] ?? '')) ?></textarea>
                                 </div>
                             </div>
 
                         </div>
 
-                        <!-- SUBMIT BUTTON -->
-                        <div class="pt-4">
-                            <button type="submit" class="btn-capsule-dark w-100 justify-content-center py-3 fs-6">
-                                Register College & Access Organizer Portal &rarr;
+                        <!-- SUBMIT BUTTON matching Save College styling -->
+                        <div class="pt-4 d-flex align-items-center justify-content-end gap-3">
+                            <a href="login.php" class="btn btn-outline-secondary rounded-pill px-4 py-2.5 text-xs font-bold text-decoration-none">Cancel</a>
+                            <button type="submit" class="btn-capsule-dark px-5 py-2.5 fs-6" style="width: auto;">
+                                Save College &rarr;
                             </button>
                         </div>
                     </form>
 
-                    <!-- CLEAN FOOTER LINKS WITH DOT SEPARATORS -->
+                    <!-- CLEAN FOOTER LINKS -->
                     <div class="mt-4 text-center text-xs text-muted pt-3 border-top d-flex justify-content-center align-items-center gap-3 flex-wrap">
                         <span>Already registered your college? <a href="login.php" class="text-dark font-bold text-decoration-underline">Sign In To Organizer Portal</a></span>
                         <span class="text-muted opacity-40">&bull;</span>
@@ -585,8 +587,16 @@ include 'Header.php';
     </div>
 </section>
 
-<!-- CASCADING SEARCHABLE SELECT JAVASCRIPT -->
+<!-- JAVASCRIPT LOGIC -->
 <script>
+    function generateSlug() {
+        const nameVal = document.getElementById('name').value;
+        const slugInput = document.getElementById('slug');
+        if (nameVal.trim() !== '') {
+            slugInput.value = nameVal.toLowerCase().trim().replace(/[^a-z0-9 -]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+        }
+    }
+
     function openDropdown(type) {
         if (type === 'university') {
             document.getElementById('universityDropdown').style.display = 'block';
@@ -642,7 +652,7 @@ include 'Header.php';
         if (input.files && input.files[0]) {
             display.innerText = input.files[0].name;
         } else {
-            display.innerText = 'Upload Official Logo...';
+            display.innerText = 'No file chosen';
         }
     }
 
@@ -672,7 +682,7 @@ include 'Header.php';
         } else if (fieldName === 'email') {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (field.value.trim() === '') {
-                isValid = false; msg = 'Official email address is required.';
+                isValid = false; msg = 'Email address is required.';
             } else if (!emailRegex.test(field.value.trim())) {
                 isValid = false; msg = 'Please enter a valid email address.';
             }
@@ -681,7 +691,7 @@ include 'Header.php';
             if (field.value.trim() === '') {
                 isValid = false; msg = 'Phone number is required.';
             } else if (!phoneRegex.test(field.value.trim())) {
-                isValid = false; msg = 'Please enter a valid 10-digit phone number.';
+                isValid = false; msg = 'Please enter a valid phone number.';
             }
         }
 
