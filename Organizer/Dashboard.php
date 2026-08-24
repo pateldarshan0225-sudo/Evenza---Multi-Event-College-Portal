@@ -508,14 +508,27 @@ $recent_registrations = $stmt->fetchAll();
             <!-- Main Content Grid -->
             <div class="berun-main-grid">
 
+                <?php
+                $dashboard_college_logo = $college_info['logo'] ?? $_SESSION['college_logo'] ?? '';
+                $dashboard_logo_src     = resolve_organizer_sidebar_logo_src($dashboard_college_logo, $college_name);
+                ?>
                 <!-- HERO WELCOME BANNER -->
                 <div class="hero-welcome-card">
-                    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
-                        <div>
-                            <span class="text-xs text-uppercase font-bold tracking-widest text-warning opacity-90"><i class="bi bi-building me-1"></i> Organizer Command Center</span>
-                            <h1 class="hero-college-name mt-1"><?= htmlspecialchars((string)$college_name) ?></h1>
-                            <div class="hero-univ-pill">
-                                <i class="bi bi-bank2"></i> Affiliated with <?= htmlspecialchars((string)($college_info['university_name'] ?? 'Main University')) ?>
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="<?= $dashboard_logo_src ?>" 
+                                 alt="<?= htmlspecialchars((string)$college_name) ?>" 
+                                 class="rounded-circle border border-2 border-warning shadow-sm flex-shrink-0" 
+                                 width="64" 
+                                 height="64" 
+                                 style="object-fit: cover; background: #ffffff;"
+                                 onerror="this.onerror=null; if(this.src.indexOf('assets/images/colleges/')!==-1){ this.src='../uploads/colleges/<?= htmlspecialchars((string)$dashboard_college_logo) ?>'; } else { this.src='https://ui-avatars.com/api/?name=<?= urlencode($college_name) ?>&background=ffd13b&color=14171a&bold=true'; }" />
+                            <div>
+                                <span class="text-xs text-uppercase font-bold tracking-widest text-warning opacity-90"><i class="bi bi-building me-1"></i> Organizer Command Center</span>
+                                <h1 class="hero-college-name mt-1"><?= htmlspecialchars((string)$college_name) ?></h1>
+                                <div class="hero-univ-pill">
+                                    <i class="bi bi-bank2"></i> Affiliated with <?= htmlspecialchars((string)($college_info['university_name'] ?? 'Main University')) ?>
+                                </div>
                             </div>
                         </div>
                         <div class="text-end d-none d-md-block">

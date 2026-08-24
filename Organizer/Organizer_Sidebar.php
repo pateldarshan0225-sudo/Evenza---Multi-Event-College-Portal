@@ -10,8 +10,42 @@ if (session_status() === PHP_SESSION_NONE) {
 $current_page  = strtolower(basename($_SERVER['PHP_SELF']));
 $college_name  = $_SESSION['college_name'] ?? 'College Organizer';
 $college_email = $_SESSION['college_email'] ?? 'organizer@evenza.com';
-$college_logo  = $_SESSION['college_logo'] ?? '';
-$logo_src      = !empty($college_logo) ? '../uploads/colleges/' . htmlspecialchars($college_logo) : 'https://ui-avatars.com/api/?name=' . urlencode($college_name) . '&background=1c2024&color=ffd13b';
+
+// Fetch fresh college logo from database if missing in session
+if (!empty($_SESSION['college_id'])) {
+    include_once __DIR__ . '/connection.php';
+    if (isset($pdo)) {
+        $stmtLogo = $pdo->prepare("SELECT logo FROM colleges WHERE college_id = :cid LIMIT 1");
+        $stmtLogo->execute(['cid' => (int)$_SESSION['college_id']]);
+        $dbLogo = $stmtLogo->fetchColumn();
+        if ($dbLogo) {
+            $_SESSION['college_logo'] = (string)$dbLogo;
+        }
+    }
+}
+
+$college_logo = $_SESSION['college_logo'] ?? '';
+
+// Dual-Directory College Logo Resolver Helper
+if (!function_exists('resolve_organizer_sidebar_logo_src')) {
+    function resolve_organizer_sidebar_logo_src($logoName, $collegeName) {
+        $cleanLogo = trim((string)$logoName);
+        if (!empty($cleanLogo)) {
+            if (file_exists(__DIR__ . '/../assets/images/colleges/' . $cleanLogo)) {
+                return '../assets/images/colleges/' . htmlspecialchars($cleanLogo);
+            }
+            if (file_exists(__DIR__ . '/../uploads/colleges/' . $cleanLogo)) {
+                return '../uploads/colleges/' . htmlspecialchars($cleanLogo);
+            }
+            if (file_exists(__DIR__ . '/../' . $cleanLogo)) {
+                return '../' . htmlspecialchars($cleanLogo);
+            }
+        }
+        return 'https://ui-avatars.com/api/?name=' . urlencode($collegeName) . '&background=1c2024&color=ffd13b&bold=true';
+    }
+}
+
+$logo_src = resolve_organizer_sidebar_logo_src($college_logo, $college_name);
 ?>
 
 <style>
@@ -75,9 +109,10 @@ $logo_src      = !empty($college_logo) ? '../uploads/colleges/' . htmlspecialcha
         height: 40px;
         border-radius: 50%;
         object-fit: cover;
-        border: 2px solid #ffffff;
+        border: 2px solid #14171a;
         box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         cursor: pointer;
+        background: #ffffff;
     }
 
     @media (max-width: 768px) {
@@ -119,7 +154,11 @@ $logo_src      = !empty($college_logo) ? '../uploads/colleges/' . htmlspecialcha
     </div>
 
     <div class="dropdown">
-        <img src="<?= $logo_src ?>" alt="College Logo" class="berun-avatar-pill dropdown-toggle" data-bs-toggle="dropdown" onerror="this.src='https://ui-avatars.com/api/?name=<?php echo urlencode($college_name); ?>&background=1c2024&color=ffd13b'" />
+        <img src="<?= $logo_src ?>" 
+             alt="<?= htmlspecialchars((string)$college_name) ?>" 
+             class="berun-avatar-pill dropdown-toggle" 
+             data-bs-toggle="dropdown" 
+             onerror="this.onerror=null; if(this.src.indexOf('assets/images/colleges/')!==-1){ this.src='../uploads/colleges/<?= htmlspecialchars((string)$college_logo) ?>'; } else { this.src='https://ui-avatars.com/api/?name=<?= urlencode($college_name) ?>&background=1c2024&color=ffd13b&bold=true'; }" />
         <ul class="dropdown-menu shadow-sm border-0 rounded-4 p-2">
             <li class="px-3 py-2 border-bottom">
                 <span class="fw-bold text-dark d-block text-xs"><?php echo htmlspecialchars((string)$college_name); ?></span>
