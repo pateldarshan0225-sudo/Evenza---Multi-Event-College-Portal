@@ -1136,7 +1136,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-dark rounded-pill px-4">Update University</button>
+                            <button type="submit" class="btn btn-dark rounded-pill px-4 btn-update-university" disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;">Update University</button>
                         </div>
                     </form>
                 </div>
@@ -1156,6 +1156,83 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                     e.stopPropagation();
                 }
                 form.classList.add("was-validated");
+            });
+        });
+    </script>
+
+    <!-- Enable/Disable Update University Button on Change -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('form input[name="form_action"][value="update"]').forEach(actionInput => {
+                const form = actionInput.closest('form');
+                if (!form) return;
+
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (!submitBtn) return;
+
+                function storeInitialValues() {
+                    const elements = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
+                    elements.forEach(el => {
+                        if (el.type === 'file') {
+                            el.value = '';
+                            el.dataset.initialValue = '';
+                        } else if (el.type === 'checkbox' || el.type === 'radio') {
+                            el.dataset.initialValue = el.checked ? 'true' : 'false';
+                        } else {
+                            el.dataset.initialValue = el.value.trim();
+                        }
+                    });
+                    evaluateChanges();
+                }
+
+                function evaluateChanges() {
+                    const elements = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
+                    let isChanged = false;
+
+                    elements.forEach(el => {
+                        if (el.type === 'file') {
+                            if (el.files && el.files.length > 0) {
+                                isChanged = true;
+                            }
+                        } else if (el.type === 'checkbox' || el.type === 'radio') {
+                            if ((el.checked ? 'true' : 'false') !== el.dataset.initialValue) {
+                                isChanged = true;
+                            }
+                        } else {
+                            if (el.value.trim() !== (el.dataset.initialValue || '')) {
+                                isChanged = true;
+                            }
+                        }
+                    });
+
+                    if (isChanged) {
+                        submitBtn.disabled = false;
+                        submitBtn.style.opacity = '1';
+                        submitBtn.style.cursor = 'pointer';
+                        submitBtn.style.pointerEvents = 'auto';
+                    } else {
+                        submitBtn.disabled = true;
+                        submitBtn.style.opacity = '0.5';
+                        submitBtn.style.cursor = 'not-allowed';
+                        submitBtn.style.pointerEvents = 'none';
+                    }
+                }
+
+                storeInitialValues();
+
+                form.addEventListener('input', evaluateChanges);
+                form.addEventListener('change', evaluateChanges);
+                form.addEventListener('keyup', evaluateChanges);
+
+                const modal = form.closest('.modal');
+                if (modal) {
+                    modal.addEventListener('shown.bs.modal', function () {
+                        storeInitialValues();
+                    });
+                    modal.addEventListener('show.bs.modal', function () {
+                        storeInitialValues();
+                    });
+                }
             });
         });
     </script>
