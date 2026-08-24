@@ -179,7 +179,52 @@ $current_page = strtolower(basename($_SERVER['PHP_SELF']));
                         </div>
                     <?php else: ?>
                         <a href="login.php" class="evenza-nav-link text-dark font-bold px-3">Login</a>
-                        <a href="register.php" class="btn-capsule-outline">Sign Up</a>
+                        
+                        <!-- SIGN UP DROPDOWN MENU (STUDENT, COLLEGE, UNIVERSITY) -->
+                        <div class="dropdown">
+                            <button class="btn-capsule-outline dropdown-toggle d-inline-flex align-items-center gap-1" type="button" id="signUpDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                Sign Up <i class="bi bi-chevron-down text-xs opacity-75 ms-1"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-2 border-dark rounded-4 p-2 mt-2" aria-labelledby="signUpDropdown" style="min-width: 290px; box-shadow: 0 14px 35px rgba(0,0,0,0.14) !important;">
+                                <li class="px-3 py-2 border-bottom mb-1">
+                                    <span class="fw-black text-dark text-xs text-uppercase tracking-wider d-block">Create An Account</span>
+                                    <span class="text-muted" style="font-size: 11px;">Select registration profile type</span>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item rounded-3 p-2.5 d-flex align-items-center gap-3" href="register.php">
+                                        <div class="rounded-circle bg-warning text-dark border border-dark d-flex align-items-center justify-content-center flex-shrink-0" style="width: 36px; height: 36px;">
+                                            <i class="bi bi-mortarboard-fill fs-6"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark text-xs">Student Registration</div>
+                                            <small class="text-muted d-block" style="font-size: 11px;">Join fests & claim digital passes</small>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item rounded-3 p-2.5 d-flex align-items-center gap-3" href="register_college.php">
+                                        <div class="rounded-circle bg-warning text-dark border border-dark d-flex align-items-center justify-content-center flex-shrink-0" style="width: 36px; height: 36px;">
+                                            <i class="bi bi-building-fill fs-6"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark text-xs">College Registration</div>
+                                            <small class="text-muted d-block" style="font-size: 11px;">Host campus events & QR entry</small>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item rounded-3 p-2.5 d-flex align-items-center gap-3" href="register_university.php">
+                                        <div class="rounded-circle bg-warning text-dark border border-dark d-flex align-items-center justify-content-center flex-shrink-0" style="width: 36px; height: 36px;">
+                                            <i class="bi bi-bank2 fs-6"></i>
+                                        </div>
+                                        <div>
+                                            <div class="fw-bold text-dark text-xs">University Registration</div>
+                                            <small class="text-muted d-block" style="font-size: 11px;">Govern multi-college network</small>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
                     <?php endif; ?>
                 </div>
 
