@@ -11,7 +11,7 @@ $current_page = strtolower(basename($_SERVER['PHP_SELF']));
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= isset($page_title) ? htmlspecialchars($page_title) . ' | Evenza' : 'Evenza - Multi-Event College Portal' ?></title>
+    <title><?= isset($page_title) ? htmlspecialchars($page_title) . ' | Evenza' : 'Evenza - Inter-College Event Management Platform' ?></title>
 
     <!-- Google Fonts: Plus Jakarta Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

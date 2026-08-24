@@ -1,7 +1,7 @@
 <?php
 /**
  * Frontend/event_detail.php
- * Event Detail & Student Registration Page
+ * Ultra-Premium Event Detail & Student Registration Page for Evenza
  */
 $page_title = "Event Details";
 include 'connection.php';
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_register'])) {
     $chk = $pdo->prepare("SELECT registration_id FROM registrations WHERE event_id = :eid AND student_id = :sid LIMIT 1");
     $chk->execute(['eid' => $event_id, 'sid' => $student_id]);
     if ($chk->fetch()) {
-        $error = 'You are already registered for this event!';
+        $error = 'You are already registered for this event. Access your verification pass in your Student Dashboard.';
     } else {
         try {
             $pdo->beginTransaction();
@@ -81,10 +81,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_register'])) {
             }
 
             $pdo->commit();
-            $flash = 'Successfully registered for ' . htmlspecialchars((string)$event['title']) . '! View your ticket in Student Dashboard.';
+            $flash = 'Event registration confirmed for ' . htmlspecialchars((string)$event['title']) . '! Access your verification pass in the Student Portal.';
         } catch (Exception $ex) {
             $pdo->rollBack();
-            $error = 'Error completing registration: ' . $ex->getMessage();
+            $error = 'We could not complete your registration request. Please try again.';
         }
     }
 }
@@ -92,115 +92,167 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_register'])) {
 include 'Header.php';
 ?>
 
-<div class="container-xl py-5">
+<style>
+    :root {
+        --bg-cream-canvas: #fdfbf7;
+        --bg-dark-accent: #14171a;
+        --color-gold-accent: #ffd13b;
+    }
 
-    <?php if ($flash): ?>
-        <div class="alert alert-success rounded-4 border-0 p-3 mb-4 text-xs font-semibold" role="alert">
-            <i class="bi bi-check-circle-fill me-2"></i> <?= htmlspecialchars($flash) ?>
-            <a href="dashboard.php" class="text-dark font-bold ms-2">Go to My Dashboard &rarr;</a>
-        </div>
-    <?php endif; ?>
+    .event-detail-canvas {
+        background-color: var(--bg-cream-canvas);
+        padding: 56px 0 88px 0;
+        min-height: 600px;
+    }
 
-    <?php if ($error): ?>
-        <div class="alert alert-danger rounded-4 border-0 p-3 mb-4 text-xs font-semibold" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i> <?= htmlspecialchars($error) ?>
-        </div>
-    <?php endif; ?>
+    .detail-card-bespoke {
+        background: #ffffff;
+        border-radius: 28px;
+        padding: 40px;
+        border: 1.5px solid #eae6df;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    }
 
-    <div class="row g-4">
-        <!-- LEFT MAIN COLUMN -->
-        <div class="col-12 col-lg-8">
-            <div class="bg-white rounded-5 p-4 p-md-5 border border-dark border-2 shadow-sm" style="box-shadow: 6px 6px 0px #14171a !important;">
-                
-                <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                    <span class="badge bg-warning text-dark font-bold px-3 py-1.5 rounded-pill text-xs">
-                        <?= htmlspecialchars((string)($event['category_name'] ?? 'General')) ?>
-                    </span>
-                    <span class="badge bg-dark text-white rounded-pill px-3 py-1.5 font-bold text-xs">
-                        Hosted by <?= htmlspecialchars((string)($event['college_name'] ?? 'College')) ?>
-                    </span>
-                </div>
+    .sidebar-card-bespoke {
+        background: #ffffff;
+        border-radius: 28px;
+        padding: 32px;
+        border: 1.5px solid #eae6df;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    }
 
-                <h1 class="fw-black text-dark display-6 mb-3"><?= htmlspecialchars((string)$event['title']) ?></h1>
+    .college-host-banner {
+        font-size: 13px;
+        font-weight: 700;
+        color: #14171a;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 18px;
+        padding: 12px 18px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+</style>
 
-                <div class="p-3 bg-light rounded-4 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3 text-xs">
-                    <div><i class="bi bi-geo-alt me-1 text-danger fs-6"></i> <strong>Venue:</strong> <?= htmlspecialchars((string)$event['venue']) ?></div>
-                    <div><i class="bi bi-calendar3 me-1 text-primary fs-6"></i> <strong>Date:</strong> <?= date('d M Y', strtotime($event['event_date'])) ?></div>
-                    <div><i class="bi bi-clock me-1 text-success fs-6"></i> <strong>Time:</strong> <?= date('h:i A', strtotime($event['start_time'] ?? '09:00:00')) ?> - <?= date('h:i A', strtotime($event['end_time'] ?? '17:00:00')) ?></div>
-                </div>
+<section class="event-detail-canvas">
+    <div class="container-xl">
 
-                <h5 class="fw-bold text-dark mb-2 fs-6 border-bottom pb-2">About the Event</h5>
-                <p class="text-secondary text-xs leading-relaxed mb-4" style="white-space: pre-line;">
-                    <?= htmlspecialchars((string)$event['description']) ?>
-                </p>
-
-                <h5 class="fw-bold text-dark mb-2 fs-6 border-bottom pb-2">Guidelines & Code</h5>
-                <div class="row g-3 text-xs text-secondary mb-4">
-                    <div class="col-6"><strong>Dress Code:</strong> <?= htmlspecialchars((string)$event['dress_code']) ?></div>
-                    <div class="col-6"><strong>Format:</strong> <?= ucfirst($event['event_type']) ?> Registration</div>
-                    <?php if ($event['event_type'] === 'team'): ?>
-                        <div class="col-12"><strong>Team Size:</strong> Minimum <?= $event['min_team_size'] ?> to Maximum <?= $event['max_team_size'] ?> Members</div>
-                    <?php endif; ?>
-                </div>
-
+        <?php if ($flash): ?>
+            <div class="alert bg-success text-white rounded-4 border-0 p-3 mb-4 d-flex align-items-center justify-content-between text-xs font-semibold shadow-sm">
+                <div><i class="bi bi-check-circle-fill fs-5 me-2"></i> <?= htmlspecialchars($flash) ?></div>
+                <a href="dashboard.php" class="btn btn-light rounded-pill px-3 py-1 text-dark text-xs font-bold">Go to Student Dashboard &rarr;</a>
             </div>
-        </div>
+        <?php endif; ?>
 
-        <!-- RIGHT REGISTRATION ACTION COLUMN -->
-        <div class="col-12 col-lg-4">
-            <div class="bg-white rounded-5 p-4 border border-dark border-2 shadow-sm position-sticky" style="top: 20px; box-shadow: 6px 6px 0px #14171a !important;">
-                
-                <h5 class="fw-black text-dark mb-3 fs-5">Registration Summary</h5>
+        <?php if ($error): ?>
+            <div class="alert bg-danger text-white rounded-4 border-0 p-3 mb-4 d-flex align-items-center gap-2 text-xs font-semibold shadow-sm">
+                <i class="bi bi-exclamation-triangle-fill fs-5 me-1"></i> <?= htmlspecialchars($error) ?>
+            </div>
+        <?php endif; ?>
 
-                <div class="p-3 bg-light rounded-4 mb-4">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span class="text-muted text-xs">Registration Fee:</span>
-                        <strong class="text-dark fs-5 fw-black"><?= (float)($event['registration_fee']) > 0 ? '₹' . number_format((float)$event['registration_fee'], 2) : 'Free' ?></strong>
+        <div class="row g-4">
+            <!-- LEFT MAIN CONTENT COLUMN -->
+            <div class="col-12 col-lg-8">
+                <div class="detail-card-bespoke">
+                    
+                    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+                        <span class="badge bg-warning text-dark font-bold px-3.5 py-1.5 rounded-pill text-xs">
+                            <?= htmlspecialchars((string)($event['category_name'] ?? 'General')) ?>
+                        </span>
+                        <span class="badge bg-dark text-white rounded-pill px-3.5 py-1.5 font-bold text-xs">
+                            <?= ucfirst($event['event_type']) ?> Competition
+                        </span>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center text-xs">
-                        <span class="text-muted">Fee Type:</span>
-                        <span class="badge bg-light text-dark border"><?= ucfirst($event['fee_type'] ?? 'per_person') ?></span>
-                    </div>
-                </div>
 
-                <?php if ($is_logged_in && $user_role === 'student'): ?>
-                    <form method="POST">
-                        <input type="hidden" name="action_register" value="1">
-                        
+                    <h1 class="fw-black text-dark display-5 mb-3" style="letter-spacing: -1px;"><?= htmlspecialchars((string)$event['title']) ?></h1>
+
+                    <!-- FULL COLLEGE HOST NAME BANNER -->
+                    <div class="college-host-banner">
+                        <i class="bi bi-bank2 text-warning fs-5"></i>
+                        <span>Organized & Hosted by <strong class="text-dark"><?= htmlspecialchars((string)($event['college_name'] ?? 'Partner Institution')) ?></strong></span>
+                    </div>
+
+                    <div class="p-3.5 bg-light rounded-4 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3 text-xs border">
+                        <div><i class="bi bi-geo-alt-fill text-danger me-1 fs-6"></i> <strong>Venue:</strong> <?= htmlspecialchars((string)$event['venue']) ?></div>
+                        <div><i class="bi bi-calendar-event-fill text-primary me-1 fs-6"></i> <strong>Date:</strong> <?= date('d M Y', strtotime($event['event_date'])) ?></div>
+                        <div><i class="bi bi-clock-fill text-success me-1 fs-6"></i> <strong>Timings:</strong> <?= date('h:i A', strtotime($event['start_time'] ?? '09:00:00')) ?> - <?= date('h:i A', strtotime($event['end_time'] ?? '17:00:00')) ?></div>
+                    </div>
+
+                    <h5 class="fw-black text-dark mb-2 fs-6 border-bottom pb-2">Event Overview & Details</h5>
+                    <p class="text-secondary text-xs leading-relaxed mb-4" style="white-space: pre-line;">
+                        <?= htmlspecialchars((string)$event['description']) ?>
+                    </p>
+
+                    <h5 class="fw-black text-dark mb-2 fs-6 border-bottom pb-2">Participation Guidelines</h5>
+                    <div class="row g-3 text-xs text-secondary mb-2">
+                        <div class="col-6"><strong>Dress Code:</strong> <?= htmlspecialchars((string)$event['dress_code']) ?></div>
+                        <div class="col-6"><strong>Registration Format:</strong> <?= ucfirst($event['event_type']) ?> Entry</div>
                         <?php if ($event['event_type'] === 'team'): ?>
-                            <div class="mb-3">
-                                <label class="form-label font-bold text-xs text-uppercase">Team Name *</label>
-                                <input type="text" class="form-control rounded-pill text-xs px-3" name="team_name" placeholder="e.g. Code Warriors" required>
-                            </div>
+                            <div class="col-12"><strong>Team Size Limits:</strong> Minimum <?= $event['min_team_size'] ?> to Maximum <?= $event['max_team_size'] ?> Members</div>
                         <?php endif; ?>
-
-                        <div class="d-grid">
-                            <button type="submit" class="btn-capsule-dark justify-content-center py-3 fs-6">
-                                Confirm & Register <i class="bi bi-check-circle"></i>
-                            </button>
-                        </div>
-                    </form>
-                <?php else: ?>
-                    <div class="text-center p-3 bg-warning-subtle text-dark rounded-4 mb-3 text-xs">
-                        Please sign in as a student to register for this college event.
                     </div>
-                    <div class="d-grid">
-                        <a href="login.php" class="btn-capsule-dark justify-content-center py-3 fs-6">
-                            Login to Register <i class="bi bi-box-arrow-in-right"></i>
-                        </a>
-                    </div>
-                <?php endif; ?>
 
-                <div class="mt-4 pt-3 border-top text-xs text-muted">
-                    <div class="mb-1"><strong>Organizer Contact:</strong></div>
-                    <div><?= htmlspecialchars((string)($event['college_email'] ?? '')) ?></div>
-                    <div><?= htmlspecialchars((string)($event['college_phone'] ?? '')) ?></div>
                 </div>
+            </div>
 
+            <!-- RIGHT REGISTRATION ACTION COLUMN -->
+            <div class="col-12 col-lg-4">
+                <div class="sidebar-card-bespoke position-sticky" style="top: 24px;">
+                    
+                    <h5 class="fw-black text-dark mb-3 fs-5">Registration Summary</h5>
+
+                    <div class="p-3 bg-light rounded-4 mb-4 border">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="text-muted text-xs font-semibold">Registration Fee:</span>
+                            <strong class="text-dark fs-4 fw-black"><?= (float)($event['registration_fee']) > 0 ? '₹' . number_format((float)$event['registration_fee'], 2) : 'Free Entry' ?></strong>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center text-xs">
+                            <span class="text-muted font-semibold">Fee Type:</span>
+                            <span class="badge bg-white text-dark border px-2.5 py-1 font-bold"><?= ucfirst(str_replace('_', ' ', $event['fee_type'] ?? 'per_person')) ?></span>
+                        </div>
+                    </div>
+
+                    <?php if ($is_logged_in && $user_role === 'student'): ?>
+                        <form method="POST">
+                            <input type="hidden" name="action_register" value="1">
+                            
+                            <?php if ($event['event_type'] === 'team'): ?>
+                                <div class="mb-3">
+                                    <label class="form-label font-bold text-xs text-uppercase text-dark mb-1">Squad / Team Name *</label>
+                                    <input type="text" class="form-control rounded-pill text-xs px-3 py-2" name="team_name" autocomplete="off" placeholder="e.g. Code Warriors" required>
+                                </div>
+                            <?php endif; ?>
+
+                            <div class="d-grid">
+                                <button type="submit" class="btn-capsule-dark justify-content-center py-3 text-xs font-bold">
+                                    Confirm Event Registration <i class="bi bi-arrow-right ms-1"></i>
+                                </button>
+                            </div>
+                        </form>
+                    <?php else: ?>
+                        <div class="text-center p-3 bg-warning-subtle text-dark rounded-4 mb-3 text-xs font-semibold border border-warning">
+                            Please sign in with your student account to register for this competition.
+                        </div>
+                        <div class="d-grid">
+                            <a href="login.php" class="btn-capsule-dark justify-content-center py-3 text-xs font-bold">
+                                Sign In to Register <i class="bi bi-box-arrow-in-right ms-1"></i>
+                            </a>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="mt-4 pt-3 border-top text-xs text-muted">
+                        <div class="mb-1 text-dark font-bold">Host Organizer Support:</div>
+                        <div class="text-truncate"><i class="bi bi-envelope me-1"></i> <?= htmlspecialchars((string)($event['college_email'] ?? 'N/A')) ?></div>
+                        <div><i class="bi bi-telephone me-1"></i> <?= htmlspecialchars((string)($event['college_phone'] ?? 'N/A')) ?></div>
+                    </div>
+
+                </div>
             </div>
         </div>
-    </div>
 
-</div>
+    </div>
+</section>
 
 <?php include 'Footer.php'; ?>
