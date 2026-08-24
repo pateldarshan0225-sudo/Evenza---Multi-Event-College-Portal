@@ -9,10 +9,8 @@
         <div class="container-xl">
             <div class="row g-4 mb-5">
                 <div class="col-12 col-md-4">
-                    <div class="d-flex align-items-center gap-2 mb-3">
-                        <div class="bg-warning text-dark font-black px-3 py-1 rounded-3 fs-5">
-                            <i class="bi bi-intersect"></i> Evenza
-                        </div>
+                    <div class="mb-3">
+                        <img src="../assets/images/evenza-logo-white.svg" alt="Evenza Portal Logo" height="38" style="height: 38px; width: auto;" />
                     </div>
                     <p class="text-secondary text-xs leading-relaxed pe-md-4">
                         The unified inter-college event ecosystem connecting accredited universities, partner institutions, campus event organizers, and students. Discover technical hackathons, cultural festivals, sports meets, and executive workshops in one seamless platform.
