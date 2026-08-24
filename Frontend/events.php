@@ -1,7 +1,7 @@
 <?php
 /**
  * Frontend/events.php
- * Ultra-Premium Searchable Event Catalog for Evenza (with Live Debounced AJAX Search & Pagination)
+ * Ultra-Premium Searchable Event Catalog for Evenza (Bespoke Executive Design)
  */
 $page_title = "Browse Events";
 include 'connection.php';
@@ -92,61 +92,110 @@ include 'Header.php';
 ?>
 
 <style>
+    :root {
+        --bg-cream-canvas: #fdfbf7;
+        --bg-dark-accent: #14171a;
+        --color-gold-accent: #ffd13b;
+    }
+
+    /* HERO & BESPOKE SEARCH CAPSULE STYLING */
     .events-hero-section {
         background-color: #fffdf7;
-        padding: 52px 0 44px 0;
+        padding: 56px 0 48px 0;
         position: relative;
     }
 
-    .search-filter-card-glass {
+    .hero-kpi-pill-badge {
         background: #ffffff;
-        border-radius: 28px;
-        padding: 14px 22px;
-        border: 1.5px solid #e2e8f0;
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.04);
-        transition: all 0.25s ease;
+        border: 1.5px solid #14171a;
+        box-shadow: 3px 3px 0px #ffd13b;
+        color: #14171a;
+        font-weight: 800;
+        font-size: 11px;
+        padding: 6px 16px;
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
     }
 
-    .search-filter-card-glass:focus-within {
+    .search-filter-capsule-luxury {
+        background: #ffffff;
+        border-radius: 9999px;
+        padding: 10px 14px 10px 24px;
+        border: 2px solid #14171a;
+        box-shadow: 6px 6px 0px #14171a;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .search-filter-capsule-luxury:focus-within,
+    .search-filter-capsule-luxury:hover {
+        box-shadow: 8px 8px 0px #ffd13b;
         border-color: #14171a;
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.07);
     }
 
-    .search-filter-card-glass input.form-control,
-    .search-filter-card-glass select.form-select {
+    .search-filter-capsule-luxury input.form-control,
+    .search-filter-capsule-luxury select.form-select {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+        font-size: 13px;
+        color: #14171a;
+    }
+
+    .search-filter-capsule-luxury input.form-control:focus,
+    .search-filter-capsule-luxury select.form-select:focus {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
         outline: none !important;
     }
 
-    .search-filter-card-glass input.form-control:focus,
-    .search-filter-card-glass select.form-select:focus {
+    .search-filter-capsule-luxury .input-group-text {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
-        outline: none !important;
+        color: #14171a;
+        font-size: 15px;
     }
 
-    .search-filter-card-glass .input-group-text {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
+    .btn-search-capsule-dark {
+        background: #14171a;
+        color: #ffffff;
+        border-radius: 9999px;
+        font-size: 12px;
+        font-weight: 800;
+        padding: 10px 24px;
+        border: 1.5px solid #14171a;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
     }
 
+    .btn-search-capsule-dark:hover {
+        background: #ffd13b;
+        color: #14171a;
+        border-color: #14171a;
+    }
+
+    /* CANVAS GRID SECTION */
     .events-grid-canvas {
-        background-color: #e8f5f2;
+        background-color: var(--bg-cream-canvas);
         padding: 64px 0 88px 0;
-        border-top: 1px solid #d8ece8;
+        border-top: 1px solid #f1f5f9;
         min-height: 500px;
     }
 
     .event-card-bespoke {
         background: #ffffff;
-        border-radius: 26px;
+        border-radius: 28px;
         padding: 28px;
-        border: 1.5px solid #dbece9;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        border: 1.5px solid #eae6df;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
         transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         display: flex;
         flex-direction: column;
@@ -170,6 +219,10 @@ include 'Header.php';
         display: inline-flex;
         align-items: center;
         gap: 5px;
+        max-width: 170px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .category-chip {
@@ -179,6 +232,7 @@ include 'Header.php';
         font-weight: 800;
         padding: 4px 12px;
         border-radius: 9999px;
+        border: 1px solid #14171a;
     }
 
     .event-title-clamp {
@@ -206,6 +260,15 @@ include 'Header.php';
         text-overflow: ellipsis;
         min-height: 40px;
         margin-bottom: 18px;
+    }
+
+    .venue-date-pill-box {
+        background: #f8fafc;
+        border: 1px solid #f1f5f9;
+        border-radius: 18px;
+        padding: 12px 16px;
+        font-size: 12px;
+        color: #475569;
     }
 
     /* BESPOKE PAGINATION CONTROLS */
@@ -277,41 +340,49 @@ include 'Header.php';
 <section class="events-hero-section">
     <div class="container-xl">
         <div class="text-center mb-4">
-            <span class="badge bg-warning text-dark font-bold px-3.5 py-1.5 rounded-pill text-xs mb-2">
-                🔥 Live Sign-ups
+            <span class="hero-kpi-pill-badge mb-3">
+                <i class="bi bi-fire text-warning"></i> 85+ Live Fests • 160+ Partner Campuses
             </span>
             <h1 class="fw-black text-dark display-5 mb-2" style="letter-spacing: -1.5px;">Explore College Events & Fests</h1>
-            <p class="text-muted text-xs mx-auto" style="max-width: 540px;">
+            <p class="text-muted text-xs mx-auto" style="max-width: 580px;">
                 Search and filter through upcoming hackathons, sports tournaments, workshops, and cultural competitions across colleges.
             </p>
         </div>
 
-        <!-- FILTER & SEARCH BAR -->
-        <div class="search-filter-card-glass mb-2">
-            <form method="GET" class="row g-3 align-items-center" id="eventsFilterForm">
+        <!-- BESPOKE LUXURY SEARCH & FILTER CAPSULE -->
+        <div class="search-filter-capsule-luxury mx-auto" style="max-width: 980px;">
+            <form method="GET" class="row g-2 align-items-center" id="eventsFilterForm">
                 <div class="col-12 col-md-5">
                     <div class="input-group">
-                        <span class="input-group-text bg-transparent border-0 ps-3 text-muted"><i class="bi bi-search"></i></span>
-                        <input type="text" class="form-control bg-transparent border-0 text-xs py-2" name="search" autocomplete="off" value="<?= htmlspecialchars((string)($_GET['search'] ?? '')) ?>" placeholder="Type to search event title, venue, or keyword...">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control" name="search" autocomplete="off" value="<?= htmlspecialchars((string)($_GET['search'] ?? '')) ?>" placeholder="Type to search event title, venue, or keyword...">
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
-                    <select class="form-select rounded-pill text-xs bg-light border-0 px-3 py-2.5" name="category">
-                        <option value="all">All Categories</option>
-                        <?php foreach ($categories as $cat): ?>
-                            <option value="<?= htmlspecialchars((string)$cat['name']) ?>" <?= (($_GET['category'] ?? '') === $cat['name']) ? 'selected' : '' ?>><?= htmlspecialchars((string)$cat['name']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-grid-fill text-muted ms-2"></i>
+                        <select class="form-select text-xs py-2" name="category">
+                            <option value="all">All Categories</option>
+                            <?php foreach ($categories as $cat): ?>
+                                <option value="<?= htmlspecialchars((string)$cat['name']) ?>" <?= (($_GET['category'] ?? '') === $cat['name']) ? 'selected' : '' ?>><?= htmlspecialchars((string)$cat['name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
                 <div class="col-6 col-md-2">
-                    <select class="form-select rounded-pill text-xs bg-light border-0 px-3 py-2.5" name="format">
-                        <option value="all">All Formats</option>
-                        <option value="solo" <?= (($_GET['format'] ?? '') === 'solo') ? 'selected' : '' ?>>Solo</option>
-                        <option value="team" <?= (($_GET['format'] ?? '') === 'team') ? 'selected' : '' ?>>Team</option>
-                    </select>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-people-fill text-muted ms-2"></i>
+                        <select class="form-select text-xs py-2" name="format">
+                            <option value="all">All Formats</option>
+                            <option value="solo" <?= (($_GET['format'] ?? '') === 'solo') ? 'selected' : '' ?>>Solo</option>
+                            <option value="team" <?= (($_GET['format'] ?? '') === 'team') ? 'selected' : '' ?>>Team</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-12 col-md-2 d-grid">
-                    <button type="submit" class="btn-capsule-dark justify-content-center py-2.5 text-xs font-bold">Filter Events</button>
+                <div class="col-12 col-md-2 text-end">
+                    <button type="submit" class="btn-search-capsule-dark w-100">
+                        Filter <i class="bi bi-arrow-right"></i>
+                    </button>
                 </div>
             </form>
         </div>
@@ -322,12 +393,17 @@ include 'Header.php';
 <section class="events-grid-canvas" id="eventsGridCanvas">
     <div class="container-xl" id="ajaxEventsContainer">
         
-        <!-- Counter Bar -->
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 text-xs">
-            <div class="text-secondary font-medium">
-                Showing <strong class="text-dark"><?= empty($events) ? 0 : ($offset + 1) ?></strong> to <strong class="text-dark"><?= min($offset + $limit, $total_records) ?></strong> of <strong class="text-dark"><?= number_format($total_records) ?></strong> Published Events
+        <!-- Executive Results Counter Bar -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-dark text-white font-bold px-3 py-1.5 rounded-pill text-xs">
+                    Showing <?= empty($events) ? 0 : ($offset + 1) ?> – <?= min($offset + $limit, $total_records) ?>
+                </span>
+                <span class="text-secondary text-xs font-semibold">
+                    of <strong class="text-dark"><?= number_format($total_records) ?></strong> Published Events
+                </span>
             </div>
-            <div class="badge bg-white text-dark border px-3 py-1.5 rounded-pill font-bold">
+            <div class="badge bg-warning text-dark border border-dark px-3.5 py-1.5 rounded-pill text-xs font-bold shadow-sm">
                 Page <?= $page ?> of <?= $total_pages ?>
             </div>
         </div>
@@ -345,8 +421,8 @@ include 'Header.php';
                         <div class="event-card-bespoke">
                             <div>
                                 <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                                    <span class="college-chip">
-                                        <i class="bi bi-check-circle-fill text-warning" style="font-size: 10px;"></i>
+                                    <span class="college-chip" title="<?= htmlspecialchars((string)($e['college_name'] ?? 'Partner College')) ?>">
+                                        <i class="bi bi-bank2 text-warning" style="font-size: 10px;"></i>
                                         <?= htmlspecialchars((string)($e['college_name'] ?? 'Partner College')) ?>
                                     </span>
                                     <span class="category-chip">
@@ -362,9 +438,9 @@ include 'Header.php';
                                     <?= htmlspecialchars((string)$e['description']) ?>
                                 </p>
 
-                                <div class="p-3 bg-light rounded-4 mb-4 d-flex align-items-center justify-content-between text-xs text-secondary">
-                                    <div><i class="bi bi-geo-alt-fill text-danger me-1"></i> <?= htmlspecialchars((string)$e['venue']) ?></div>
-                                    <div><i class="bi bi-calendar-event-fill text-primary me-1"></i> <?= date('d M Y', strtotime($e['event_date'])) ?></div>
+                                <div class="venue-date-pill-box mb-4 d-flex align-items-center justify-content-between text-xs">
+                                    <div class="text-truncate me-2"><i class="bi bi-geo-alt-fill text-danger me-1"></i> <?= htmlspecialchars((string)$e['venue']) ?></div>
+                                    <div class="text-nowrap"><i class="bi bi-calendar-event-fill text-primary me-1"></i> <?= date('d M Y', strtotime($e['event_date'])) ?></div>
                                 </div>
                             </div>
 
