@@ -42,12 +42,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (in_array($fileExtension, $allowedExtensions)) {
             $newFileName = 'college_' . time() . '_' . rand(1000, 9999) . '.' . $fileExtension;
-            $uploadFileDir = '../uploads/colleges/';
-            if (!is_dir($uploadFileDir)) {
-                mkdir($uploadFileDir, 0755, true);
-            }
-            $dest_path = $uploadFileDir . $newFileName;
-            if (move_uploaded_file($fileTmpPath, $dest_path)) {
+            $uploadDir1  = '../uploads/colleges/';
+            $uploadDir2  = '../assets/images/colleges/';
+            
+            if (!is_dir($uploadDir1)) mkdir($uploadDir1, 0755, true);
+            if (!is_dir($uploadDir2)) mkdir($uploadDir2, 0755, true);
+
+            $dest1 = $uploadDir1 . $newFileName;
+            $dest2 = $uploadDir2 . $newFileName;
+
+            if (move_uploaded_file($fileTmpPath, $dest1)) {
+                @copy($dest1, $dest2);
                 $logo_filename = $newFileName;
             }
         } else {
