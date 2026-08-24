@@ -106,7 +106,7 @@ include 'Header.php';
     .search-filter-card-glass {
         background: #ffffff;
         border-radius: 28px;
-        padding: 16px 20px;
+        padding: 14px 20px;
         border: 1.5px solid #e2e8f0;
         box-shadow: 0 12px 32px rgba(0, 0, 0, 0.04);
         transition: all 0.25s ease;
@@ -115,6 +115,28 @@ include 'Header.php';
     .search-filter-card-glass:focus-within {
         border-color: #14171a;
         box-shadow: 0 16px 40px rgba(0, 0, 0, 0.07);
+    }
+
+    .search-filter-card-glass input.form-control,
+    .search-filter-card-glass select.form-select {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    .search-filter-card-glass input.form-control:focus,
+    .search-filter-card-glass select.form-select:focus {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    .search-filter-card-glass .input-group-text {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
     }
 
     /* CANVAS GRID SECTION */
@@ -288,7 +310,7 @@ include 'Header.php';
                 <div class="col-12 col-md-6">
                     <div class="input-group">
                         <span class="input-group-text bg-transparent border-0 ps-3 text-muted"><i class="bi bi-search"></i></span>
-                        <input type="text" class="form-control bg-transparent border-0 text-xs py-2" name="search" value="<?= htmlspecialchars((string)($_GET['search'] ?? '')) ?>" placeholder="Search college name, location, or email...">
+                        <input type="text" class="form-control bg-transparent border-0 text-xs py-2" name="search" autocomplete="off" value="<?= htmlspecialchars((string)($_GET['search'] ?? '')) ?>" placeholder="Search college name, location, or email...">
                     </div>
                 </div>
                 <div class="col-12 col-md-4">
