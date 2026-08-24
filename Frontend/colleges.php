@@ -1,7 +1,7 @@
 <?php
 /**
  * Frontend/colleges.php
- * Ultra-Premium Partner Colleges Directory for Evenza (with 6-Card Pagination)
+ * Ultra-Premium Partner Colleges Directory for Evenza (with 6-Card Pagination & Logo Resolver)
  */
 $page_title = "Partner Colleges";
 include 'connection.php';
@@ -65,6 +65,19 @@ $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
 $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 $stmt->execute();
 $colleges = $stmt->fetchAll();
+
+// College Logo Resolver Helper
+function resolve_college_logo_src($logoName) {
+    if (!empty($logoName)) {
+        if (file_exists(__DIR__ . '/../assets/images/colleges/' . $logoName)) {
+            return '../assets/images/colleges/' . htmlspecialchars($logoName);
+        }
+        if (file_exists(__DIR__ . '/../uploads/colleges/' . $logoName)) {
+            return '../uploads/colleges/' . htmlspecialchars($logoName);
+        }
+    }
+    return null;
+}
 
 // Helper to build URL query strings for pagination links
 function get_page_url($pageNumber) {
@@ -133,9 +146,9 @@ include 'Header.php';
     }
 
     .college-avatar-pod {
-        width: 54px;
-        height: 54px;
-        border-radius: 16px;
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
         background: #ffd13b;
         border: 2px solid #14171a;
         display: flex;
@@ -294,12 +307,17 @@ include 'Header.php';
 <section class="colleges-grid-canvas">
     <div class="container-xl">
         
-        <!-- Results Counter Bar -->
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 text-xs">
-            <div class="text-secondary font-medium">
-                Showing <strong class="text-dark"><?= empty($colleges) ? 0 : ($offset + 1) ?></strong> to <strong class="text-dark"><?= min($offset + $limit, $total_records) ?></strong> of <strong class="text-dark"><?= number_format($total_records) ?></strong> Partner Colleges
+        <!-- Executive Results Counter Bar -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-dark text-white font-bold px-3 py-1.5 rounded-pill text-xs">
+                    Showing <?= empty($colleges) ? 0 : ($offset + 1) ?> – <?= min($offset + $limit, $total_records) ?>
+                </span>
+                <span class="text-secondary text-xs font-semibold">
+                    of <strong class="text-dark"><?= number_format($total_records) ?></strong> Partner Colleges
+                </span>
             </div>
-            <div class="badge bg-white text-dark border px-3 py-1.5 rounded-pill font-bold">
+            <div class="badge bg-warning text-dark border border-dark px-3.5 py-1.5 rounded-pill text-xs font-bold shadow-sm">
                 Page <?= $page ?> of <?= $total_pages ?>
             </div>
         </div>
@@ -312,9 +330,7 @@ include 'Header.php';
                 </div>
             <?php else: ?>
                 <?php foreach ($colleges as $c): 
-                    $logo_src = !empty($c['logo']) && file_exists(__DIR__ . '/../uploads/colleges/' . $c['logo']) 
-                        ? '../uploads/colleges/' . htmlspecialchars($c['logo'])
-                        : '';
+                    $logo_src = resolve_college_logo_src($c['logo'] ?? '');
                     
                     // Generate 2-letter Initials for Avatar Fallback
                     $words = explode(' ', trim($c['name']));
@@ -327,7 +343,7 @@ include 'Header.php';
                                 <div class="d-flex align-items-start gap-3 mb-4">
                                     <div class="college-avatar-pod">
                                         <?php if ($logo_src): ?>
-                                            <img src="<?= $logo_src ?>" alt="College Logo">
+                                            <img src="<?= $logo_src ?>" alt="College Logo" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<?= urlencode($c['name']) ?>&background=ffd13b&color=14171a&bold=true';">
                                         <?php else: ?>
                                             <span><?= $initials ?></span>
                                         <?php endif; ?>
