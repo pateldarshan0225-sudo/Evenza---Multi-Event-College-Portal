@@ -1,7 +1,7 @@
 <?php
 /**
  * Frontend/events.php
- * Ultra-Premium Searchable Event Catalog for Evenza (Bespoke Executive Design)
+ * Ultra-Premium Searchable Event Catalog for Evenza (Full College Name Display & 6-Event Pagination)
  */
 $page_title = "Browse Events";
 include 'connection.php';
@@ -209,30 +209,34 @@ include 'Header.php';
         border-color: #14171a;
     }
 
-    .college-chip {
-        background: #14171a;
-        color: #ffffff;
-        font-size: 11px;
-        font-weight: 700;
-        padding: 4px 12px;
-        border-radius: 9999px;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        max-width: 170px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
     .category-chip {
         background: #ffd13b;
         color: #14171a;
         font-size: 11px;
         font-weight: 800;
+        padding: 4px 14px;
+        border-radius: 9999px;
+        border: 1.5px solid #14171a;
+    }
+
+    .format-chip {
+        background: #eff6ff;
+        color: #2563eb;
+        font-size: 11px;
+        font-weight: 700;
         padding: 4px 12px;
         border-radius: 9999px;
-        border: 1px solid #14171a;
+        border: 1px solid #bfdbfe;
+    }
+
+    .college-host-row {
+        font-size: 12px;
+        color: #475569;
+        background: #f8fafc;
+        border: 1px solid #f1f5f9;
+        border-radius: 14px;
+        padding: 8px 14px;
+        line-height: 1.4;
     }
 
     .event-title-clamp {
@@ -259,7 +263,7 @@ include 'Header.php';
         overflow: hidden;
         text-overflow: ellipsis;
         min-height: 40px;
-        margin-bottom: 18px;
+        margin-bottom: 16px;
     }
 
     .venue-date-pill-box {
@@ -420,30 +424,40 @@ include 'Header.php';
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="event-card-bespoke">
                             <div>
+                                <!-- Top Row Badges -->
                                 <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
-                                    <span class="college-chip" title="<?= htmlspecialchars((string)($e['college_name'] ?? 'Partner College')) ?>">
-                                        <i class="bi bi-bank2 text-warning" style="font-size: 10px;"></i>
-                                        <?= htmlspecialchars((string)($e['college_name'] ?? 'Partner College')) ?>
-                                    </span>
                                     <span class="category-chip">
                                         <?= htmlspecialchars((string)($e['category_name'] ?? 'Fest')) ?>
                                     </span>
+                                    <span class="format-chip">
+                                        <i class="bi bi-person-fill me-1"></i> <?= ucfirst($e['event_type']) ?> <?= $e['event_type'] === 'team' ? '(' . $e['min_team_size'] . '-' . $e['max_team_size'] . ')' : '' ?>
+                                    </span>
                                 </div>
 
+                                <!-- Event Title -->
                                 <h5 class="event-title-clamp">
                                     <?= htmlspecialchars((string)$e['title']) ?>
                                 </h5>
 
+                                <!-- FULL COLLEGE NAME HOST ROW -->
+                                <div class="college-host-row mb-3">
+                                    <i class="bi bi-bank2 text-warning me-1.5"></i>
+                                    Hosted by <strong class="text-dark"><?= htmlspecialchars((string)($e['college_name'] ?? 'Partner College')) ?></strong>
+                                </div>
+
+                                <!-- Description -->
                                 <p class="event-desc-clamp">
                                     <?= htmlspecialchars((string)$e['description']) ?>
                                 </p>
 
+                                <!-- Venue & Date -->
                                 <div class="venue-date-pill-box mb-4 d-flex align-items-center justify-content-between text-xs">
                                     <div class="text-truncate me-2"><i class="bi bi-geo-alt-fill text-danger me-1"></i> <?= htmlspecialchars((string)$e['venue']) ?></div>
                                     <div class="text-nowrap"><i class="bi bi-calendar-event-fill text-primary me-1"></i> <?= date('d M Y', strtotime($e['event_date'])) ?></div>
                                 </div>
                             </div>
 
+                            <!-- Footer Action Bar -->
                             <div class="pt-3 border-top border-dark border-opacity-10 d-flex align-items-center justify-content-between">
                                 <a href="event_detail.php?id=<?= $e['event_id'] ?>" class="btn-capsule-dark text-xs py-2.5 px-4">
                                     Register Now <i class="bi bi-arrow-right ms-1"></i>
