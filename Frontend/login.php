@@ -36,10 +36,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $admin = $stmt->fetch();
 
         if ($admin && ($password === $admin['password'] || password_verify($password, $admin['password']))) {
-            $_SESSION['admin_id']    = $admin['admin_id'];
-            $_SESSION['admin_name']  = $admin['name'] ?? $admin['admin_name'] ?? 'Administrator';
-            $_SESSION['admin_email'] = $admin['email'];
-            $_SESSION['loggedin']    = true;
+            unset($_SESSION['student_id'], $_SESSION['student_logged_in'], $_SESSION['organizer_logged_in']);
+            $_SESSION['admin_id']        = $admin['admin_id'];
+            $_SESSION['admin_name']      = $admin['name'] ?? $admin['admin_name'] ?? 'Administrator';
+            $_SESSION['admin_email']     = $admin['email'];
+            $_SESSION['admin_logged_in'] = true;
+            $_SESSION['loggedin']        = true;
             header('Location: ../Admin/Dashboard.php');
             exit;
         }
@@ -50,6 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $college = $stmt->fetch();
 
         if ($college && ($password === $college['password'] || password_verify($password, $college['password']))) {
+            unset($_SESSION['student_id'], $_SESSION['student_logged_in'], $_SESSION['admin_id'], $_SESSION['admin_logged_in']);
             $_SESSION['college_id']           = $college['college_id'];
             $_SESSION['college_name']         = $college['name'];
             $_SESSION['college_email']        = $college['email'];
@@ -65,11 +68,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $student = $stmt->fetch();
 
         if ($student && ($password === $student['password'] || password_verify($password, $student['password']))) {
-            $_SESSION['student_id']        = $student['student_id'];
-            $_SESSION['student_name']      = $student['name'];
-            $_SESSION['student_email']     = $student['email'];
-            $_SESSION['college_id']        = $student['college_id'];
-            $_SESSION['student_logged_in'] = true;
+            unset($_SESSION['organizer_logged_in'], $_SESSION['admin_id'], $_SESSION['admin_logged_in']);
+            $_SESSION['student_id']         = $student['student_id'];
+            $_SESSION['student_name']       = $student['name'];
+            $_SESSION['student_email']      = $student['email'];
+            $_SESSION['college_id']         = $student['college_id'];
+            $_SESSION['student_college_id'] = $student['college_id'];
+            $_SESSION['student_logged_in']  = true;
             header('Location: ../Student/Dashboard.php');
             exit;
         }
