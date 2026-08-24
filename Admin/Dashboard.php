@@ -1003,15 +1003,8 @@ $registration_goal = max(100, (int)($total_regs * 1.25));
         <!-- Top Header Navigation Bar -->
         <header class="berun-header">
             <div class="d-flex align-items-center gap-4">
-                <a href="Dashboard.php" class="berun-logo-brand">
-                    <div class="berun-logo-dots">
-                        <div class="berun-logo-dots-top">
-                            <div class="berun-dot"></div>
-                            <div class="berun-dot"></div>
-                        </div>
-                        <div class="berun-dot"></div>
-                    </div>
-                    <div class="berun-logo-text">Even<span>za</span></div>
+                <a href="Dashboard.php" class="d-inline-flex align-items-center text-decoration-none">
+                    <img src="../assets/images/evenza-logo.svg" alt="Evenza Logo" height="38" style="height: 38px; width: auto;" />
                 </a>
 
                 <div class="ps-2">
