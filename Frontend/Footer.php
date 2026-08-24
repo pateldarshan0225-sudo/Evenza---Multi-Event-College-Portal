@@ -34,6 +34,7 @@
                         <li><a href="login.php" class="text-secondary text-decoration-none hover-white">Organizer Portal</a></li>
                         <li><a href="register.php" class="text-secondary text-decoration-none hover-white">Student Registration</a></li>
                         <li><a href="register_college.php" class="text-secondary text-decoration-none hover-white">College Registration</a></li>
+                        <li><a href="register_university.php" class="text-secondary text-decoration-none hover-white">University Registration</a></li>
                     </ul>
                 </div>
 
