@@ -146,7 +146,6 @@ $events = $pdo->query("
         object-fit: contain;
     }
 
-    /* Hero Floating Stat Card */
     .hero-floating-card {
         position: absolute;
         bottom: 20px;
@@ -162,7 +161,6 @@ $events = $pdo->query("
         gap: 12px;
     }
 
-    /* Social Proof Avatar Bubbles */
     .avatar-stack {
         display: flex;
         align-items: center;
@@ -192,7 +190,7 @@ $events = $pdo->query("
         opacity: 0.85;
     }
 
-    /* WHY STUDENTS CHOOSE EVENZA (VALUE CARDS) */
+    /* WHY STUDENTS CHOOSE EVENZA */
     .student-value-section {
         background-color: #fdfbf7;
         padding: 72px 0;
@@ -202,15 +200,16 @@ $events = $pdo->query("
         background: #ffffff;
         border-radius: 24px;
         padding: 32px 28px;
-        border: 2px solid #14171a;
-        box-shadow: 4px 4px 0px #14171a;
+        border: 1.5px solid #e5e7eb;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
         transition: all 0.25s ease;
         height: 100%;
     }
 
     .value-card-box:hover {
-        transform: translateY(-4px);
-        box-shadow: 7px 7px 0px #14171a;
+        transform: translateY(-5px);
+        border-color: #14171a;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.07);
     }
 
     .value-icon-circle {
@@ -218,7 +217,6 @@ $events = $pdo->query("
         height: 54px;
         border-radius: 16px;
         background: #fef3e2;
-        border: 1.5px solid #14171a;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -226,68 +224,136 @@ $events = $pdo->query("
         margin-bottom: 20px;
     }
 
-    /* CATEGORIES GRID */
-    .category-section {
-        background-color: #fef6e2;
-        padding: 72px 0;
+    /* =========================================================
+       LUXURY BESPOKE CATEGORIES GRID ("BROWSE BY CATEGORY")
+       ========================================================= */
+    .category-section-luxury {
+        background-color: #fff9ed;
+        padding: 84px 0;
+        position: relative;
     }
 
-    .cat-pill-card {
+    .cat-luxury-card {
         background: #ffffff;
-        border-radius: 20px;
-        padding: 24px;
-        border: 2px solid #14171a;
-        box-shadow: 4px 4px 0px #14171a;
+        border-radius: 24px;
+        padding: 28px 24px;
+        border: 1.5px solid #f3efe6;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
         text-decoration: none;
         color: #14171a;
         display: flex;
         flex-direction: column;
-        align-items: center;
-        text-align: center;
-        transition: all 0.2s ease;
+        justify-content: space-between;
+        height: 100%;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        position: relative;
+        overflow: hidden;
     }
 
-    .cat-pill-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 6px 6px 0px #14171a;
+    .cat-luxury-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        border-color: #14171a;
         color: #14171a;
     }
 
-    .cat-pill-icon {
-        width: 52px;
-        height: 52px;
-        border-radius: 50%;
-        background: #14171a;
-        color: #ffd13b;
+    .cat-icon-wrapper {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 22px;
-        margin-bottom: 12px;
+        font-size: 24px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
     }
 
-    /* FEATURED EVENTS SECTION (MINT GREEN CANVAS) */
-    .featured-section {
-        background-color: #e6f4f1;
-        padding: 80px 0;
+    .cat-luxury-card:hover .cat-icon-wrapper {
+        transform: scale(1.08) rotate(-4deg);
     }
 
-    .event-card-student {
+    /* Domain Color Themes */
+    .theme-tech { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+    .theme-sports { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+    .theme-mgmt { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+    .theme-gaming { background: #faf5ff; color: #9333ea; border: 1px solid #e9d5ff; }
+    .theme-art { background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; }
+    .theme-literary { background: #f0fdf4; color: #0d9488; border: 1px solid #99f6e4; }
+
+    .cat-count-badge {
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 9999px;
+        background: #f4f1ea;
+        color: #6b7280;
+        display: inline-block;
+        margin-top: 6px;
+    }
+
+    .cat-arrow-link {
+        font-size: 12px;
+        font-weight: 800;
+        color: #14171a;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 16px;
+        transition: gap 0.2s ease;
+    }
+
+    .cat-luxury-card:hover .cat-arrow-link {
+        gap: 10px;
+        color: #2563eb;
+    }
+
+    /* =========================================================
+       BESPOKE FEATURED EVENTS SECTION ("UPCOMING COMPETITIONS")
+       ========================================================= */
+    .featured-section-luxury {
+        background-color: #e8f5f2;
+        padding: 88px 0;
+    }
+
+    .event-card-bespoke {
         background: #ffffff;
         border-radius: 24px;
         padding: 28px;
-        border: 2px solid #14171a;
-        box-shadow: 5px 5px 0px #14171a;
-        transition: all 0.25s ease;
+        border: 1.5px solid #dbece9;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         height: 100%;
     }
 
-    .event-card-student:hover {
-        transform: translateY(-4px);
-        box-shadow: 8px 8px 0px #14171a;
+    .event-card-bespoke:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 42px rgba(0, 0, 0, 0.09);
+        border-color: #14171a;
+    }
+
+    .college-chip {
+        background: #14171a;
+        color: #ffffff;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 12px;
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .category-chip {
+        background: #ffd13b;
+        color: #14171a;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 4px 12px;
+        border-radius: 9999px;
     }
 
     /* HOW IT WORKS SECTION */
@@ -297,8 +363,8 @@ $events = $pdo->query("
     }
 
     .step-number-badge {
-        width: 42px;
-        height: 42px;
+        width: 44px;
+        height: 44px;
         border-radius: 50%;
         background: #ffd13b;
         border: 2px solid #14171a;
@@ -403,7 +469,7 @@ $events = $pdo->query("
     </div>
 </section>
 
-<!-- WHY STUDENTS CHOOSE EVENZA (VALUE CARDS) -->
+<!-- WHY STUDENTS CHOOSE EVENZA -->
 <section class="student-value-section">
     <div class="container-xl">
         <div class="text-center mb-5">
@@ -448,28 +514,56 @@ $events = $pdo->query("
     </div>
 </section>
 
-<!-- CATEGORIES SHOWCASE GRID -->
-<section class="category-section">
+<!-- =========================================================
+     LUXURY BESPOKE CATEGORIES GRID ("BROWSE BY CATEGORY")
+     ========================================================= -->
+<section class="category-section-luxury">
     <div class="container-xl">
         <div class="d-flex justify-content-between align-items-end mb-5 flex-wrap gap-3">
             <div>
-                <span class="badge bg-dark text-white font-bold px-3 py-1 rounded-pill text-xs mb-2">Popular Domains</span>
+                <span class="badge bg-dark text-white font-bold px-3.5 py-1.5 rounded-pill text-xs mb-2">
+                    <i class="bi bi-lightning-charge-fill text-warning me-1"></i> Popular Domains
+                </span>
                 <h2 class="fw-black text-dark display-6 mb-0">Browse By Category</h2>
             </div>
-            <a href="categories.php" class="btn-capsule-outline text-xs py-2 px-4">All Categories &rarr;</a>
+            <a href="categories.php" class="btn-capsule-outline text-xs py-2 px-4">
+                All Categories <i class="bi bi-arrow-right ms-1"></i>
+            </a>
         </div>
 
-        <div class="row g-3 justify-content-center">
+        <div class="row g-4">
             <?php 
-            $catIcons = ['bi bi-code-slash', 'bi bi-briefcase', 'bi bi-palette', 'bi bi-camera', 'bi bi-controller', 'bi bi-cpu'];
+            $catConfigs = [
+                ['icon' => 'bi bi-code-slash', 'theme' => 'theme-tech'],
+                ['icon' => 'bi bi-trophy', 'theme' => 'theme-sports'],
+                ['icon' => 'bi bi-briefcase', 'theme' => 'theme-mgmt'],
+                ['icon' => 'bi bi-controller', 'theme' => 'theme-gaming'],
+                ['icon' => 'bi bi-palette', 'theme' => 'theme-art'],
+                ['icon' => 'bi bi-book', 'theme' => 'theme-literary']
+            ];
+
             foreach ($categories as $idx => $cat): 
-                $icon = $catIcons[$idx % count($catIcons)];
+                $cfg = $catConfigs[$idx % count($catConfigs)];
             ?>
                 <div class="col-12 col-sm-6 col-md-4 col-lg-2">
-                    <a href="events.php?category=<?= urlencode($cat['name']) ?>" class="cat-pill-card">
-                        <div class="cat-pill-icon"><i class="<?= $icon ?>"></i></div>
-                        <h6 class="fw-bold mb-1 text-dark text-xs"><?= htmlspecialchars((string)$cat['name']) ?></h6>
-                        <small class="text-muted" style="font-size: 11px;"><?= $cat['event_count'] ?> Active Fests</small>
+                    <a href="events.php?category=<?= urlencode($cat['name']) ?>" class="cat-luxury-card">
+                        <div>
+                            <div class="cat-icon-wrapper <?= $cfg['theme'] ?>">
+                                <i class="<?= $cfg['icon'] ?>"></i>
+                            </div>
+
+                            <h6 class="fw-black text-dark mb-1 fs-6" style="letter-spacing: -0.3px;">
+                                <?= htmlspecialchars((string)$cat['name']) ?>
+                            </h6>
+                            
+                            <span class="cat-count-badge">
+                                <?= $cat['event_count'] ?> Active Fest<?= $cat['event_count'] == 1 ? '' : 's' ?>
+                            </span>
+                        </div>
+
+                        <div class="cat-arrow-link">
+                            Explore <i class="bi bi-arrow-right"></i>
+                        </div>
                     </a>
                 </div>
             <?php endforeach; ?>
@@ -477,55 +571,62 @@ $events = $pdo->query("
     </div>
 </section>
 
-<!-- FEATURED EVENTS SECTION (MINT GREEN CANVAS) -->
-<section class="featured-section">
+<!-- =========================================================
+     BESPOKE FEATURED EVENTS SECTION ("UPCOMING COMPETITIONS")
+     ========================================================= -->
+<section class="featured-section-luxury">
     <div class="container-xl">
         <div class="d-flex justify-content-between align-items-end mb-5 flex-wrap gap-3">
             <div>
-                <span class="badge bg-warning text-dark font-bold px-3 py-1 rounded-pill text-xs mb-2">Live Sign-ups</span>
+                <span class="badge bg-warning text-dark font-bold px-3.5 py-1.5 rounded-pill text-xs mb-2">
+                    🔥 Live Sign-ups
+                </span>
                 <h2 class="fw-black text-dark display-6 mb-1">Upcoming Competitions & Fests</h2>
-                <p class="text-muted text-xs mb-0">Handpicked national hackathons, cultural meets, and workshops</p>
+                <p class="text-muted text-xs mb-0">Handpicked national hackathons, cultural meets, and workshops across India</p>
             </div>
-            <a href="events.php" class="btn-capsule-dark py-2.5 px-4 text-xs">Explore All Events &rarr;</a>
+            <a href="events.php" class="btn-capsule-dark py-2.5 px-4 text-xs">
+                Explore All Events <i class="bi bi-arrow-right ms-1"></i>
+            </a>
         </div>
 
         <div class="row g-4">
             <?php if (empty($events)): ?>
                 <div class="col-12 text-center py-5 text-muted">
-                    <i class="bi bi-calendar-x fs-1 d-block mb-2"></i>
+                    <i class="bi bi-calendar-x fs-1 d-block mb-2 text-muted opacity-50"></i>
                     No events published yet. Check back soon!
                 </div>
             <?php else: ?>
                 <?php foreach ($events as $e): ?>
                     <div class="col-12 col-md-6 col-lg-4">
-                        <div class="event-card-student">
+                        <div class="event-card-bespoke">
                             <div>
-                                <div class="d-flex align-items-center justify-content-between mb-3">
-                                    <span class="badge bg-dark text-white rounded-pill px-3 py-1 font-bold text-xs">
+                                <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
+                                    <span class="college-chip">
+                                        <i class="bi bi-check-circle-fill text-warning" style="font-size: 10px;"></i>
                                         <?= htmlspecialchars((string)($e['college_name'] ?? 'Partner College')) ?>
                                     </span>
-                                    <span class="badge bg-warning text-dark rounded-pill px-2.5 py-1 font-bold text-xs">
+                                    <span class="category-chip">
                                         <?= htmlspecialchars((string)($e['category_name'] ?? 'Fest')) ?>
                                     </span>
                                 </div>
 
-                                <h5 class="fw-black text-dark mb-2" style="font-size: 19px; line-height: 1.3;">
+                                <h5 class="fw-black text-dark mb-2" style="font-size: 19px; line-height: 1.35; letter-spacing: -0.3px;">
                                     <?= htmlspecialchars((string)$e['title']) ?>
                                 </h5>
 
-                                <p class="text-muted text-xs mb-3" style="line-height: 1.5; height: 38px; overflow: hidden;">
-                                    <?= htmlspecialchars(mb_strimwidth((string)$e['description'], 0, 100, '...')) ?>
+                                <p class="text-muted text-xs mb-4" style="line-height: 1.6; height: 38px; overflow: hidden;">
+                                    <?= htmlspecialchars(mb_strimwidth((string)$e['description'], 0, 95, '...')) ?>
                                 </p>
 
-                                <div class="text-xs text-secondary mb-3">
-                                    <div class="mb-1"><i class="bi bi-geo-alt me-1 text-danger"></i> <?= htmlspecialchars((string)$e['venue']) ?></div>
-                                    <div><i class="bi bi-calendar3 me-1 text-primary"></i> <?= date('d M Y', strtotime($e['event_date'])) ?></div>
+                                <div class="p-3 bg-light rounded-4 mb-4 d-flex align-items-center justify-content-between text-xs text-secondary">
+                                    <div><i class="bi bi-geo-alt-fill text-danger me-1"></i> <?= htmlspecialchars((string)$e['venue']) ?></div>
+                                    <div><i class="bi bi-calendar-event-fill text-primary me-1"></i> <?= date('d M Y', strtotime($e['event_date'])) ?></div>
                                 </div>
                             </div>
 
                             <div class="pt-3 border-top border-dark border-opacity-10 d-flex align-items-center justify-content-between">
                                 <a href="event_detail.php?id=<?= $e['event_id'] ?>" class="btn-capsule-dark text-xs py-2.5 px-4">
-                                    Register Now <i class="bi bi-arrow-right"></i>
+                                    Register Now <i class="bi bi-arrow-right ms-1"></i>
                                 </a>
                                 <span class="fw-black text-dark text-xs fs-6">
                                     <?= (float)($e['registration_fee']) > 0 ? '₹' . number_format((float)$e['registration_fee'], 2) : 'Free Entry' ?>
