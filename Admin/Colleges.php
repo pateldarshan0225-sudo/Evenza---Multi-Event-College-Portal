@@ -864,15 +864,8 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
         <!-- Top Header Navigation Bar -->
         <header class="berun-header">
             <div class="d-flex align-items-center gap-4">
-                <a href="Dashboard.php" class="berun-logo-brand">
-                    <div class="berun-logo-dots">
-                        <div class="berun-logo-dots-top">
-                            <div class="berun-dot"></div>
-                            <div class="berun-dot"></div>
-                        </div>
-                        <div class="berun-dot"></div>
-                    </div>
-                    <div class="berun-logo-text">Even<span>za</span></div>
+                <a href="Dashboard.php" class="d-flex align-items-center me-3">
+                    <img src="../assets/images/evenza-logo.svg" alt="Evenza Logo" height="38" style="height: 38px; width: auto;" />
                 </a>
 
                 <div class="ps-2">
@@ -1014,13 +1007,23 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                                     <?php foreach ($colleges as $i => $c): ?>
                                         <?php
                                         $isActive = $c['status'] === 'active';
-                                        $logoSrc = !empty($c['logo']) ? $LOGO_WEB_PATH . htmlspecialchars($c['logo']) : $LOGO_WEB_PATH . 'placeholder.png';
+                                        $logoFile = $c['logo'] ?? '';
+                                        $logoSrc  = '../assets/images/colleges/placeholder.png';
+                                        if (!empty($logoFile)) {
+                                            if (file_exists(__DIR__ . '/../assets/images/colleges/' . $logoFile)) {
+                                                $logoSrc = '../assets/images/colleges/' . htmlspecialchars($logoFile);
+                                            } elseif (file_exists(__DIR__ . '/../uploads/colleges/' . $logoFile)) {
+                                                $logoSrc = '../uploads/colleges/' . htmlspecialchars($logoFile);
+                                            } else {
+                                                $logoSrc = '../assets/images/colleges/' . htmlspecialchars($logoFile);
+                                            }
+                                        }
                                         ?>
                                         <tr>
                                             <td class="ps-4 font-semibold text-muted"><?= $i + 1 ?></td>
                                             <td>
                                                 <div class="d-flex align-items-center gap-3">
-                                                    <img src="<?= $logoSrc ?>" class="college-logo" alt="College Logo" onerror="this.src='https://ui-avatars.com/api/?name=<?= urlencode($c['name']) ?>&background=f4f2eb&color=1c2024'" />
+                                                    <img src="<?= $logoSrc ?>" class="college-logo" alt="College Logo" onerror="if(!this.dataset.triedUpload){this.dataset.triedUpload=true; this.src='../uploads/colleges/<?= htmlspecialchars($logoFile) ?>';} else {this.src='https://ui-avatars.com/api/?name=<?= urlencode($c['name']) ?>&background=f4f2eb&color=1c2024';}" />
                                                     <div>
                                                         <div class="college-name"><?= htmlspecialchars($c['name']) ?></div>
                                                         <small class="text-muted d-block" style="font-size: 11px; font-weight: 500;">
@@ -1427,6 +1430,18 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
             }
         }
 
+        function syncCollegeModalStatus(collegeId, isActive) {
+            const modal = document.getElementById('editCollegeModal' + collegeId);
+            if (modal) {
+                const statusSelect = modal.querySelector('select[name="status"]');
+                if (statusSelect) {
+                    statusSelect.value = isActive ? 'active' : 'inactive';
+                    statusSelect.dataset.initialValue = statusSelect.value;
+                    statusSelect.dispatchEvent(new Event('change'));
+                }
+            }
+        }
+
         document.querySelectorAll(".status-toggle").forEach(toggle => {
             toggle.addEventListener("change", function () {
                 const row = this.closest("tr");
@@ -1435,6 +1450,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
 
                 setBadge(row, isActive);
                 adjustCounts(isActive);
+                syncCollegeModalStatus(collegeId, isActive);
                 filterColleges();
                 this.disabled = true;
 
@@ -1454,6 +1470,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                     toggle.checked = !isActive;
                     setBadge(row, !isActive);
                     adjustCounts(!isActive);
+                    syncCollegeModalStatus(collegeId, !isActive);
                     filterColleges();
                     alert("Could not update status. Please try again.");
                 })
