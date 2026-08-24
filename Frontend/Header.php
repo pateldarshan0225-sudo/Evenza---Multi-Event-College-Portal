@@ -141,10 +141,8 @@ $current_page = strtolower(basename($_SERVER['PHP_SELF']));
             <div class="d-flex align-items-center justify-content-between">
                 
                 <!-- Logo Brand -->
-                <a href="index.php" class="evenza-logo-brand">
-                    <div class="evenza-logo-box">
-                        <i class="bi bi-intersect text-warning"></i> Evenza
-                    </div>
+                <a href="index.php" class="d-inline-flex align-items-center text-decoration-none">
+                    <img src="../assets/images/evenza-logo.svg" alt="Evenza Portal Logo" height="42" style="height: 42px; width: auto;" />
                 </a>
 
                 <!-- Desktop Nav Links -->

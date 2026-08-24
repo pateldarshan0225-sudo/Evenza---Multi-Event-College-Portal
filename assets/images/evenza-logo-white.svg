@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 64" width="280" height="64" fill="none">
+  <defs>
+    <linearGradient id="whiteGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe259"/>
+      <stop offset="100%" stop-color="#ffa751"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Logo Mark Container (White border) -->
+  <g>
+    <rect x="4" y="4" width="54" height="54" rx="16" fill="#14171a" stroke="#33373b" stroke-width="2"/>
+    <path d="M20 22 C20 18.6863 22.6863 16 26 16 L36 16 C39.3137 16 42 18.6863 42 22 L42 22 C42 25.3137 39.3137 28 36 28 L26 28 C22.6863 28 20 25.3137 20 22 Z" fill="url(#whiteGoldGrad)"/>
+    <circle cx="25" cy="22" r="3" fill="#14171a"/>
+    <rect x="20" y="30" width="16" height="6" rx="3" fill="#ffffff"/>
+    <path d="M20 42 C20 38.6863 22.6863 36 26 36 L38 36 C41.3137 36 44 38.6863 44 42 L44 42 C44 45.3137 41.3137 48 38 48 L26 48 C22.6863 48 20 45.3137 20 42 Z" fill="url(#whiteGoldGrad)"/>
+    <circle cx="39" cy="42" r="3" fill="#14171a"/>
+  </g>
+
+  <!-- Brand Name Typography (White) -->
+  <text x="74" y="43" font-family="'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif" font-weight="800" font-size="32" letter-spacing="-0.8" fill="#ffffff">
+    Even<tspan fill="#ffd13b">za</tspan>
+  </text>
+
+  <!-- Tagline Badge -->
+  <rect x="194" y="24" width="76" height="20" rx="10" fill="#ffd13b"/>
+  <text x="232" y="37" font-family="'Plus Jakarta Sans', 'Inter', sans-serif" font-weight="800" font-size="9" fill="#14171a" text-anchor="middle" letter-spacing="0.5">
+    PORTAL
+  </text>
+</svg>
