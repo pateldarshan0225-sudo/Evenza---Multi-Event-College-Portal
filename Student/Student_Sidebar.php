@@ -110,9 +110,6 @@ $avatar_url    = 'https://ui-avatars.com/api/?name=' . urlencode($student_name) 
         <a href="MyTeams.php" class="berun-nav-item <?= $current_page === 'myteams.php' ? 'active' : '' ?>" title="My Teams & Squads">
             <i class="bi bi-people<?= $current_page === 'myteams.php' ? '-fill' : '' ?>"></i>
         </a>
-        <a href="../Frontend/events.php" class="berun-nav-item" title="Explore Competitions">
-            <i class="bi bi-search"></i>
-        </a>
         <a href="../Frontend/index.php" class="berun-nav-item text-warning" title="Visit Main Website">
             <i class="bi bi-globe"></i>
         </a>
