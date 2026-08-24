@@ -1,6 +1,7 @@
 <?php
 /**
- * Root Router / Redirector for Evenza Portal
+ * Root Router for Evenza Website
+ * Directs incoming visitors to the Frontend website landing page
  */
-header('Location: Admin/Index.php');
+header('Location: Frontend/index.php');
 exit;
