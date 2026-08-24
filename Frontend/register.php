@@ -1,7 +1,7 @@
 <?php
 /**
  * Frontend/register.php
- * Ultra-Premium Student Registration Gateway (With Cascading University & Live Search Filters)
+ * Ultra-Premium Student Registration Gateway (With Exact Search University & Search College UI)
  */
 $page_title = "Student Registration Gateway";
 include 'connection.php';
@@ -152,74 +152,119 @@ include 'Header.php';
 
     .register-input-group {
         position: relative;
+        margin-bottom: 4px;
     }
 
-    .form-label-custom {
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: 0.6px;
+    .form-label-clean {
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
         text-transform: uppercase;
+        color: #6b7280;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .searchable-select-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    .searchable-select-input {
+        background: #ffffff;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 18px;
+        padding: 12px 40px 12px 20px;
+        font-size: 14px;
+        font-weight: 500;
         color: #14171a;
-        margin-bottom: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+        width: 100%;
+        transition: all 0.2s ease;
+    }
+
+    .searchable-select-input::placeholder {
+        color: #9ca3af;
+        font-weight: 400;
+    }
+
+    .searchable-select-input:focus {
+        border-color: #14171a;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(20, 23, 26, 0.08);
+    }
+
+    .select-caret-icon {
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9ca3af;
+        font-size: 11px;
+        pointer-events: none;
+    }
+
+    .searchable-select-dropdown {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        background: #ffffff;
+        border: 1.5px solid #14171a;
+        border-radius: 16px;
+        max-height: 220px;
+        overflow-y: auto;
+        z-index: 1050;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        display: none;
+    }
+
+    .searchable-select-item {
+        padding: 10px 18px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #14171a;
+        cursor: pointer;
+        transition: background 0.15s ease;
+    }
+
+    .searchable-select-item:hover {
+        background: #ffd13b;
+        color: #14171a;
+    }
+
+    .searchable-select-item.no-results {
+        color: #9ca3af;
+        cursor: default;
     }
 
     .form-control-luxury, .form-select-luxury {
         background: #ffffff;
-        border: 1.5px solid #d1d5db;
-        border-radius: 9999px;
-        padding: 11px 20px;
-        font-size: 13px;
-        font-weight: 600;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 18px;
+        padding: 12px 20px;
+        font-size: 14px;
+        font-weight: 500;
         color: #14171a;
         transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         width: 100%;
     }
 
+    .form-control-luxury::placeholder {
+        color: #9ca3af;
+        font-weight: 400;
+    }
+
     .form-control-luxury:focus, .form-select-luxury:focus {
         border-color: #14171a;
-        box-shadow: 0 0 0 3px rgba(20, 23, 26, 0.1);
+        box-shadow: 0 0 0 3px rgba(20, 23, 26, 0.08);
         outline: none;
-    }
-
-    .search-filter-box {
-        background: #f9f8f4;
-        border: 1.5px dashed #cbd5e1;
-        border-radius: 16px;
-        padding: 10px 14px;
-        margin-bottom: 8px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .search-filter-box input {
-        border: none;
-        background: transparent;
-        font-size: 12px;
-        font-weight: 600;
-        outline: none;
-        width: 100%;
-        color: #14171a;
     }
 
     .invalid-feedback-bespoke {
         color: #dc3545;
         font-size: 11px;
         font-weight: 700;
-        margin-top: 4px;
-        display: flex;
-        align-items: center;
-        gap: 4px;
-    }
-
-    .valid-feedback-bespoke {
-        color: #059669;
-        font-size: 11px;
-        font-weight: 700;
-        margin-top: 4px;
+        margin-top: 6px;
         display: flex;
         align-items: center;
         gap: 4px;
@@ -227,13 +272,13 @@ include 'Header.php';
 
     .btn-eye-toggle {
         position: absolute;
-        right: 16px;
-        top: 36px;
+        right: 18px;
+        top: 42px;
         background: none;
         border: none;
-        color: #6b7280;
+        color: #9ca3af;
         cursor: pointer;
-        font-size: 16px;
+        font-size: 15px;
     }
 
     .password-strength-bar {
@@ -332,14 +377,14 @@ include 'Header.php';
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: LUXURY REGISTRATION FORM WITH CASCADING SEARCH FILTERS -->
+            <!-- RIGHT COLUMN: LUXURY REGISTRATION FORM MATCHING USER REFERENCE IMAGE -->
             <div class="col-12 col-lg-7">
                 <div class="register-card-bespoke">
                     
                     <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
                         <div>
-                            <h3 class="fw-black text-dark fs-4 mb-0" style="letter-spacing: -0.5px;">Student Registration</h3>
-                            <p class="text-muted text-xs mb-0">Fill in your institutional credentials to generate your profile</p>
+                            <h3 class="fw-black text-dark fs-4 mb-0" style="letter-spacing: -0.5px;">Student Profile Registration</h3>
+                            <p class="text-muted text-xs mb-0">Select your university & college to connect your student account</p>
                         </div>
                         <span class="badge bg-warning text-dark font-bold px-3 py-1.5 rounded-pill text-xs border border-dark">
                             Step 1 of 1
@@ -353,58 +398,60 @@ include 'Header.php';
                     <?php endif; ?>
 
                     <form method="POST" id="studentRegisterForm" novalidate>
-                        <div class="row g-3">
+                        <div class="row g-4">
 
-                            <!-- 1. SELECT / SEARCH UNIVERSITY (Cascading Parent Filter) -->
+                            <!-- 1. SEARCH UNIVERSITY (EXACT REFERENCE UI) -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
-                                    <label class="form-label-custom">
-                                        <span>Select University *</span>
-                                        <span class="text-muted" style="font-size: 10px;" id="univCountBadge"><?= count($universities) ?> Available</span>
-                                    </label>
+                                    <label class="form-label-clean">UNIVERSITY *</label>
+                                    <div class="searchable-select-wrapper">
+                                        <input type="text" 
+                                               id="universityInput" 
+                                               class="searchable-select-input <?= isset($errors['university_id']) ? 'is-invalid' : '' ?>" 
+                                               placeholder="Search university..." 
+                                               autocomplete="off"
+                                               onfocus="openDropdown('university')" 
+                                               oninput="filterDropdown('university')">
+                                        <i class="bi bi-caret-down-fill select-caret-icon"></i>
+                                        <input type="hidden" name="university_id" id="universitySelect" value="<?= htmlspecialchars((string)($_POST['university_id'] ?? '')) ?>" required>
 
-                                    <!-- Live Search University Box -->
-                                    <div class="search-filter-box">
-                                        <i class="bi bi-search text-muted"></i>
-                                        <input type="text" id="searchUniversityInput" placeholder="Search university name..." onkeyup="filterUniversityOptions()">
+                                        <div class="searchable-select-dropdown" id="universityDropdown">
+                                            <?php foreach ($universities as $u): ?>
+                                                <div class="searchable-select-item" data-value="<?= $u['university_id'] ?>" onclick="selectUniversity(<?= $u['university_id'] ?>, '<?= htmlspecialchars(addslashes($u['name'])) ?>')">
+                                                    <?= htmlspecialchars((string)$u['name']) ?>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
                                     </div>
-
-                                    <select class="form-select-luxury <?= isset($errors['university_id']) ? 'is-invalid' : '' ?>" name="university_id" id="universitySelect" onchange="filterCollegesByUniversity()" required>
-                                        <option value="">Choose University...</option>
-                                        <?php foreach ($universities as $u): ?>
-                                            <option value="<?= $u['university_id'] ?>" <?= isset($_POST['university_id']) && $_POST['university_id'] == $u['university_id'] ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars((string)$u['name']) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
                                     <div class="invalid-feedback-bespoke" id="err_university_id" style="<?= isset($errors['university_id']) ? 'display:flex;' : 'display:none;' ?>">
                                         <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['university_id'] ?? 'Please select your university.') ?>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 2. SELECT / SEARCH COLLEGE (Cascading Dependent Filter) -->
+                            <!-- 2. SEARCH COLLEGE (EXACT REFERENCE UI - CASCADING DEPENDENT) -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
-                                    <label class="form-label-custom">
-                                        <span>Select College *</span>
-                                        <span class="text-muted" style="font-size: 10px;" id="collegeCountBadge"><?= count($colleges) ?> Colleges</span>
-                                    </label>
+                                    <label class="form-label-clean">COLLEGE *</label>
+                                    <div class="searchable-select-wrapper">
+                                        <input type="text" 
+                                               id="collegeInput" 
+                                               class="searchable-select-input <?= isset($errors['college_id']) ? 'is-invalid' : '' ?>" 
+                                               placeholder="Search college..." 
+                                               autocomplete="off"
+                                               onfocus="openDropdown('college')" 
+                                               oninput="filterDropdown('college')">
+                                        <i class="bi bi-caret-down-fill select-caret-icon"></i>
+                                        <input type="hidden" name="college_id" id="collegeSelect" value="<?= htmlspecialchars((string)($_POST['college_id'] ?? '')) ?>" required>
 
-                                    <!-- Live Search College Box -->
-                                    <div class="search-filter-box">
-                                        <i class="bi bi-building-add text-warning"></i>
-                                        <input type="text" id="searchCollegeInput" placeholder="Search college name..." onkeyup="filterCollegeOptions()">
+                                        <div class="searchable-select-dropdown" id="collegeDropdown">
+                                            <?php foreach ($colleges as $c): ?>
+                                                <div class="searchable-select-item college-item" data-value="<?= $c['college_id'] ?>" data-univ="<?= $c['university_id'] ?>" onclick="selectCollege(<?= $c['college_id'] ?>, '<?= htmlspecialchars(addslashes($c['name'])) ?>')">
+                                                    <?= htmlspecialchars((string)$c['name']) ?>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
                                     </div>
-
-                                    <select class="form-select-luxury <?= isset($errors['college_id']) ? 'is-invalid' : '' ?>" name="college_id" id="collegeSelect" required>
-                                        <option value="">Choose College...</option>
-                                        <?php foreach ($colleges as $c): ?>
-                                            <option value="<?= $c['college_id'] ?>" data-univ="<?= $c['university_id'] ?>" <?= isset($_POST['college_id']) && $_POST['college_id'] == $c['college_id'] ? 'selected' : '' ?>>
-                                                <?= htmlspecialchars((string)$c['name']) ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
                                     <div class="invalid-feedback-bespoke" id="err_college_id" style="<?= isset($errors['college_id']) ? 'display:flex;' : 'display:none;' ?>">
                                         <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['college_id'] ?? 'Please select your college.') ?>
                                     </div>
@@ -414,7 +461,7 @@ include 'Header.php';
                             <!-- 3. ENROLLMENT / ROLL NO -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
-                                    <label class="form-label-custom">Enrollment / Roll No *</label>
+                                    <label class="form-label-clean">ENROLLMENT / ROLL NO *</label>
                                     <input type="text" class="form-control-luxury <?= isset($errors['enrollment_no']) ? 'is-invalid' : '' ?>" name="enrollment_no" id="enrollment_no" value="<?= htmlspecialchars((string)($_POST['enrollment_no'] ?? '')) ?>" placeholder="e.g. STU-100-1" oninput="validateField('enrollment_no')" required>
                                     <div class="invalid-feedback-bespoke" id="err_enrollment_no" style="<?= isset($errors['enrollment_no']) ? 'display:flex;' : 'display:none;' ?>">
                                         <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['enrollment_no'] ?? 'Enrollment number is required.') ?>
@@ -425,7 +472,7 @@ include 'Header.php';
                             <!-- 4. FULL NAME -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
-                                    <label class="form-label-custom">Full Name *</label>
+                                    <label class="form-label-clean">FULL NAME *</label>
                                     <input type="text" class="form-control-luxury <?= isset($errors['name']) ? 'is-invalid' : '' ?>" name="name" id="name" value="<?= htmlspecialchars((string)($_POST['name'] ?? '')) ?>" placeholder="Your full legal name" oninput="validateField('name')" required>
                                     <div class="invalid-feedback-bespoke" id="err_name" style="<?= isset($errors['name']) ? 'display:flex;' : 'display:none;' ?>">
                                         <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['name'] ?? 'Full name is required.') ?>
@@ -436,7 +483,7 @@ include 'Header.php';
                             <!-- 5. EMAIL ADDRESS -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
-                                    <label class="form-label-custom">Email Address *</label>
+                                    <label class="form-label-clean">EMAIL ADDRESS *</label>
                                     <input type="email" class="form-control-luxury <?= isset($errors['email']) ? 'is-invalid' : '' ?>" name="email" id="email" value="<?= htmlspecialchars((string)($_POST['email'] ?? '')) ?>" placeholder="student@college.edu" oninput="validateField('email')" required>
                                     <div class="invalid-feedback-bespoke" id="err_email" style="<?= isset($errors['email']) ? 'display:flex;' : 'display:none;' ?>">
                                         <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['email'] ?? 'Valid email address is required.') ?>
@@ -447,7 +494,7 @@ include 'Header.php';
                             <!-- 6. PHONE NUMBER -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
-                                    <label class="form-label-custom">Phone Number *</label>
+                                    <label class="form-label-clean">PHONE NUMBER *</label>
                                     <input type="tel" class="form-control-luxury <?= isset($errors['phone']) ? 'is-invalid' : '' ?>" name="phone" id="phone" value="<?= htmlspecialchars((string)($_POST['phone'] ?? '')) ?>" placeholder="10-digit phone number" oninput="validateField('phone')" required>
                                     <div class="invalid-feedback-bespoke" id="err_phone" style="<?= isset($errors['phone']) ? 'display:flex;' : 'display:none;' ?>">
                                         <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['phone'] ?? 'Valid 10-digit phone number required.') ?>
@@ -458,7 +505,7 @@ include 'Header.php';
                             <!-- 7. PASSWORD WITH EYE TOGGLE & STRENGTH BAR -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group position-relative">
-                                    <label class="form-label-custom">Password *</label>
+                                    <label class="form-label-clean">PASSWORD *</label>
                                     <input type="password" class="form-control-luxury <?= isset($errors['password']) ? 'is-invalid' : '' ?>" name="password" id="registerPassword" placeholder="Min 6 characters" oninput="checkPasswordStrength()" required>
                                     <button type="button" class="btn-eye-toggle" onclick="toggleRegisterPassword()">
                                         <i class="bi bi-eye" id="eyeIcon"></i>
@@ -475,7 +522,7 @@ include 'Header.php';
                             <!-- 8. GENDER & SEMESTER -->
                             <div class="col-12 col-md-3">
                                 <div class="register-input-group">
-                                    <label class="form-label-custom">Gender *</label>
+                                    <label class="form-label-clean">GENDER *</label>
                                     <select class="form-select-luxury" name="gender" id="gender" required>
                                         <option value="male" <?= (isset($_POST['gender']) && $_POST['gender'] === 'male') ? 'selected' : '' ?>>Male</option>
                                         <option value="female" <?= (isset($_POST['gender']) && $_POST['gender'] === 'female') ? 'selected' : '' ?>>Female</option>
@@ -485,7 +532,7 @@ include 'Header.php';
 
                             <div class="col-12 col-md-3">
                                 <div class="register-input-group">
-                                    <label class="form-label-custom">Semester *</label>
+                                    <label class="form-label-clean">CURRENT SEMESTER *</label>
                                     <select class="form-select-luxury" name="semester" id="semester" required>
                                         <?php for ($i=1; $i<=8; $i++): ?>
                                             <option value="<?= $i ?>" <?= (isset($_POST['semester']) && (int)$_POST['semester'] === $i) ? 'selected' : '' ?>>Semester <?= $i ?></option>
@@ -515,87 +562,88 @@ include 'Header.php';
     </div>
 </section>
 
-<!-- CASCADING FILTER & REAL-TIME VALIDATION SCRIPT -->
+<!-- CASCADING SEARCHABLE SELECT JAVASCRIPT -->
 <script>
-    // 1. CASCADING UNIVERSITY TO COLLEGE FILTER
-    function filterCollegesByUniversity() {
-        const selectedUnivId = document.getElementById('universitySelect').value;
-        const collegeSelect  = document.getElementById('collegeSelect');
-        const options        = collegeSelect.querySelectorAll('option');
-        let visibleCount     = 0;
+    let selectedUniversityId = null;
 
-        options.forEach(opt => {
-            if (opt.value === '') {
-                opt.style.display = 'block';
-                return;
-            }
-            const univAttr = opt.getAttribute('data-univ');
-            if (!selectedUnivId || univAttr === selectedUnivId) {
-                opt.style.display = 'block';
-                visibleCount++;
-            } else {
-                opt.style.display = 'none';
-            }
-        });
+    function openDropdown(type) {
+        document.getElementById('universityDropdown').style.display = 'none';
+        document.getElementById('collegeDropdown').style.display = 'none';
 
-        document.getElementById('collegeCountBadge').innerText = visibleCount + ' Colleges';
-        if (collegeSelect.value !== '') {
-            const selectedOpt = collegeSelect.options[collegeSelect.selectedIndex];
-            if (selectedOpt && selectedOpt.style.display === 'none') {
-                collegeSelect.value = '';
-            }
+        if (type === 'university') {
+            document.getElementById('universityDropdown').style.display = 'block';
+            filterDropdown('university');
+        } else if (type === 'college') {
+            document.getElementById('collegeDropdown').style.display = 'block';
+            filterDropdown('college');
         }
     }
 
-    // 2. LIVE SEARCH UNIVERSITY FILTER
-    function filterUniversityOptions() {
-        const query  = document.getElementById('searchUniversityInput').value.toLowerCase().trim();
-        const select = document.getElementById('universitySelect');
-        const opts   = select.querySelectorAll('option');
-        let count    = 0;
+    function filterDropdown(type) {
+        if (type === 'university') {
+            const query = document.getElementById('universityInput').value.toLowerCase().trim();
+            const items = document.querySelectorAll('#universityDropdown .searchable-select-item');
+            items.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        } else if (type === 'college') {
+            const query = document.getElementById('collegeInput').value.toLowerCase().trim();
+            const items = document.querySelectorAll('#collegeDropdown .college-item');
+            items.forEach(item => {
+                const text = item.innerText.toLowerCase();
+                const univId = item.getAttribute('data-univ');
+                const matchUniv = !selectedUniversityId || univId == selectedUniversityId;
+                const matchQuery = text.includes(query);
 
-        opts.forEach(opt => {
-            if (opt.value === '') return;
-            const text = opt.text.toLowerCase();
-            if (text.includes(query)) {
-                opt.style.display = 'block';
-                count++;
-            } else {
-                opt.style.display = 'none';
-            }
-        });
-
-        document.getElementById('univCountBadge').innerText = count + ' Available';
+                if (matchUniv && matchQuery) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
     }
 
-    // 3. LIVE SEARCH COLLEGE FILTER
-    function filterCollegeOptions() {
-        const query          = document.getElementById('searchCollegeInput').value.toLowerCase().trim();
-        const selectedUnivId = document.getElementById('universitySelect').value;
-        const select         = document.getElementById('collegeSelect');
-        const opts           = select.querySelectorAll('option');
-        let count            = 0;
+    function selectUniversity(id, name) {
+        document.getElementById('universityInput').value = name;
+        document.getElementById('universitySelect').value = id;
+        selectedUniversityId = id;
+        document.getElementById('universityDropdown').style.display = 'none';
+        document.getElementById('err_university_id').style.display = 'none';
+        document.getElementById('universityInput').classList.remove('is-invalid');
 
-        opts.forEach(opt => {
-            if (opt.value === '') return;
-            const text     = opt.text.toLowerCase();
-            const univAttr = opt.getAttribute('data-univ');
-            
-            const matchUniv  = !selectedUnivId || univAttr === selectedUnivId;
-            const matchQuery = text.includes(query);
-
-            if (matchUniv && matchQuery) {
-                opt.style.display = 'block';
-                count++;
-            } else {
-                opt.style.display = 'none';
-            }
-        });
-
-        document.getElementById('collegeCountBadge').innerText = count + ' Colleges';
+        // Reset college field and auto open college search
+        document.getElementById('collegeInput').value = '';
+        document.getElementById('collegeSelect').value = '';
+        openDropdown('college');
     }
 
-    // 4. REAL-TIME INPUT VALIDATION HANDLER
+    function selectCollege(id, name) {
+        document.getElementById('collegeInput').value = name;
+        document.getElementById('collegeSelect').value = id;
+        document.getElementById('collegeDropdown').style.display = 'none';
+        document.getElementById('err_college_id').style.display = 'none';
+        document.getElementById('collegeInput').classList.remove('is-invalid');
+    }
+
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('#universityWrapper') && !e.target.closest('#universityDropdown')) {
+            const univDropdown = document.getElementById('universityDropdown');
+            if (univDropdown) univDropdown.style.display = 'none';
+        }
+        if (!e.target.closest('#collegeInput') && !e.target.closest('#collegeDropdown')) {
+            const collegeDropdown = document.getElementById('collegeDropdown');
+            if (collegeDropdown) collegeDropdown.style.display = 'none';
+        }
+    });
+
+    // Real-Time Form Validation
     function validateField(fieldName) {
         const field = document.getElementById(fieldName);
         const err   = document.getElementById('err_' + fieldName);
@@ -642,7 +690,6 @@ include 'Header.php';
         }
     }
 
-    // 5. PASSWORD STRENGTH & EYE TOGGLE
     function toggleRegisterPassword() {
         const input = document.getElementById('registerPassword');
         const icon  = document.getElementById('eyeIcon');
