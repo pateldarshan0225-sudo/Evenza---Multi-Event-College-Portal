@@ -45,7 +45,7 @@ $events = $pdo->query("
     /* HERO SECTION STYLING */
     .student-hero {
         background-color: var(--bg-cream);
-        padding: 40px 0 80px 0;
+        padding: 48px 0 88px 0;
         position: relative;
         overflow: hidden;
     }
@@ -61,7 +61,7 @@ $events = $pdo->query("
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        margin-bottom: 20px;
+        margin-bottom: 22px;
     }
 
     .live-dot-pulse {
@@ -80,23 +80,24 @@ $events = $pdo->query("
     }
 
     .hero-main-title {
-        font-size: 56px;
+        font-size: 58px;
         font-weight: 800;
-        letter-spacing: -1.8px;
+        letter-spacing: -2px;
         color: #14171a;
-        line-height: 1.12;
+        line-height: 1.1;
     }
 
     .highlight-marker {
         background: linear-gradient(180deg, rgba(255,255,255,0) 50%, #ffd13b 50%);
-        padding: 0 6px;
+        padding: 0 8px;
+        border-radius: 6px;
     }
 
     .hero-subtitle {
         font-size: 16px;
         color: #4b5563;
-        line-height: 1.6;
-        margin: 20px 0 28px 0;
+        line-height: 1.65;
+        margin: 22px 0 30px 0;
         max-width: 520px;
         font-weight: 500;
     }
@@ -109,6 +110,12 @@ $events = $pdo->query("
         padding: 10px 12px 10px 20px;
         box-shadow: 5px 5px 0px #14171a;
         max-width: 540px;
+        transition: all 0.2s ease;
+    }
+
+    .hero-search-box:focus-within {
+        box-shadow: 7px 7px 0px #14171a;
+        transform: translateY(-2px);
     }
 
     .hero-search-box input {
@@ -120,45 +127,70 @@ $events = $pdo->query("
         background: transparent;
     }
 
-    /* Hero Blob Image Container */
-    .hero-image-pod {
+    /* BESPOKE HERO SHOWCASE POD */
+    .hero-showcase-pod {
         position: relative;
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 10px;
     }
 
-    .hero-yellow-blob {
+    .hero-image-frame {
         width: 100%;
-        max-width: 440px;
-        height: 420px;
-        background: #ffd13b;
-        border-radius: 38% 62% 63% 37% / 41% 44% 56% 59%;
-        position: absolute;
-        z-index: 1;
-        transform: rotate(-6deg);
+        max-width: 480px;
+        height: 380px;
+        border-radius: 36px;
+        border: 3px solid #14171a;
+        box-shadow: 10px 10px 0px #ffd13b;
+        overflow: hidden;
+        position: relative;
+        background: #14171a;
     }
 
-    .hero-student-img {
-        position: relative;
-        z-index: 2;
-        max-height: 440px;
-        object-fit: contain;
+    .hero-image-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+
+    .hero-image-frame:hover img {
+        transform: scale(1.04);
+    }
+
+    /* Floating Micro Badges */
+    .hero-badge-top-right {
+        position: absolute;
+        top: -12px;
+        right: 10px;
+        z-index: 4;
+        background: #ffd13b;
+        color: #14171a;
+        border: 2px solid #14171a;
+        border-radius: 9999px;
+        padding: 8px 18px;
+        font-size: 12px;
+        font-weight: 800;
+        box-shadow: 4px 4px 0px #14171a;
+        display: flex;
+        align-items: center;
+        gap: 6px;
     }
 
     .hero-floating-card {
         position: absolute;
-        bottom: 20px;
-        left: -10px;
-        z-index: 3;
+        bottom: -15px;
+        left: -15px;
+        z-index: 4;
         background: #ffffff;
         border: 2px solid #14171a;
-        border-radius: 20px;
-        padding: 14px 20px;
-        box-shadow: 4px 4px 0px #14171a;
+        border-radius: 24px;
+        padding: 14px 22px;
+        box-shadow: 6px 6px 0px #14171a;
         display: flex;
         align-items: center;
-        gap: 12px;
+        gap: 14px;
     }
 
     .avatar-stack {
@@ -166,8 +198,8 @@ $events = $pdo->query("
         align-items: center;
     }
     .avatar-stack img {
-        width: 32px;
-        height: 32px;
+        width: 34px;
+        height: 34px;
         border-radius: 50%;
         border: 2px solid #ffffff;
         margin-left: -10px;
@@ -461,19 +493,31 @@ $events = $pdo->query("
                 </div>
             </div>
 
+            <!-- HERO RIGHT SHOWCASE POD -->
             <div class="col-12 col-lg-6">
-                <div class="hero-image-pod">
-                    <div class="hero-yellow-blob"></div>
-                    <img src="https://illustrations.pouch.cool/illustration/student-girl.png" alt="Student Competitor" class="hero-student-img" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&auto=format&fit=crop';">
+                <div class="hero-showcase-pod">
+                    
+                    <!-- Top Floating Pill -->
+                    <div class="hero-badge-top-right">
+                        <i class="bi bi-building-check"></i> 160+ Partner Colleges
+                    </div>
+
+                    <!-- Framed Executive Photo Pod -->
+                    <div class="hero-image-frame">
+                        <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop" alt="College Student Competitors">
+                    </div>
                     
                     <!-- Floating Stat Badge -->
                     <div class="hero-floating-card">
-                        <div class="bg-warning p-2 rounded-circle border border-dark"><i class="bi bi-trophy-fill fs-5 text-dark"></i></div>
+                        <div class="bg-warning p-2.5 rounded-circle border border-dark d-flex align-items-center justify-content-center" style="width:44px; height:44px;">
+                            <i class="bi bi-trophy-fill fs-5 text-dark"></i>
+                        </div>
                         <div>
                             <div class="fw-black text-dark text-xs mb-0">₹50,00,000+ Prize Pool</div>
-                            <small class="text-muted" style="font-size: 10px;">Across Hosted Fests 2026</small>
+                            <small class="text-muted" style="font-size: 11px;">Across National College Fests 2026</small>
                         </div>
                     </div>
+
                 </div>
             </div>
 
