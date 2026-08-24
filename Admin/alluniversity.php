@@ -1382,6 +1382,18 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
             }
         }
 
+        function syncModalStatus(universityId, isActive) {
+            const modal = document.getElementById('editUniversityModal' + universityId);
+            if (modal) {
+                const statusSelect = modal.querySelector('select[name="status"]');
+                if (statusSelect) {
+                    statusSelect.value = isActive ? 'active' : 'inactive';
+                    statusSelect.dataset.initialValue = statusSelect.value;
+                    statusSelect.dispatchEvent(new Event('change'));
+                }
+            }
+        }
+
         document.querySelectorAll(".status-toggle").forEach(toggle => {
             toggle.addEventListener("change", function () {
                 const row = this.closest("tr");
@@ -1390,6 +1402,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
 
                 setBadge(row, isActive);
                 adjustCounts(isActive);
+                syncModalStatus(universityId, isActive);
                 filterUniversities();
                 this.disabled = true;
 
@@ -1409,6 +1422,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                     toggle.checked = !isActive;
                     setBadge(row, !isActive);
                     adjustCounts(!isActive);
+                    syncModalStatus(universityId, !isActive);
                     filterUniversities();
                     alert("Could not update status. Please try again.");
                 })
