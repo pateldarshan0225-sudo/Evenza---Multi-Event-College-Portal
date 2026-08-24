@@ -113,6 +113,9 @@ $logo_src      = !empty($college_logo) ? '../uploads/colleges/' . htmlspecialcha
         <a href="Students.php" class="berun-nav-item <?= $current_page === 'students.php' ? 'active' : '' ?>" title="College Students">
             <i class="bi bi-people"></i>
         </a>
+        <a href="../Frontend/index.php" class="berun-nav-item text-warning" title="Visit Main Website Home">
+            <i class="bi bi-globe"></i>
+        </a>
     </div>
 
     <div class="dropdown">
@@ -122,7 +125,8 @@ $logo_src      = !empty($college_logo) ? '../uploads/colleges/' . htmlspecialcha
                 <span class="fw-bold text-dark d-block text-xs"><?php echo htmlspecialchars((string)$college_name); ?></span>
                 <span class="text-muted text-xs"><?php echo htmlspecialchars((string)$college_email); ?></span>
             </li>
-            <li><a class="dropdown-item rounded-3 py-2 text-xs mt-1" href="Profile.php"><i class="bi bi-building me-2"></i> College Profile</a></li>
+            <li><a class="dropdown-item rounded-3 py-2 text-xs mt-1" href="../Frontend/index.php"><i class="bi bi-globe me-2 text-warning"></i> Visit Main Website</a></li>
+            <li><a class="dropdown-item rounded-3 py-2 text-xs text-dark" href="Profile.php"><i class="bi bi-building me-2"></i> College Profile</a></li>
             <li><a class="dropdown-item rounded-3 py-2 text-xs text-dark" href="Profile.php?tab=security"><i class="bi bi-shield-lock me-2"></i> Change Password</a></li>
             <li><a class="dropdown-item rounded-3 py-2 text-xs text-danger" href="Logout.php"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
         </ul>

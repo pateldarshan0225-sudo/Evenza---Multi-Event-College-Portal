@@ -46,7 +46,12 @@ $admin_name  = isset($_SESSION['admin_name'])
     </div>
     <!-- [Mobile Media Block end] -->
 
-    <div class="ms-auto">
+    <div class="ms-auto d-flex align-items-center">
+      <!-- Visit Main Website Button -->
+      <a href="../Frontend/index.php" class="btn btn-warning rounded-pill px-3 py-1.5 text-xs font-bold text-dark text-nowrap me-3 d-inline-flex align-items-center gap-1.5 shadow-sm" style="text-decoration: none;">
+        <i class="bi bi-globe"></i> Visit Website
+      </a>
+
       <ul class="inline-flex *:min-h-header-height *:inline-flex *:items-center">
 
         <!-- User Profile -->
@@ -69,6 +74,14 @@ $admin_name  = isset($_SESSION['admin_name'])
             </div>
             <div class="dropdown-body py-4 px-5">
               <div class="profile-notification-scroll position-relative" style="max-height: calc(100vh - 225px)">
+
+                <!-- Visit Main Website -->
+                <a href="../Frontend/index.php" class="dropdown-item">
+                  <span>
+                    <i class="bi bi-globe me-2 text-warning"></i>
+                    <span>Visit Main Website</span>
+                  </span>
+                </a>
 
                 <!-- Change Password (working) -->
                 <a href="change_password.php" class="dropdown-item">

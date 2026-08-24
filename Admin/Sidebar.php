@@ -124,6 +124,9 @@ $admin_email  = $_SESSION['admin_email'] ?? 'admin@evenza.com';
         <a href="allteams.php" class="berun-nav-item <?= in_array($current_page, ['allteams.php', 'teamdetails.php', 'teammembers.php'], true) ? 'active' : '' ?>" title="Teams">
             <i class="bi bi-mortarboard<?= in_array($current_page, ['allteams.php', 'teamdetails.php', 'teammembers.php'], true) ? '-fill' : '' ?>"></i>
         </a>
+        <a href="../Frontend/index.php" class="berun-nav-item text-warning" title="Visit Main Website Home">
+            <i class="bi bi-globe"></i>
+        </a>
     </div>
 
     <div class="dropdown">
@@ -133,7 +136,8 @@ $admin_email  = $_SESSION['admin_email'] ?? 'admin@evenza.com';
                 <span class="fw-bold text-dark d-block text-xs"><?php echo htmlspecialchars((string)$admin_name); ?></span>
                 <span class="text-muted text-xs"><?php echo htmlspecialchars((string)$admin_email); ?></span>
             </li>
-            <li><a class="dropdown-item rounded-3 py-2 text-xs mt-1" href="change_password.php"><i class="bi bi-lock me-2"></i> Change Password</a></li>
+            <li><a class="dropdown-item rounded-3 py-2 text-xs mt-1" href="../Frontend/index.php"><i class="bi bi-globe me-2 text-warning"></i> Visit Main Website</a></li>
+            <li><a class="dropdown-item rounded-3 py-2 text-xs" href="change_password.php"><i class="bi bi-lock me-2"></i> Change Password</a></li>
             <li><a class="dropdown-item rounded-3 py-2 text-xs text-danger" href="logout.php"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
         </ul>
     </div>
