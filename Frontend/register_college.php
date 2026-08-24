@@ -1,7 +1,7 @@
 <?php
 /**
  * Frontend/register_college.php
- * Ultra-Premium College / Campus Event Organizer Registration Gateway
+ * Ultra-Executive College / Campus Event Organizer Registration Gateway
  */
 $page_title = "College & Campus Organizer Registration";
 include 'connection.php';
@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors['email'] = 'Valid institutional email address is required.';
+        $errors['email'] = 'Valid official email address is required.';
     }
 
     if ($phone === '') {
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['password'] = 'Password must be at least 6 characters.';
     }
 
-    // Uniqueness Checks for College Name and Email
+    // Uniqueness Checks for College Email
     if (empty($errors)) {
         $chk = $pdo->prepare("SELECT college_id FROM colleges WHERE email = :email LIMIT 1");
         $chk->execute(['email' => $email]);
@@ -126,7 +126,7 @@ include 'Header.php';
     }
 
     .register-gateway-section {
-        padding: 56px 0 80px 0;
+        padding: 60px 0 90px 0;
     }
 
     .register-pill-badge {
@@ -136,33 +136,33 @@ include 'Header.php';
         color: #14171a;
         font-weight: 800;
         font-size: 11px;
-        padding: 6px 16px;
+        padding: 7px 18px;
         border-radius: 9999px;
         display: inline-flex;
         align-items: center;
         gap: 8px;
+        letter-spacing: 0.2px;
     }
 
     .register-card-bespoke {
         background: #ffffff;
         border: 2px solid #14171a;
-        border-radius: 32px;
-        padding: 40px;
+        border-radius: 36px;
+        padding: 44px;
         box-shadow: 8px 8px 0px #14171a;
         position: relative;
     }
 
     .register-input-group {
         position: relative;
-        margin-bottom: 4px;
     }
 
     .form-label-clean {
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.6px;
         text-transform: uppercase;
-        color: #6b7280;
+        color: #4b5563;
         margin-bottom: 8px;
         display: block;
     }
@@ -175,13 +175,13 @@ include 'Header.php';
     .searchable-select-input {
         background: #ffffff;
         border: 1.5px solid #e5e7eb;
-        border-radius: 18px;
-        padding: 12px 40px 12px 20px;
-        font-size: 14px;
-        font-weight: 500;
+        border-radius: 9999px;
+        padding: 13px 44px 13px 22px;
+        font-size: 13.5px;
+        font-weight: 600;
         color: #14171a;
         width: 100%;
-        transition: all 0.2s ease;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .searchable-select-input::placeholder {
@@ -197,7 +197,7 @@ include 'Header.php';
 
     .select-caret-icon {
         position: absolute;
-        right: 18px;
+        right: 20px;
         top: 50%;
         transform: translateY(-50%);
         color: #9ca3af;
@@ -212,16 +212,16 @@ include 'Header.php';
         right: 0;
         background: #ffffff;
         border: 1.5px solid #14171a;
-        border-radius: 16px;
+        border-radius: 20px;
         max-height: 220px;
         overflow-y: auto;
         z-index: 1050;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.12);
         display: none;
     }
 
     .searchable-select-item {
-        padding: 10px 18px;
+        padding: 11px 20px;
         font-size: 13px;
         font-weight: 600;
         color: #14171a;
@@ -237,10 +237,10 @@ include 'Header.php';
     .form-control-luxury {
         background: #ffffff;
         border: 1.5px solid #e5e7eb;
-        border-radius: 18px;
-        padding: 12px 20px;
-        font-size: 14px;
-        font-weight: 500;
+        border-radius: 9999px;
+        padding: 13px 22px;
+        font-size: 13.5px;
+        font-weight: 600;
         color: #14171a;
         transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         width: 100%;
@@ -257,6 +257,31 @@ include 'Header.php';
         outline: none;
     }
 
+    .custom-file-upload-box {
+        position: relative;
+        background: #fdfbf7;
+        border: 1.5px dashed #cbd5e1;
+        border-radius: 9999px;
+        padding: 8px 18px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .custom-file-upload-box:hover {
+        border-color: #14171a;
+        background: #ffffff;
+    }
+
+    .custom-file-upload-box input[type="file"] {
+        position: absolute;
+        top: 0; left: 0; width: 100%; height: 100%;
+        opacity: 0;
+        cursor: pointer;
+    }
+
     .invalid-feedback-bespoke {
         color: #dc3545;
         font-size: 11px;
@@ -269,8 +294,8 @@ include 'Header.php';
 
     .btn-eye-toggle {
         position: absolute;
-        right: 18px;
-        top: 42px;
+        right: 20px;
+        top: 40px;
         background: none;
         border: none;
         color: #9ca3af;
@@ -293,34 +318,56 @@ include 'Header.php';
         border-radius: 9999px;
     }
 
-    .eco-pillar-card {
-        background: #ffffff;
-        border: 1.5px solid #14171a;
-        border-radius: 20px;
-        padding: 18px 20px;
-        box-shadow: 4px 4px 0px #14171a;
-        margin-bottom: 16px;
+    /* Handcrafted Metric Pills */
+    .metric-pill-strip {
         display: flex;
         align-items: center;
         gap: 16px;
+        margin: 24px 0 32px 0;
+        flex-wrap: wrap;
     }
 
-    .eco-pillar-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 14px;
-        background: #ffd13b;
-        color: #14171a;
+    .metric-pill-item {
+        background: #ffffff;
         border: 1.5px solid #14171a;
+        border-radius: 18px;
+        padding: 10px 18px;
+        box-shadow: 3px 3px 0px #14171a;
+    }
+    .metric-pill-val { font-size: 18px; font-weight: 900; color: #14171a; line-height: 1; }
+    .metric-pill-lbl { font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; margin-top: 3px; }
+
+    .editorial-feature-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .editorial-feature-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding-bottom: 14px;
+        border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .editorial-feature-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        background: #ffd13b;
+        border: 1.5px solid #14171a;
+        color: #14171a;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
+        font-size: 16px;
         flex-shrink: 0;
     }
 
     @media (max-width: 768px) {
-        .register-card-bespoke { padding: 24px; border-radius: 24px; }
+        .register-card-bespoke { padding: 26px; border-radius: 28px; }
     }
 </style>
 
@@ -328,53 +375,71 @@ include 'Header.php';
     <div class="container-xl">
         <div class="row g-5 align-items-center justify-content-center">
 
-            <!-- LEFT COLUMN: COLLEGE ORGANIZER BRAND HIGHLIGHTS -->
+            <!-- LEFT COLUMN: HANDCRAFTED BRAND HIGHLIGHTS -->
             <div class="col-12 col-lg-5">
                 <span class="register-pill-badge mb-3">
-                    <i class="bi bi-building-fill text-warning"></i> Campus Event Organizer Gateway
+                    <i class="bi bi-building-check text-warning"></i> Campus Event Organizer Gateway
                 </span>
                 <h1 class="fw-black text-dark display-6 mb-3" style="letter-spacing: -1px; line-height: 1.15;">
                     Register Your College & Host Inter-College Events
                 </h1>
-                <p class="text-muted leading-relaxed text-sm mb-4">
-                    Connect your institution to the Evenza network. Publish technical hackathons, cultural festivals, sports leagues, and verify student competitor entry passes instantly.
+                <p class="text-muted leading-relaxed text-sm mb-0">
+                    Connect your institution to the Evenza network. Publish hackathons, cultural festivals, sports leagues, and verify student competitor entry passes instantly.
                 </p>
 
-                <!-- 3 ECOSYSTEM PILLAR CARDS -->
-                <div class="eco-pillar-card">
-                    <div class="eco-pillar-icon"><i class="bi bi-calendar-event-fill"></i></div>
-                    <div>
-                        <div class="fw-black text-dark text-xs mb-0">Publish & Manage Events</div>
-                        <small class="text-muted" style="font-size: 11px;">Create competitions with custom categories and rules</small>
+                <!-- 3 HANDCRAFTED METRIC PILLS -->
+                <div class="metric-pill-strip">
+                    <div class="metric-pill-item">
+                        <div class="metric-pill-val">250+</div>
+                        <div class="metric-pill-lbl">Live Events</div>
+                    </div>
+                    <div class="metric-pill-item">
+                        <div class="metric-pill-val">80+</div>
+                        <div class="metric-pill-lbl">Universities</div>
+                    </div>
+                    <div class="metric-pill-item">
+                        <div class="metric-pill-val">100%</div>
+                        <div class="metric-pill-lbl">QR Accuracy</div>
                     </div>
                 </div>
 
-                <div class="eco-pillar-card">
-                    <div class="eco-pillar-icon"><i class="bi bi-qr-code"></i></div>
-                    <div>
-                        <div class="fw-black text-dark text-xs mb-0">Digital Pass Check-in System</div>
-                        <small class="text-muted" style="font-size: 11px;">Scan QR codes at event venues to verify student entry</small>
+                <!-- EDITORIAL FEATURE LIST -->
+                <div class="editorial-feature-list">
+                    <div class="editorial-feature-item">
+                        <div class="editorial-feature-icon"><i class="bi bi-calendar2-event-fill"></i></div>
+                        <div>
+                            <div class="fw-bold text-dark text-xs mb-0.5">Publish & Manage Campus Events</div>
+                            <div class="text-muted" style="font-size: 11.5px;">Create competitions with custom categories, rules, and registration deadlines</div>
+                        </div>
+                    </div>
+
+                    <div class="editorial-feature-item">
+                        <div class="editorial-feature-icon"><i class="bi bi-qr-code-scan"></i></div>
+                        <div>
+                            <div class="fw-bold text-dark text-xs mb-0.5">Digital Pass QR Check-in System</div>
+                            <div class="text-muted" style="font-size: 11.5px;">Scan digital venue entry passes at gates to verify student credentials</div>
+                        </div>
+                    </div>
+
+                    <div class="editorial-feature-item" style="border-bottom: none;">
+                        <div class="editorial-feature-icon"><i class="bi bi-bar-chart-line-fill"></i></div>
+                        <div>
+                            <div class="fw-bold text-dark text-xs mb-0.5">Real-Time Registration Analytics</div>
+                            <div class="text-muted" style="font-size: 11.5px;">Track live sign-ups, squad teams, entry pass check-in rates, and revenue</div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="eco-pillar-card">
-                    <div class="eco-pillar-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                <div class="p-3 bg-white rounded-4 border border-dark d-flex align-items-center gap-3 shadow-sm">
+                    <i class="bi bi-shield-lock-fill text-success fs-4"></i>
                     <div>
-                        <div class="fw-black text-dark text-xs mb-0">Real-Time Registration Analytics</div>
-                        <small class="text-muted" style="font-size: 11px;">Track total sign-ups, entry pass check-ins, and revenue</small>
-                    </div>
-                </div>
-
-                <div class="p-3 bg-white rounded-4 border border-dark d-flex align-items-center gap-3 shadow-sm mt-4">
-                    <i class="bi bi-award-fill text-warning fs-4"></i>
-                    <div>
-                        <div class="fw-bold text-dark text-xs">Verified Institution Badge</div>
-                        <small class="text-muted" style="font-size: 11px;">Accredited colleges receive official verified organizer status</small>
+                        <div class="fw-bold text-dark text-xs">Verified Institution Gateway</div>
+                        <small class="text-muted" style="font-size: 11px;">Accredited colleges receive official verified organizer status & portal access</small>
                     </div>
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: LUXURY COLLEGE REGISTRATION FORM -->
+            <!-- RIGHT COLUMN: REFINED LUXURY FORM CONTAINER -->
             <div class="col-12 col-lg-7">
                 <div class="register-card-bespoke">
                     
@@ -478,12 +543,21 @@ include 'Header.php';
                                 </div>
                             </div>
 
-                            <!-- 6. COLLEGE LOGO UPLOAD -->
+                            <!-- 6. CUSTOM BESPOKE LOGO UPLOAD CONTROL -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
                                     <label class="form-label-clean">COLLEGE LOGO (OPTIONAL)</label>
-                                    <input type="file" class="form-control-luxury" name="logo" id="logo" accept="image/*">
-                                    <small class="text-muted" style="font-size: 11px;">JPG, PNG, WEBP, SVG up to 5MB</small>
+                                    <div class="custom-file-upload-box">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <i class="bi bi-cloud-arrow-up-fill text-warning fs-5"></i>
+                                            <span class="text-xs font-bold text-dark" id="fileNameDisplay">Upload Official Logo...</span>
+                                        </div>
+                                        <span class="badge bg-dark text-white rounded-pill px-2.5 py-1 text-xs">Browse</span>
+                                        <input type="file" name="logo" id="logoInput" accept="image/*" onchange="displaySelectedFileName(this)">
+                                    </div>
+                                    <div class="invalid-feedback-bespoke" id="err_logo" style="<?= isset($errors['logo']) ? 'display:flex;' : 'display:none;' ?>">
+                                        <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['logo'] ?? '') ?>
+                                    </div>
                                 </div>
                             </div>
 
@@ -497,9 +571,10 @@ include 'Header.php';
                         </div>
                     </form>
 
-                    <div class="mt-4 text-center text-xs text-muted pt-3 border-top d-flex justify-content-center gap-3">
+                    <!-- CLEAN FOOTER LINKS WITH DOT SEPARATORS -->
+                    <div class="mt-4 text-center text-xs text-muted pt-3 border-top d-flex justify-content-center align-items-center gap-3 flex-wrap">
                         <span>Already registered your college? <a href="login.php" class="text-dark font-bold text-decoration-underline">Sign In To Organizer Portal</a></span>
-                        <span>&bull;</span>
+                        <span class="text-muted opacity-40">&bull;</span>
                         <span>Student? <a href="register.php" class="text-dark font-bold text-decoration-underline">Register Student Profile</a></span>
                     </div>
 
@@ -560,6 +635,15 @@ include 'Header.php';
         document.getElementById('universityDropdown').style.display = 'none';
         document.getElementById('err_university_id').style.display = 'none';
         document.getElementById('universityInput').classList.remove('is-invalid');
+    }
+
+    function displaySelectedFileName(input) {
+        const display = document.getElementById('fileNameDisplay');
+        if (input.files && input.files[0]) {
+            display.innerText = input.files[0].name;
+        } else {
+            display.innerText = 'Upload Official Logo...';
+        }
     }
 
     // Close dropdowns when clicking outside

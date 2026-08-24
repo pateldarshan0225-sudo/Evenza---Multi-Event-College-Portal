@@ -1,7 +1,7 @@
 <?php
 /**
  * Frontend/register.php
- * Ultra-Premium Student Registration Gateway (With Exact Search University & Search College UI)
+ * Ultra-Executive Student Registration Gateway
  */
 $page_title = "Student Registration Gateway";
 include 'connection.php';
@@ -124,7 +124,7 @@ include 'Header.php';
     }
 
     .register-gateway-section {
-        padding: 56px 0 80px 0;
+        padding: 60px 0 90px 0;
     }
 
     .register-pill-badge {
@@ -134,33 +134,33 @@ include 'Header.php';
         color: #14171a;
         font-weight: 800;
         font-size: 11px;
-        padding: 6px 16px;
+        padding: 7px 18px;
         border-radius: 9999px;
         display: inline-flex;
         align-items: center;
         gap: 8px;
+        letter-spacing: 0.2px;
     }
 
     .register-card-bespoke {
         background: #ffffff;
         border: 2px solid #14171a;
-        border-radius: 32px;
-        padding: 40px;
+        border-radius: 36px;
+        padding: 44px;
         box-shadow: 8px 8px 0px #14171a;
         position: relative;
     }
 
     .register-input-group {
         position: relative;
-        margin-bottom: 4px;
     }
 
     .form-label-clean {
-        font-size: 12px;
-        font-weight: 700;
-        letter-spacing: 0.5px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.6px;
         text-transform: uppercase;
-        color: #6b7280;
+        color: #4b5563;
         margin-bottom: 8px;
         display: block;
     }
@@ -173,13 +173,13 @@ include 'Header.php';
     .searchable-select-input {
         background: #ffffff;
         border: 1.5px solid #e5e7eb;
-        border-radius: 18px;
-        padding: 12px 40px 12px 20px;
-        font-size: 14px;
-        font-weight: 500;
+        border-radius: 9999px;
+        padding: 13px 44px 13px 22px;
+        font-size: 13.5px;
+        font-weight: 600;
         color: #14171a;
         width: 100%;
-        transition: all 0.2s ease;
+        transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .searchable-select-input::placeholder {
@@ -195,7 +195,7 @@ include 'Header.php';
 
     .select-caret-icon {
         position: absolute;
-        right: 18px;
+        right: 20px;
         top: 50%;
         transform: translateY(-50%);
         color: #9ca3af;
@@ -210,16 +210,16 @@ include 'Header.php';
         right: 0;
         background: #ffffff;
         border: 1.5px solid #14171a;
-        border-radius: 16px;
+        border-radius: 20px;
         max-height: 220px;
         overflow-y: auto;
         z-index: 1050;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.12);
         display: none;
     }
 
     .searchable-select-item {
-        padding: 10px 18px;
+        padding: 11px 20px;
         font-size: 13px;
         font-weight: 600;
         color: #14171a;
@@ -232,18 +232,13 @@ include 'Header.php';
         color: #14171a;
     }
 
-    .searchable-select-item.no-results {
-        color: #9ca3af;
-        cursor: default;
-    }
-
     .form-control-luxury, .form-select-luxury {
         background: #ffffff;
         border: 1.5px solid #e5e7eb;
-        border-radius: 18px;
-        padding: 12px 20px;
-        font-size: 14px;
-        font-weight: 500;
+        border-radius: 9999px;
+        padding: 13px 22px;
+        font-size: 13.5px;
+        font-weight: 600;
         color: #14171a;
         transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         width: 100%;
@@ -272,8 +267,8 @@ include 'Header.php';
 
     .btn-eye-toggle {
         position: absolute;
-        right: 18px;
-        top: 42px;
+        right: 20px;
+        top: 40px;
         background: none;
         border: none;
         color: #9ca3af;
@@ -296,34 +291,55 @@ include 'Header.php';
         border-radius: 9999px;
     }
 
-    .eco-pillar-card {
-        background: #ffffff;
-        border: 1.5px solid #14171a;
-        border-radius: 20px;
-        padding: 18px 20px;
-        box-shadow: 4px 4px 0px #14171a;
-        margin-bottom: 16px;
+    .metric-pill-strip {
         display: flex;
         align-items: center;
         gap: 16px;
+        margin: 24px 0 32px 0;
+        flex-wrap: wrap;
     }
 
-    .eco-pillar-icon {
-        width: 44px;
-        height: 44px;
-        border-radius: 14px;
-        background: #ffd13b;
-        color: #14171a;
+    .metric-pill-item {
+        background: #ffffff;
         border: 1.5px solid #14171a;
+        border-radius: 18px;
+        padding: 10px 18px;
+        box-shadow: 3px 3px 0px #14171a;
+    }
+    .metric-pill-val { font-size: 18px; font-weight: 900; color: #14171a; line-height: 1; }
+    .metric-pill-lbl { font-size: 10px; font-weight: 700; color: #6b7280; text-transform: uppercase; margin-top: 3px; }
+
+    .editorial-feature-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 32px;
+    }
+
+    .editorial-feature-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        padding-bottom: 14px;
+        border-bottom: 1px dashed #e2e8f0;
+    }
+
+    .editorial-feature-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 12px;
+        background: #ffd13b;
+        border: 1.5px solid #14171a;
+        color: #14171a;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 20px;
+        font-size: 16px;
         flex-shrink: 0;
     }
 
     @media (max-width: 768px) {
-        .register-card-bespoke { padding: 24px; border-radius: 24px; }
+        .register-card-bespoke { padding: 26px; border-radius: 28px; }
     }
 </style>
 
@@ -331,7 +347,7 @@ include 'Header.php';
     <div class="container-xl">
         <div class="row g-5 align-items-center justify-content-center">
 
-            <!-- LEFT COLUMN: ECOSYSTEM BRAND HIGHLIGHTS -->
+            <!-- LEFT COLUMN: HANDCRAFTED STUDENT BRAND HIGHLIGHTS -->
             <div class="col-12 col-lg-5">
                 <span class="register-pill-badge mb-3">
                     <i class="bi bi-mortarboard-fill text-warning"></i> Student Competitor Access
@@ -339,36 +355,54 @@ include 'Header.php';
                 <h1 class="fw-black text-dark display-6 mb-3" style="letter-spacing: -1px; line-height: 1.15;">
                     Create Your Verified Student Profile
                 </h1>
-                <p class="text-muted leading-relaxed text-sm mb-4">
+                <p class="text-muted leading-relaxed text-sm mb-0">
                     Join 250+ accredited universities and partner institutions. Register once to claim digital venue entry passes, create hackathon squad teams, and compete across top campus festivals.
                 </p>
 
-                <!-- 3 ECOSYSTEM PILLAR CARDS -->
-                <div class="eco-pillar-card">
-                    <div class="eco-pillar-icon"><i class="bi bi-qr-code-scan"></i></div>
-                    <div>
-                        <div class="fw-black text-dark text-xs mb-0">Instant QR Venue Entry Passes</div>
-                        <small class="text-muted" style="font-size: 11px;">Verified digital tickets generated upon registration</small>
+                <!-- 3 HANDCRAFTED METRIC PILLS -->
+                <div class="metric-pill-strip">
+                    <div class="metric-pill-item">
+                        <div class="metric-pill-val">250+</div>
+                        <div class="metric-pill-lbl">Inter-College Events</div>
+                    </div>
+                    <div class="metric-pill-item">
+                        <div class="metric-pill-val">80+</div>
+                        <div class="metric-pill-lbl">Partner Colleges</div>
+                    </div>
+                    <div class="metric-pill-item">
+                        <div class="metric-pill-val">100%</div>
+                        <div class="metric-pill-lbl">Instant Passes</div>
                     </div>
                 </div>
 
-                <div class="eco-pillar-card">
-                    <div class="eco-pillar-icon"><i class="bi bi-people-fill"></i></div>
-                    <div>
-                        <div class="fw-black text-dark text-xs mb-0">Multi-Member Squad Rosters</div>
-                        <small class="text-muted" style="font-size: 11px;">Generate team codes & invite campus squad mates</small>
+                <!-- EDITORIAL FEATURE LIST -->
+                <div class="editorial-feature-list">
+                    <div class="editorial-feature-item">
+                        <div class="editorial-feature-icon"><i class="bi bi-qr-code-scan"></i></div>
+                        <div>
+                            <div class="fw-bold text-dark text-xs mb-0.5">Instant QR Venue Entry Passes</div>
+                            <div class="text-muted" style="font-size: 11.5px;">Verified digital tickets generated upon registration for gate scanning</div>
+                        </div>
+                    </div>
+
+                    <div class="editorial-feature-item">
+                        <div class="editorial-feature-icon"><i class="bi bi-people-fill"></i></div>
+                        <div>
+                            <div class="fw-bold text-dark text-xs mb-0.5">Multi-Member Squad Rosters</div>
+                            <div class="text-muted" style="font-size: 11.5px;">Generate team codes & invite campus squad mates to hackathons</div>
+                        </div>
+                    </div>
+
+                    <div class="editorial-feature-item" style="border-bottom: none;">
+                        <div class="editorial-feature-icon"><i class="bi bi-shield-check"></i></div>
+                        <div>
+                            <div class="fw-bold text-dark text-xs mb-0.5">Single Sign-On Integration</div>
+                            <div class="text-muted" style="font-size: 11.5px;">Access student competitor dashboard instantly with institutional credentials</div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="eco-pillar-card">
-                    <div class="eco-pillar-icon"><i class="bi bi-shield-check"></i></div>
-                    <div>
-                        <div class="fw-black text-dark text-xs mb-0">Single Sign-On Integration</div>
-                        <small class="text-muted" style="font-size: 11px;">Access student competitor dashboard instantly</small>
-                    </div>
-                </div>
-
-                <div class="p-3 bg-white rounded-4 border border-dark d-flex align-items-center gap-3 shadow-sm mt-4">
+                <div class="p-3 bg-white rounded-4 border border-dark d-flex align-items-center gap-3 shadow-sm">
                     <i class="bi bi-lock-fill text-success fs-4"></i>
                     <div>
                         <div class="fw-bold text-dark text-xs">256-Bit SSL Encrypted Gateway</div>
@@ -377,7 +411,7 @@ include 'Header.php';
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: LUXURY REGISTRATION FORM MATCHING USER REFERENCE IMAGE -->
+            <!-- RIGHT COLUMN: REFINED LUXURY FORM CONTAINER -->
             <div class="col-12 col-lg-7">
                 <div class="register-card-bespoke">
                     
@@ -400,7 +434,7 @@ include 'Header.php';
                     <form method="POST" id="studentRegisterForm" novalidate>
                         <div class="row g-4">
 
-                            <!-- 1. SEARCH UNIVERSITY (EXACT REFERENCE UI WITH LIVE CHAR-BY-CHAR SEARCH) -->
+                            <!-- 1. SEARCH UNIVERSITY -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
                                     <label class="form-label-clean">UNIVERSITY *</label>
@@ -431,7 +465,7 @@ include 'Header.php';
                                 </div>
                             </div>
 
-                            <!-- 2. SEARCH COLLEGE (EXACT REFERENCE UI - CASCADING DEPENDENT WITH LIVE CHAR-BY-CHAR SEARCH) -->
+                            <!-- 2. SEARCH COLLEGE (CASCADING DEPENDENT) -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
                                     <label class="form-label-clean">COLLEGE *</label>
@@ -555,10 +589,11 @@ include 'Header.php';
                         </div>
                     </form>
 
-                    <div class="mt-4 text-center text-xs text-muted pt-3 border-top d-flex justify-content-center gap-3 flex-wrap">
-                        <span>Already registered your profile? <a href="login.php" class="text-dark font-bold text-decoration-underline">Sign In Here</a></span>
-                        <span>&bull;</span>
-                        <span>Registering a College / Institution? <a href="register_college.php" class="text-dark font-bold text-decoration-underline">College Registration</a></span>
+                    <!-- CLEAN FOOTER LINKS WITH DOT SEPARATORS -->
+                    <div class="mt-4 text-center text-xs text-muted pt-3 border-top d-flex justify-content-center align-items-center gap-3 flex-wrap">
+                        <span>Already registered your profile? <a href="login.php" class="text-dark font-bold text-decoration-underline">Sign In To Student Portal</a></span>
+                        <span class="text-muted opacity-40">&bull;</span>
+                        <span>College / Institution? <a href="register_college.php" class="text-dark font-bold text-decoration-underline">College Registration</a></span>
                     </div>
 
                 </div>
@@ -656,25 +691,6 @@ include 'Header.php';
         }
     }
 
-    window.addEventListener('DOMContentLoaded', function() {
-        const selectedUnivId = document.getElementById('universitySelect').value;
-        if (selectedUnivId) {
-            const item = document.querySelector(`#universityDropdown .searchable-select-item[data-value="${selectedUnivId}"]`);
-            if (item) {
-                document.getElementById('universityInput').value = item.innerText.trim();
-                selectedUniversityId = selectedUnivId;
-            }
-        }
-
-        const selectedCollegeId = document.getElementById('collegeSelect').value;
-        if (selectedCollegeId) {
-            const item = document.querySelector(`#collegeDropdown .searchable-select-item[data-value="${selectedCollegeId}"]`);
-            if (item) {
-                document.getElementById('collegeInput').value = item.innerText.trim();
-            }
-        }
-    });
-
     function selectUniversity(id, name) {
         document.getElementById('universityInput').value = name;
         document.getElementById('universitySelect').value = id;
@@ -703,7 +719,7 @@ include 'Header.php';
             const univDropdown = document.getElementById('universityDropdown');
             if (univDropdown) univDropdown.style.display = 'none';
         }
-        if (!e.target.closest('#collegeInput') && !e.target.closest('#collegeDropdown')) {
+        if (!e.target.closest('#collegeWrapper') && !e.target.closest('#collegeDropdown')) {
             const collegeDropdown = document.getElementById('collegeDropdown');
             if (collegeDropdown) collegeDropdown.style.display = 'none';
         }
@@ -793,6 +809,25 @@ include 'Header.php';
             err.style.display = 'none';
         }
     }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        const selectedUnivId = document.getElementById('universitySelect').value;
+        if (selectedUnivId) {
+            const item = document.querySelector(`#universityDropdown .searchable-select-item[data-value="${selectedUnivId}"]`);
+            if (item) {
+                document.getElementById('universityInput').value = item.innerText.trim();
+                selectedUniversityId = selectedUnivId;
+            }
+        }
+
+        const selectedCollegeId = document.getElementById('collegeSelect').value;
+        if (selectedCollegeId) {
+            const item = document.querySelector(`#collegeDropdown .searchable-select-item[data-value="${selectedCollegeId}"]`);
+            if (item) {
+                document.getElementById('collegeInput').value = item.innerText.trim();
+            }
+        }
+    });
 </script>
 
 <?php include 'Footer.php'; ?>
