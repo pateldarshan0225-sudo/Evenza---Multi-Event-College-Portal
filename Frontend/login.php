@@ -36,11 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $admin = $stmt->fetch();
 
         if ($admin && ($password === $admin['password'] || password_verify($password, $admin['password']))) {
-            $_SESSION['admin_id']        = $admin['admin_id'];
-            $_SESSION['admin_name']      = $admin['name'] ?? $admin['admin_name'] ?? 'Administrator';
-            $_SESSION['admin_email']     = $admin['email'];
-            $_SESSION['admin_logged_in'] = true;
-            $_SESSION['loggedin']        = true;
+            $_SESSION['admin_id']    = $admin['admin_id'];
+            $_SESSION['admin_name']  = $admin['name'] ?? $admin['admin_name'] ?? 'Administrator';
+            $_SESSION['admin_email'] = $admin['email'];
+            $_SESSION['loggedin']    = true;
             header('Location: ../Admin/Dashboard.php');
             exit;
         }
