@@ -1,7 +1,7 @@
 <?php
 /**
  * Frontend/colleges.php
- * Ultra-Premium Partner Colleges Directory for Evenza (with 6-Card Pagination & Logo Resolver)
+ * Ultra-Premium Partner Colleges Directory for Evenza (with Seamless AJAX 6-Card Pagination)
  */
 $page_title = "Partner Colleges";
 include 'connection.php';
@@ -263,6 +263,10 @@ include 'Header.php';
         border-color: #14171a;
         box-shadow: 0 4px 12px rgba(20, 23, 26, 0.15);
     }
+
+    #ajaxCollegesContainer {
+        transition: opacity 0.2s ease;
+    }
 </style>
 
 <!-- PAGE HERO -->
@@ -280,7 +284,7 @@ include 'Header.php';
 
         <!-- SEARCH & FILTER BAR -->
         <div class="search-filter-card-glass mb-2">
-            <form method="GET" class="row g-3 align-items-center">
+            <form method="GET" class="row g-3 align-items-center" id="collegesFilterForm">
                 <div class="col-12 col-md-6">
                     <div class="input-group">
                         <span class="input-group-text bg-transparent border-0 ps-3 text-muted"><i class="bi bi-search"></i></span>
@@ -304,8 +308,8 @@ include 'Header.php';
 </section>
 
 <!-- COLLEGES GRID CANVAS SECTION -->
-<section class="colleges-grid-canvas">
-    <div class="container-xl">
+<section class="colleges-grid-canvas" id="collegesGridCanvas">
+    <div class="container-xl" id="ajaxCollegesContainer">
         
         <!-- Executive Results Counter Bar -->
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
@@ -390,21 +394,21 @@ include 'Header.php';
         <?php if ($total_pages > 1): ?>
             <div class="pagination-wrapper">
                 <!-- Previous Button -->
-                <a href="<?= get_page_url($page - 1) ?>" class="pagination-btn <?= $page <= 1 ? 'disabled' : '' ?>">
+                <a href="<?= get_page_url($page - 1) ?>" class="pagination-btn ajax-page-link <?= $page <= 1 ? 'disabled' : '' ?>">
                     <i class="bi bi-arrow-left"></i> Previous
                 </a>
 
                 <!-- Number Pills -->
                 <div class="d-flex align-items-center gap-2">
                     <?php for ($p = 1; $p <= $total_pages; $p++): ?>
-                        <a href="<?= get_page_url($p) ?>" class="page-number-pill <?= $p === $page ? 'active' : '' ?>">
+                        <a href="<?= get_page_url($p) ?>" class="page-number-pill ajax-page-link <?= $p === $page ? 'active' : '' ?>">
                             <?= $p ?>
                         </a>
                     <?php endfor; ?>
                 </div>
 
                 <!-- Next Button -->
-                <a href="<?= get_page_url($page + 1) ?>" class="pagination-btn <?= $page >= $total_pages ? 'disabled' : '' ?>">
+                <a href="<?= get_page_url($page + 1) ?>" class="pagination-btn ajax-page-link <?= $page >= $total_pages ? 'disabled' : '' ?>">
                     Next <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
@@ -412,5 +416,58 @@ include 'Header.php';
 
     </div>
 </section>
+
+<!-- SEAMLESS AJAX PAGINATION SCRIPT -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('ajaxCollegesContainer');
+
+    function bindAjaxPagination() {
+        if (!container) return;
+
+        const links = container.querySelectorAll('.ajax-page-link');
+        links.forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                if (this.classList.contains('disabled')) return;
+                e.preventDefault();
+
+                const targetUrl = this.getAttribute('href');
+                if (!targetUrl) return;
+
+                // Set subtle loading opacity
+                container.style.opacity = '0.4';
+
+                fetch(targetUrl)
+                    .then(response => response.text())
+                    .then(htmlText => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(htmlText, 'text/html');
+                        const newContent = doc.getElementById('ajaxCollegesContainer');
+
+                        if (newContent) {
+                            container.innerHTML = newContent.innerHTML;
+                            history.pushState({}, '', targetUrl);
+                            
+                            // Re-bind click handlers to newly loaded pagination buttons
+                            bindAjaxPagination();
+
+                            // Smooth scroll to top of colleges grid
+                            document.getElementById('collegesGridCanvas').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    })
+                    .catch(err => {
+                        console.error('AJAX Pagination error:', err);
+                        window.location.href = targetUrl; // Fallback to normal navigation
+                    })
+                    .finally(() => {
+                        container.style.opacity = '1';
+                    });
+            });
+        });
+    }
+
+    bindAjaxPagination();
+});
+</script>
 
 <?php include 'Footer.php'; ?>

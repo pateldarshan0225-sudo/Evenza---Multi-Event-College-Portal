@@ -1,7 +1,7 @@
 <?php
 /**
  * Frontend/events.php
- * Ultra-Premium Searchable Event Catalog for Evenza (with Fixes & Pagination)
+ * Ultra-Premium Searchable Event Catalog for Evenza (with Seamless AJAX Pagination)
  */
 $page_title = "Browse Events";
 include 'connection.php';
@@ -245,6 +245,10 @@ include 'Header.php';
         border-color: #14171a;
         box-shadow: 0 4px 12px rgba(20, 23, 26, 0.15);
     }
+
+    #ajaxEventsContainer {
+        transition: opacity 0.2s ease;
+    }
 </style>
 
 <!-- PAGE HERO -->
@@ -293,8 +297,8 @@ include 'Header.php';
 </section>
 
 <!-- EVENTS GRID CANVAS -->
-<section class="events-grid-canvas">
-    <div class="container-xl">
+<section class="events-grid-canvas" id="eventsGridCanvas">
+    <div class="container-xl" id="ajaxEventsContainer">
         
         <!-- Counter Bar -->
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2 text-xs">
@@ -359,19 +363,19 @@ include 'Header.php';
         <!-- PAGINATION BAR -->
         <?php if ($total_pages > 1): ?>
             <div class="pagination-wrapper">
-                <a href="<?= get_events_page_url($page - 1) ?>" class="pagination-btn <?= $page <= 1 ? 'disabled' : '' ?>">
+                <a href="<?= get_events_page_url($page - 1) ?>" class="pagination-btn ajax-events-page-link <?= $page <= 1 ? 'disabled' : '' ?>">
                     <i class="bi bi-arrow-left"></i> Previous
                 </a>
 
                 <div class="d-flex align-items-center gap-2">
                     <?php for ($p = 1; $p <= $total_pages; $p++): ?>
-                        <a href="<?= get_events_page_url($p) ?>" class="page-number-pill <?= $p === $page ? 'active' : '' ?>">
+                        <a href="<?= get_events_page_url($p) ?>" class="page-number-pill ajax-events-page-link <?= $p === $page ? 'active' : '' ?>">
                             <?= $p ?>
                         </a>
                     <?php endfor; ?>
                 </div>
 
-                <a href="<?= get_events_page_url($page + 1) ?>" class="pagination-btn <?= $page >= $total_pages ? 'disabled' : '' ?>">
+                <a href="<?= get_events_page_url($page + 1) ?>" class="pagination-btn ajax-events-page-link <?= $page >= $total_pages ? 'disabled' : '' ?>">
                     Next <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
@@ -379,5 +383,53 @@ include 'Header.php';
 
     </div>
 </section>
+
+<!-- SEAMLESS AJAX PAGINATION SCRIPT -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('ajaxEventsContainer');
+
+    function bindEventsAjaxPagination() {
+        if (!container) return;
+
+        const links = container.querySelectorAll('.ajax-events-page-link');
+        links.forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                if (this.classList.contains('disabled')) return;
+                e.preventDefault();
+
+                const targetUrl = this.getAttribute('href');
+                if (!targetUrl) return;
+
+                container.style.opacity = '0.4';
+
+                fetch(targetUrl)
+                    .then(response => response.text())
+                    .then(htmlText => {
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(htmlText, 'text/html');
+                        const newContent = doc.getElementById('ajaxEventsContainer');
+
+                        if (newContent) {
+                            container.innerHTML = newContent.innerHTML;
+                            history.pushState({}, '', targetUrl);
+                            bindEventsAjaxPagination();
+                            document.getElementById('eventsGridCanvas').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    })
+                    .catch(err => {
+                        console.error('AJAX Pagination error:', err);
+                        window.location.href = targetUrl;
+                    })
+                    .finally(() => {
+                        container.style.opacity = '1';
+                    });
+            });
+        });
+    }
+
+    bindEventsAjaxPagination();
+});
+</script>
 
 <?php include 'Footer.php'; ?>
