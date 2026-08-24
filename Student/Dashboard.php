@@ -391,6 +391,9 @@ $recent_registrations = $stmt->fetchAll();
             </div>
 
             <div class="d-flex align-items-center gap-3">
+                <a href="../Frontend/index.php" class="btn btn-warning rounded-pill px-3 py-2 text-xs font-bold text-dark text-nowrap d-inline-flex align-items-center gap-1.5 shadow-sm" style="text-decoration: none;">
+                    <i class="bi bi-globe"></i> Visit Main Website
+                </a>
                 <a href="../Frontend/events.php" class="berun-btn-dark">
                     <i class="bi bi-search"></i> Explore Competitions
                 </a>
