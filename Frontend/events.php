@@ -1,7 +1,7 @@
 <?php
 /**
  * Frontend/events.php
- * Ultra-Premium Searchable Event Catalog for Evenza (with Seamless AJAX Pagination)
+ * Ultra-Premium Searchable Event Catalog for Evenza (with Live Debounced AJAX Search & Pagination)
  */
 $page_title = "Browse Events";
 include 'connection.php';
@@ -288,11 +288,11 @@ include 'Header.php';
 
         <!-- FILTER & SEARCH BAR -->
         <div class="search-filter-card-glass mb-2">
-            <form method="GET" class="row g-3 align-items-center">
+            <form method="GET" class="row g-3 align-items-center" id="eventsFilterForm">
                 <div class="col-12 col-md-5">
                     <div class="input-group">
                         <span class="input-group-text bg-transparent border-0 ps-3 text-muted"><i class="bi bi-search"></i></span>
-                        <input type="text" class="form-control bg-transparent border-0 text-xs py-2" name="search" autocomplete="off" value="<?= htmlspecialchars((string)($_GET['search'] ?? '')) ?>" placeholder="Search event title, venue, or keyword...">
+                        <input type="text" class="form-control bg-transparent border-0 text-xs py-2" name="search" autocomplete="off" value="<?= htmlspecialchars((string)($_GET['search'] ?? '')) ?>" placeholder="Type to search event title, venue, or keyword...">
                     </div>
                 </div>
                 <div class="col-6 col-md-3">
@@ -406,10 +406,79 @@ include 'Header.php';
     </div>
 </section>
 
-<!-- SEAMLESS AJAX PAGINATION SCRIPT -->
+<!-- SEAMLESS LIVE REAL-TIME AJAX SEARCH & PAGINATION SCRIPT -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const container = document.getElementById('ajaxEventsContainer');
+    const filterForm = document.getElementById('eventsFilterForm');
+    const searchInput = filterForm ? filterForm.querySelector('input[name="search"]') : null;
+    const selects = filterForm ? filterForm.querySelectorAll('select') : [];
+
+    let debounceTimer = null;
+
+    function fetchFilteredEvents(url, pushHistory = true) {
+        if (!container) return;
+        container.style.opacity = '0.4';
+
+        fetch(url)
+            .then(response => response.text())
+            .then(htmlText => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+                const newContent = doc.getElementById('ajaxEventsContainer');
+
+                if (newContent) {
+                    container.innerHTML = newContent.innerHTML;
+                    if (pushHistory) {
+                        history.replaceState({}, '', url);
+                    }
+                    bindEventsAjaxPagination();
+                }
+            })
+            .catch(err => console.error('Events Live Search AJAX error:', err))
+            .finally(() => {
+                container.style.opacity = '1';
+            });
+    }
+
+    function triggerLiveSearch() {
+        if (!filterForm) return;
+        const formData = new FormData(filterForm);
+        const searchParams = new URLSearchParams();
+        
+        for (const [key, value] of formData.entries()) {
+            if (value && value !== 'all') {
+                searchParams.set(key, value);
+            }
+        }
+        searchParams.set('page', '1');
+
+        const targetUrl = 'events.php?' + searchParams.toString();
+        fetchFilteredEvents(targetUrl, true);
+    }
+
+    // Live debounced search on typing (250ms)
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(triggerLiveSearch, 250);
+        });
+    }
+
+    // Live filter on select dropdown changes
+    selects.forEach(function(selectEl) {
+        selectEl.addEventListener('change', function () {
+            triggerLiveSearch();
+        });
+    });
+
+    // Prevent full-page form submit on Enter key
+    if (filterForm) {
+        filterForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            triggerLiveSearch();
+        });
+    }
 
     function bindEventsAjaxPagination() {
         if (!container) return;
@@ -423,29 +492,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const targetUrl = this.getAttribute('href');
                 if (!targetUrl) return;
 
-                container.style.opacity = '0.4';
-
-                fetch(targetUrl)
-                    .then(response => response.text())
-                    .then(htmlText => {
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(htmlText, 'text/html');
-                        const newContent = doc.getElementById('ajaxEventsContainer');
-
-                        if (newContent) {
-                            container.innerHTML = newContent.innerHTML;
-                            history.pushState({}, '', targetUrl);
-                            bindEventsAjaxPagination();
-                            document.getElementById('eventsGridCanvas').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                    })
-                    .catch(err => {
-                        console.error('AJAX Pagination error:', err);
-                        window.location.href = targetUrl;
-                    })
-                    .finally(() => {
-                        container.style.opacity = '1';
-                    });
+                fetchFilteredEvents(targetUrl, true);
+                document.getElementById('eventsGridCanvas').scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
     }

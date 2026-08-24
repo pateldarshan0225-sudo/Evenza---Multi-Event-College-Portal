@@ -1,7 +1,7 @@
 <?php
 /**
  * Frontend/colleges.php
- * Ultra-Premium Partner Colleges Directory for Evenza (Bespoke Executive Design)
+ * Ultra-Premium Partner Colleges Directory for Evenza (with Live Debounced AJAX Search & Pagination)
  */
 $page_title = "Partner Colleges";
 include 'connection.php';
@@ -351,7 +351,7 @@ include 'Header.php';
                 <div class="col-12 col-md-6">
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-search"></i></span>
-                        <input type="text" class="form-control" name="search" autocomplete="off" value="<?= htmlspecialchars((string)($_GET['search'] ?? '')) ?>" placeholder="Search college name, location, or email...">
+                        <input type="text" class="form-control" name="search" autocomplete="off" value="<?= htmlspecialchars((string)($_GET['search'] ?? '')) ?>" placeholder="Type to search college name, city, or email...">
                     </div>
                 </div>
                 <div class="col-12 col-md-4">
@@ -485,10 +485,79 @@ include 'Header.php';
     </div>
 </section>
 
-<!-- SEAMLESS AJAX PAGINATION SCRIPT -->
+<!-- SEAMLESS LIVE REAL-TIME AJAX SEARCH & PAGINATION SCRIPT -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const container = document.getElementById('ajaxCollegesContainer');
+    const filterForm = document.getElementById('collegesFilterForm');
+    const searchInput = filterForm ? filterForm.querySelector('input[name="search"]') : null;
+    const universitySelect = filterForm ? filterForm.querySelector('select[name="university"]') : null;
+
+    let debounceTimer = null;
+
+    function fetchFilteredColleges(url, pushHistory = true) {
+        if (!container) return;
+        container.style.opacity = '0.4';
+
+        fetch(url)
+            .then(response => response.text())
+            .then(htmlText => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+                const newContent = doc.getElementById('ajaxCollegesContainer');
+
+                if (newContent) {
+                    container.innerHTML = newContent.innerHTML;
+                    if (pushHistory) {
+                        history.replaceState({}, '', url);
+                    }
+                    bindAjaxPagination();
+                }
+            })
+            .catch(err => console.error('Live Search AJAX error:', err))
+            .finally(() => {
+                container.style.opacity = '1';
+            });
+    }
+
+    function triggerLiveSearch() {
+        if (!filterForm) return;
+        const formData = new FormData(filterForm);
+        const searchParams = new URLSearchParams();
+        
+        for (const [key, value] of formData.entries()) {
+            if (value && value !== 'all') {
+                searchParams.set(key, value);
+            }
+        }
+        searchParams.set('page', '1');
+
+        const targetUrl = 'colleges.php?' + searchParams.toString();
+        fetchFilteredColleges(targetUrl, true);
+    }
+
+    // Live debounced search on typing (250ms)
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(triggerLiveSearch, 250);
+        });
+    }
+
+    // Live filter on university select dropdown change
+    if (universitySelect) {
+        universitySelect.addEventListener('change', function () {
+            triggerLiveSearch();
+        });
+    }
+
+    // Prevent full-page form submit on Enter key
+    if (filterForm) {
+        filterForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            triggerLiveSearch();
+        });
+    }
 
     function bindAjaxPagination() {
         if (!container) return;
@@ -502,34 +571,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const targetUrl = this.getAttribute('href');
                 if (!targetUrl) return;
 
-                // Set subtle loading opacity
-                container.style.opacity = '0.4';
-
-                fetch(targetUrl)
-                    .then(response => response.text())
-                    .then(htmlText => {
-                        const parser = new DOMParser();
-                        const doc = parser.parseFromString(htmlText, 'text/html');
-                        const newContent = doc.getElementById('ajaxCollegesContainer');
-
-                        if (newContent) {
-                            container.innerHTML = newContent.innerHTML;
-                            history.pushState({}, '', targetUrl);
-                            
-                            // Re-bind click handlers to newly loaded pagination buttons
-                            bindAjaxPagination();
-
-                            // Smooth scroll to top of colleges grid
-                            document.getElementById('collegesGridCanvas').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                    })
-                    .catch(err => {
-                        console.error('AJAX Pagination error:', err);
-                        window.location.href = targetUrl; // Fallback to normal navigation
-                    })
-                    .finally(() => {
-                        container.style.opacity = '1';
-                    });
+                fetchFilteredColleges(targetUrl, true);
+                document.getElementById('collegesGridCanvas').scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
     }
