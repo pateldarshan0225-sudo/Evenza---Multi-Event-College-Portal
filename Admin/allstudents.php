@@ -342,7 +342,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
                     'enrollment_no'        => trim($_POST['enrollment_no']),
                     'name'                 => trim($_POST['name']),
                     'email'                => trim($_POST['email']),
-                    'password'             => password_hash($_POST['password'], PASSWORD_DEFAULT),
+                    'password'             => trim($_POST['password']),
                     'phone'                => trim($_POST['phone']) !== '' ? trim($_POST['phone']) : null,
                     'gender'               => trim($_POST['gender']) !== '' ? trim($_POST['gender']) : null,
                     'semester'             => trim($_POST['semester']) !== '' ? trim($_POST['semester']) : null,
@@ -420,7 +420,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
                 ];
 
                 if (trim($_POST['password'] ?? '') !== '') {
-                    $params['password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
+                    $params['password'] = trim($_POST['password']);
                 }
 
                 $stmt->execute($params);
