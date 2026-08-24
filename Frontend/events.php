@@ -39,8 +39,8 @@ if (!empty($_GET['college']) && $_GET['college'] !== 'all') {
 
 $whereClause = implode(' AND ', $where);
 
-// PAGINATION LOGIC (9 events per page)
-$limit = 9;
+// PAGINATION LOGIC (Default 6 events per page)
+$limit = 6;
 $page  = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
 $page  = max(1, $page);
 
@@ -61,7 +61,7 @@ if ($page > $total_pages) {
 }
 $offset = ($page - 1) * $limit;
 
-// Fetch Paginated Events
+// Fetch Paginated Events (Newest / Latest Events First)
 $sql = "
     SELECT e.*, c.name AS category_name, col.name AS college_name
     FROM events e
