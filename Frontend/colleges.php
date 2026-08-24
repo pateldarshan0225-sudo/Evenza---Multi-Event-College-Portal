@@ -1,7 +1,7 @@
 <?php
 /**
  * Frontend/colleges.php
- * Ultra-Premium Partner Colleges Directory for Evenza (with Seamless AJAX 6-Card Pagination)
+ * Ultra-Premium Partner Colleges Directory for Evenza (Bespoke Executive Design)
  */
 $page_title = "Partner Colleges";
 include 'connection.php';
@@ -96,47 +96,88 @@ include 'Header.php';
         --color-gold-accent: #ffd13b;
     }
 
-    /* HERO & SEARCH BAR STYLING */
+    /* HERO & BESPOKE SEARCH CAPSULE STYLING */
     .colleges-hero-section {
         background-color: #fffdf7;
-        padding: 52px 0 44px 0;
+        padding: 56px 0 48px 0;
         position: relative;
     }
 
-    .search-filter-card-glass {
+    .hero-kpi-pill-badge {
         background: #ffffff;
-        border-radius: 28px;
-        padding: 14px 20px;
-        border: 1.5px solid #e2e8f0;
-        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.04);
-        transition: all 0.25s ease;
+        border: 1.5px solid #14171a;
+        box-shadow: 3px 3px 0px #ffd13b;
+        color: #14171a;
+        font-weight: 800;
+        font-size: 11px;
+        padding: 6px 16px;
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
     }
 
-    .search-filter-card-glass:focus-within {
+    .search-filter-capsule-luxury {
+        background: #ffffff;
+        border-radius: 9999px;
+        padding: 10px 14px 10px 24px;
+        border: 2px solid #14171a;
+        box-shadow: 6px 6px 0px #14171a;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .search-filter-capsule-luxury:focus-within,
+    .search-filter-capsule-luxury:hover {
+        box-shadow: 8px 8px 0px #ffd13b;
         border-color: #14171a;
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.07);
     }
 
-    .search-filter-card-glass input.form-control,
-    .search-filter-card-glass select.form-select {
+    .search-filter-capsule-luxury input.form-control,
+    .search-filter-capsule-luxury select.form-select {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+        font-size: 13px;
+        color: #14171a;
+    }
+
+    .search-filter-capsule-luxury input.form-control:focus,
+    .search-filter-capsule-luxury select.form-select:focus {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
         outline: none !important;
     }
 
-    .search-filter-card-glass input.form-control:focus,
-    .search-filter-card-glass select.form-select:focus {
+    .search-filter-capsule-luxury .input-group-text {
         background: transparent !important;
         border: none !important;
         box-shadow: none !important;
-        outline: none !important;
+        color: #14171a;
+        font-size: 15px;
     }
 
-    .search-filter-card-glass .input-group-text {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
+    .btn-search-capsule-dark {
+        background: #14171a;
+        color: #ffffff;
+        border-radius: 9999px;
+        font-size: 12px;
+        font-weight: 800;
+        padding: 10px 24px;
+        border: 1.5px solid #14171a;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .btn-search-capsule-dark:hover {
+        background: #ffd13b;
+        color: #14171a;
+        border-color: #14171a;
     }
 
     /* CANVAS GRID SECTION */
@@ -201,7 +242,7 @@ include 'Header.php';
         display: inline-flex;
         align-items: center;
         gap: 5px;
-        max-width: 100%;
+        max-width: 190px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -223,7 +264,7 @@ include 'Header.php';
         font-weight: 800;
         padding: 5px 14px;
         border-radius: 9999px;
-        border: 1px solid #14171a;
+        border: 1.5px solid #14171a;
     }
 
     /* BESPOKE PAGINATION CONTROLS */
@@ -295,34 +336,39 @@ include 'Header.php';
 <section class="colleges-hero-section">
     <div class="container-xl">
         <div class="text-center mb-4">
-            <span class="badge bg-warning text-dark font-bold px-3.5 py-1.5 rounded-pill text-xs mb-2">
-                <i class="bi bi-bank2 me-1"></i> Accredited Campus Network
+            <span class="hero-kpi-pill-badge mb-3">
+                <i class="bi bi-bank2 text-warning"></i> 160+ Accredited Campuses • 85+ Live Fests
             </span>
             <h1 class="fw-black text-dark display-5 mb-2" style="letter-spacing: -1.5px;">Partner Colleges & Institutions</h1>
-            <p class="text-muted text-xs mx-auto" style="max-width: 560px;">
-                Discover accredited colleges hosting inter-college fests, technical hackathons, and national competitions on Evenza.
+            <p class="text-muted text-xs mx-auto" style="max-width: 580px;">
+                Explore accredited colleges hosting inter-college fests, technical hackathons, and national competitions on Evenza.
             </p>
         </div>
 
-        <!-- SEARCH & FILTER BAR -->
-        <div class="search-filter-card-glass mb-2">
-            <form method="GET" class="row g-3 align-items-center" id="collegesFilterForm">
+        <!-- BESPOKE LUXURY SEARCH & FILTER CAPSULE -->
+        <div class="search-filter-capsule-luxury mx-auto" style="max-width: 920px;">
+            <form method="GET" class="row g-2 align-items-center" id="collegesFilterForm">
                 <div class="col-12 col-md-6">
                     <div class="input-group">
-                        <span class="input-group-text bg-transparent border-0 ps-3 text-muted"><i class="bi bi-search"></i></span>
-                        <input type="text" class="form-control bg-transparent border-0 text-xs py-2" name="search" autocomplete="off" value="<?= htmlspecialchars((string)($_GET['search'] ?? '')) ?>" placeholder="Search college name, location, or email...">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control" name="search" autocomplete="off" value="<?= htmlspecialchars((string)($_GET['search'] ?? '')) ?>" placeholder="Search college name, location, or email...">
                     </div>
                 </div>
                 <div class="col-12 col-md-4">
-                    <select class="form-select rounded-pill text-xs bg-light border-0 px-3 py-2.5" name="university">
-                        <option value="all">All Affiliated Universities</option>
-                        <?php foreach ($universities as $u): ?>
-                            <option value="<?= htmlspecialchars((string)$u['name']) ?>" <?= (($_GET['university'] ?? '') === $u['name']) ? 'selected' : '' ?>><?= htmlspecialchars((string)$u['name']) ?></option>
-                        <?php endforeach; ?>
-                    </select>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-mortarboard-fill text-muted ms-2"></i>
+                        <select class="form-select text-xs py-2" name="university">
+                            <option value="all">All Affiliated Universities</option>
+                            <?php foreach ($universities as $u): ?>
+                                <option value="<?= htmlspecialchars((string)$u['name']) ?>" <?= (($_GET['university'] ?? '') === $u['name']) ? 'selected' : '' ?>><?= htmlspecialchars((string)$u['name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                 </div>
-                <div class="col-12 col-md-2 d-grid">
-                    <button type="submit" class="btn-capsule-dark justify-content-center py-2.5 text-xs font-bold">Filter Colleges</button>
+                <div class="col-12 col-md-2 text-end">
+                    <button type="submit" class="btn-search-capsule-dark w-100">
+                        Filter <i class="bi bi-arrow-right"></i>
+                    </button>
                 </div>
             </form>
         </div>
