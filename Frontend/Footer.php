@@ -32,8 +32,8 @@
                     <ul class="list-unstyled text-xs d-flex flex-column gap-2 mb-0">
                         <li><a href="login.php" class="text-secondary text-decoration-none hover-white">Student Portal</a></li>
                         <li><a href="login.php" class="text-secondary text-decoration-none hover-white">Organizer Portal</a></li>
-                        <li><a href="login.php" class="text-secondary text-decoration-none hover-white">Administrator Portal</a></li>
                         <li><a href="register.php" class="text-secondary text-decoration-none hover-white">Student Registration</a></li>
+                        <li><a href="register_college.php" class="text-secondary text-decoration-none hover-white">College Registration</a></li>
                     </ul>
                 </div>
 

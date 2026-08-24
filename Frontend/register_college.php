@@ -1,110 +1,112 @@
 <?php
 /**
- * Frontend/register.php
- * Ultra-Premium Student Registration Gateway (With Exact Search University & Search College UI)
+ * Frontend/register_college.php
+ * Ultra-Premium College / Campus Event Organizer Registration Gateway
  */
-$page_title = "Student Registration Gateway";
+$page_title = "College & Campus Organizer Registration";
 include 'connection.php';
 include_once 'frontend_auth.php';
 
-if ($is_logged_in && $user_role === 'student') {
-    header('Location: ../Student/Dashboard.php');
+if ($is_logged_in && ($user_role === 'organizer' || $user_role === 'college')) {
+    header('Location: ../Organizer/Dashboard.php');
     exit;
 }
 
 $errors = [];
 $success = false;
 
-// Fetch Universities & Colleges with Mapping
+// Fetch Universities for Searchable Selector
 $universities = $pdo->query("SELECT university_id, name FROM universities ORDER BY name ASC")->fetchAll();
-$colleges     = $pdo->query("
-    SELECT c.college_id, c.university_id, c.name, u.name AS university_name 
-    FROM colleges c 
-    LEFT JOIN universities u ON c.university_id = u.university_id 
-    WHERE c.status = 'active' 
-    ORDER BY c.name ASC
-")->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $university_id = filter_input(INPUT_POST, 'university_id', FILTER_VALIDATE_INT);
-    $college_id    = filter_input(INPUT_POST, 'college_id', FILTER_VALIDATE_INT);
-    $enrollment_no = trim($_POST['enrollment_no'] ?? '');
     $name          = trim($_POST['name'] ?? '');
     $email         = trim($_POST['email'] ?? '');
-    $password      = $_POST['password'] ?? '';
     $phone         = trim($_POST['phone'] ?? '');
-    $gender        = $_POST['gender'] ?? 'male';
-    $semester      = (int)($_POST['semester'] ?? 1);
+    $password      = $_POST['password'] ?? '';
+    
+    // College Logo File Processing
+    $logo_filename = 'default_college.png';
+    if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
+        $fileTmpPath   = $_FILES['logo']['tmp_name'];
+        $fileName      = $_FILES['logo']['name'];
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'svg'];
+
+        if (in_array($fileExtension, $allowedExtensions)) {
+            $newFileName = 'college_' . time() . '_' . rand(1000, 9999) . '.' . $fileExtension;
+            $uploadFileDir = '../uploads/colleges/';
+            if (!is_dir($uploadFileDir)) {
+                mkdir($uploadFileDir, 0755, true);
+            }
+            $dest_path = $uploadFileDir . $newFileName;
+            if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                $logo_filename = $newFileName;
+            }
+        } else {
+            $errors['logo'] = 'Invalid image format. Allowed: JPG, PNG, WEBP, SVG.';
+        }
+    }
 
     // Validation
     if (!$university_id) $errors['university_id'] = 'Please select your university.';
-    if (!$college_id) $errors['college_id'] = 'Please select your college.';
-    if ($enrollment_no === '') {
-        $errors['enrollment_no'] = 'Enrollment / Roll number is required.';
-    } elseif (strlen($enrollment_no) < 3) {
-        $errors['enrollment_no'] = 'Enrollment number must be at least 3 characters.';
-    }
-    
     if ($name === '') {
-        $errors['name'] = 'Full name is required.';
-    } elseif (strlen($name) < 2) {
-        $errors['name'] = 'Full name must be at least 2 characters.';
+        $errors['name'] = 'College / Institution name is required.';
+    } elseif (strlen($name) < 3) {
+        $errors['name'] = 'College name must be at least 3 characters.';
     }
 
     if ($email === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $errors['email'] = 'Valid email address is required.';
-    }
-
-    if ($password === '') {
-        $errors['password'] = 'Password is required.';
-    } elseif (strlen($password) < 6) {
-        $errors['password'] = 'Password must be at least 6 characters.';
+        $errors['email'] = 'Valid institutional email address is required.';
     }
 
     if ($phone === '') {
-        $errors['phone'] = 'Phone number is required.';
+        $errors['phone'] = 'Official contact phone number is required.';
     } elseif (!preg_match('/^[0-9+\-\s()]{10,15}$/', $phone)) {
         $errors['phone'] = 'Please enter a valid 10-digit phone number.';
     }
 
-    // Email Uniqueness Check
+    if ($password === '') {
+        $errors['password'] = 'Account password is required.';
+    } elseif (strlen($password) < 6) {
+        $errors['password'] = 'Password must be at least 6 characters.';
+    }
+
+    // Uniqueness Checks for College Name and Email
     if (empty($errors)) {
-        $chk = $pdo->prepare("SELECT student_id FROM students WHERE email = :email LIMIT 1");
+        $chk = $pdo->prepare("SELECT college_id FROM colleges WHERE email = :email LIMIT 1");
         $chk->execute(['email' => $email]);
         if ($chk->fetch()) {
-            $errors['email'] = 'An account with this email address already exists. Please login instead.';
+            $errors['email'] = 'An institution account with this email address already exists.';
         }
     }
 
     if (empty($errors)) {
         try {
             $stmt = $pdo->prepare("
-                INSERT INTO students (college_id, enrollment_no, name, email, password, phone, gender, semester, verification_status, account_status, created_at, updated_at)
-                VALUES (:cid, :eno, :name, :email, :pass, :phone, :gender, :sem, 'verified', 'active', NOW(), NOW())
+                INSERT INTO colleges (university_id, name, email, phone, logo, status, password, created_at, updated_at)
+                VALUES (:uid, :name, :email, :phone, :logo, 'active', :pass, NOW(), NOW())
             ");
             $stmt->execute([
-                'cid'      => $college_id,
-                'eno'      => $enrollment_no,
-                'name'     => $name,
-                'email'    => $email,
-                'pass'     => $password,
-                'phone'    => $phone,
-                'gender'   => $gender,
-                'sem'      => $semester
+                'uid'   => $university_id,
+                'name'  => $name,
+                'email' => $email,
+                'phone' => $phone,
+                'logo'  => $logo_filename,
+                'pass'  => $password
             ]);
 
             $new_id = $pdo->lastInsertId();
-            $_SESSION['student_id']        = $new_id;
-            $_SESSION['student_name']      = $name;
-            $_SESSION['student_email']     = $email;
-            $_SESSION['college_id']        = $college_id;
-            $_SESSION['student_college_id'] = $college_id;
-            $_SESSION['student_logged_in']  = true;
+            $_SESSION['college_id']            = $new_id;
+            $_SESSION['college_name']          = $name;
+            $_SESSION['college_email']         = $email;
+            $_SESSION['college_logo']          = $logo_filename;
+            $_SESSION['organizer_logged_in']   = true;
 
-            header('Location: ../Student/Dashboard.php');
+            header('Location: ../Organizer/Dashboard.php');
             exit;
         } catch (PDOException $e) {
-            $errors['general'] = 'Error registering account: ' . $e->getMessage();
+            $errors['general'] = 'Error registering college account: ' . $e->getMessage();
         }
     }
 }
@@ -232,12 +234,7 @@ include 'Header.php';
         color: #14171a;
     }
 
-    .searchable-select-item.no-results {
-        color: #9ca3af;
-        cursor: default;
-    }
-
-    .form-control-luxury, .form-select-luxury {
+    .form-control-luxury {
         background: #ffffff;
         border: 1.5px solid #e5e7eb;
         border-radius: 18px;
@@ -254,7 +251,7 @@ include 'Header.php';
         font-weight: 400;
     }
 
-    .form-control-luxury:focus, .form-select-luxury:focus {
+    .form-control-luxury:focus {
         border-color: #14171a;
         box-shadow: 0 0 0 3px rgba(20, 23, 26, 0.08);
         outline: none;
@@ -331,63 +328,63 @@ include 'Header.php';
     <div class="container-xl">
         <div class="row g-5 align-items-center justify-content-center">
 
-            <!-- LEFT COLUMN: ECOSYSTEM BRAND HIGHLIGHTS -->
+            <!-- LEFT COLUMN: COLLEGE ORGANIZER BRAND HIGHLIGHTS -->
             <div class="col-12 col-lg-5">
                 <span class="register-pill-badge mb-3">
-                    <i class="bi bi-mortarboard-fill text-warning"></i> Student Competitor Access
+                    <i class="bi bi-building-fill text-warning"></i> Campus Event Organizer Gateway
                 </span>
                 <h1 class="fw-black text-dark display-6 mb-3" style="letter-spacing: -1px; line-height: 1.15;">
-                    Create Your Verified Student Profile
+                    Register Your College & Host Inter-College Events
                 </h1>
                 <p class="text-muted leading-relaxed text-sm mb-4">
-                    Join 250+ accredited universities and partner institutions. Register once to claim digital venue entry passes, create hackathon squad teams, and compete across top campus festivals.
+                    Connect your institution to the Evenza network. Publish technical hackathons, cultural festivals, sports leagues, and verify student competitor entry passes instantly.
                 </p>
 
                 <!-- 3 ECOSYSTEM PILLAR CARDS -->
                 <div class="eco-pillar-card">
-                    <div class="eco-pillar-icon"><i class="bi bi-qr-code-scan"></i></div>
+                    <div class="eco-pillar-icon"><i class="bi bi-calendar-event-fill"></i></div>
                     <div>
-                        <div class="fw-black text-dark text-xs mb-0">Instant QR Venue Entry Passes</div>
-                        <small class="text-muted" style="font-size: 11px;">Verified digital tickets generated upon registration</small>
+                        <div class="fw-black text-dark text-xs mb-0">Publish & Manage Events</div>
+                        <small class="text-muted" style="font-size: 11px;">Create competitions with custom categories and rules</small>
                     </div>
                 </div>
 
                 <div class="eco-pillar-card">
-                    <div class="eco-pillar-icon"><i class="bi bi-people-fill"></i></div>
+                    <div class="eco-pillar-icon"><i class="bi bi-qr-code"></i></div>
                     <div>
-                        <div class="fw-black text-dark text-xs mb-0">Multi-Member Squad Rosters</div>
-                        <small class="text-muted" style="font-size: 11px;">Generate team codes & invite campus squad mates</small>
+                        <div class="fw-black text-dark text-xs mb-0">Digital Pass Check-in System</div>
+                        <small class="text-muted" style="font-size: 11px;">Scan QR codes at event venues to verify student entry</small>
                     </div>
                 </div>
 
                 <div class="eco-pillar-card">
-                    <div class="eco-pillar-icon"><i class="bi bi-shield-check"></i></div>
+                    <div class="eco-pillar-icon"><i class="bi bi-graph-up-arrow"></i></div>
                     <div>
-                        <div class="fw-black text-dark text-xs mb-0">Single Sign-On Integration</div>
-                        <small class="text-muted" style="font-size: 11px;">Access student competitor dashboard instantly</small>
+                        <div class="fw-black text-dark text-xs mb-0">Real-Time Registration Analytics</div>
+                        <small class="text-muted" style="font-size: 11px;">Track total sign-ups, entry pass check-ins, and revenue</small>
                     </div>
                 </div>
 
                 <div class="p-3 bg-white rounded-4 border border-dark d-flex align-items-center gap-3 shadow-sm mt-4">
-                    <i class="bi bi-lock-fill text-success fs-4"></i>
+                    <i class="bi bi-award-fill text-warning fs-4"></i>
                     <div>
-                        <div class="fw-bold text-dark text-xs">256-Bit SSL Encrypted Gateway</div>
-                        <small class="text-muted" style="font-size: 11px;">Your institutional data is protected under FERPA & privacy protocols</small>
+                        <div class="fw-bold text-dark text-xs">Verified Institution Badge</div>
+                        <small class="text-muted" style="font-size: 11px;">Accredited colleges receive official verified organizer status</small>
                     </div>
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: LUXURY REGISTRATION FORM MATCHING USER REFERENCE IMAGE -->
+            <!-- RIGHT COLUMN: LUXURY COLLEGE REGISTRATION FORM -->
             <div class="col-12 col-lg-7">
                 <div class="register-card-bespoke">
                     
                     <div class="d-flex align-items-center justify-content-between mb-4 border-bottom pb-3">
                         <div>
-                            <h3 class="fw-black text-dark fs-4 mb-0" style="letter-spacing: -0.5px;">Student Profile Registration</h3>
-                            <p class="text-muted text-xs mb-0">Select your university & college to connect your student account</p>
+                            <h3 class="fw-black text-dark fs-4 mb-0" style="letter-spacing: -0.5px;">College Registration</h3>
+                            <p class="text-muted text-xs mb-0">Select university affiliation & enter institutional details</p>
                         </div>
                         <span class="badge bg-warning text-dark font-bold px-3 py-1.5 rounded-pill text-xs border border-dark">
-                            Step 1 of 1
+                            Organizer Account
                         </span>
                     </div>
 
@@ -397,7 +394,7 @@ include 'Header.php';
                         </div>
                     <?php endif; ?>
 
-                    <form method="POST" id="studentRegisterForm" novalidate>
+                    <form method="POST" id="collegeRegisterForm" enctype="multipart/form-data" novalidate>
                         <div class="row g-4">
 
                             <!-- 1. SEARCH UNIVERSITY (EXACT REFERENCE UI WITH LIVE CHAR-BY-CHAR SEARCH) -->
@@ -431,85 +428,43 @@ include 'Header.php';
                                 </div>
                             </div>
 
-                            <!-- 2. SEARCH COLLEGE (EXACT REFERENCE UI - CASCADING DEPENDENT WITH LIVE CHAR-BY-CHAR SEARCH) -->
+                            <!-- 2. COLLEGE / INSTITUTION NAME -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
-                                    <label class="form-label-clean">COLLEGE *</label>
-                                    <div class="searchable-select-wrapper" id="collegeWrapper">
-                                        <input type="text" 
-                                               id="collegeInput" 
-                                               class="searchable-select-input <?= isset($errors['college_id']) ? 'is-invalid' : '' ?>" 
-                                               placeholder="Search college..." 
-                                               autocomplete="off"
-                                               onfocus="openDropdown('college')" 
-                                               onclick="openDropdown('college')"
-                                               oninput="openDropdown('college'); filterDropdown('college');"
-                                               onkeyup="openDropdown('college'); filterDropdown('college');">
-                                        <i class="bi bi-caret-down-fill select-caret-icon"></i>
-                                        <input type="hidden" name="college_id" id="collegeSelect" value="<?= htmlspecialchars((string)($_POST['college_id'] ?? '')) ?>" required>
-
-                                        <div class="searchable-select-dropdown" id="collegeDropdown">
-                                            <?php foreach ($colleges as $c): ?>
-                                                <div class="searchable-select-item college-item" data-value="<?= $c['college_id'] ?>" data-univ="<?= $c['university_id'] ?>" onclick="selectCollege(<?= $c['college_id'] ?>, '<?= htmlspecialchars(addslashes($c['name'])) ?>')">
-                                                    <?= htmlspecialchars((string)$c['name']) ?>
-                                                </div>
-                                            <?php endforeach; ?>
-                                        </div>
-                                    </div>
-                                    <div class="invalid-feedback-bespoke" id="err_college_id" style="<?= isset($errors['college_id']) ? 'display:flex;' : 'display:none;' ?>">
-                                        <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['college_id'] ?? 'Please select your college.') ?>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 3. ENROLLMENT / ROLL NO -->
-                            <div class="col-12 col-md-6">
-                                <div class="register-input-group">
-                                    <label class="form-label-clean">ENROLLMENT / ROLL NO *</label>
-                                    <input type="text" class="form-control-luxury <?= isset($errors['enrollment_no']) ? 'is-invalid' : '' ?>" name="enrollment_no" id="enrollment_no" value="<?= htmlspecialchars((string)($_POST['enrollment_no'] ?? '')) ?>" placeholder="e.g. STU-100-1" oninput="validateField('enrollment_no')" required>
-                                    <div class="invalid-feedback-bespoke" id="err_enrollment_no" style="<?= isset($errors['enrollment_no']) ? 'display:flex;' : 'display:none;' ?>">
-                                        <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['enrollment_no'] ?? 'Enrollment number is required.') ?>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- 4. FULL NAME -->
-                            <div class="col-12 col-md-6">
-                                <div class="register-input-group">
-                                    <label class="form-label-clean">FULL NAME *</label>
-                                    <input type="text" class="form-control-luxury <?= isset($errors['name']) ? 'is-invalid' : '' ?>" name="name" id="name" value="<?= htmlspecialchars((string)($_POST['name'] ?? '')) ?>" placeholder="Your full legal name" oninput="validateField('name')" required>
+                                    <label class="form-label-clean">COLLEGE / INSTITUTION NAME *</label>
+                                    <input type="text" class="form-control-luxury <?= isset($errors['name']) ? 'is-invalid' : '' ?>" name="name" id="name" value="<?= htmlspecialchars((string)($_POST['name'] ?? '')) ?>" placeholder="e.g. Stanford College of Engineering" oninput="validateField('name')" required>
                                     <div class="invalid-feedback-bespoke" id="err_name" style="<?= isset($errors['name']) ? 'display:flex;' : 'display:none;' ?>">
-                                        <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['name'] ?? 'Full name is required.') ?>
+                                        <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['name'] ?? 'College name is required.') ?>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 5. EMAIL ADDRESS -->
+                            <!-- 3. OFFICIAL EMAIL ADDRESS -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
-                                    <label class="form-label-clean">EMAIL ADDRESS *</label>
-                                    <input type="email" class="form-control-luxury <?= isset($errors['email']) ? 'is-invalid' : '' ?>" name="email" id="email" value="<?= htmlspecialchars((string)($_POST['email'] ?? '')) ?>" placeholder="student@college.edu" oninput="validateField('email')" required>
+                                    <label class="form-label-clean">OFFICIAL EMAIL ADDRESS *</label>
+                                    <input type="email" class="form-control-luxury <?= isset($errors['email']) ? 'is-invalid' : '' ?>" name="email" id="email" value="<?= htmlspecialchars((string)($_POST['email'] ?? '')) ?>" placeholder="events@college.edu" oninput="validateField('email')" required>
                                     <div class="invalid-feedback-bespoke" id="err_email" style="<?= isset($errors['email']) ? 'display:flex;' : 'display:none;' ?>">
-                                        <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['email'] ?? 'Valid email address is required.') ?>
+                                        <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['email'] ?? 'Valid official email address is required.') ?>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 6. PHONE NUMBER -->
+                            <!-- 4. OFFICIAL PHONE NUMBER -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
-                                    <label class="form-label-clean">PHONE NUMBER *</label>
-                                    <input type="tel" class="form-control-luxury <?= isset($errors['phone']) ? 'is-invalid' : '' ?>" name="phone" id="phone" value="<?= htmlspecialchars((string)($_POST['phone'] ?? '')) ?>" placeholder="10-digit phone number" oninput="validateField('phone')" required>
+                                    <label class="form-label-clean">OFFICIAL PHONE NUMBER *</label>
+                                    <input type="tel" class="form-control-luxury <?= isset($errors['phone']) ? 'is-invalid' : '' ?>" name="phone" id="phone" value="<?= htmlspecialchars((string)($_POST['phone'] ?? '')) ?>" placeholder="10-digit phone / landline" oninput="validateField('phone')" required>
                                     <div class="invalid-feedback-bespoke" id="err_phone" style="<?= isset($errors['phone']) ? 'display:flex;' : 'display:none;' ?>">
                                         <i class="bi bi-x-circle-fill"></i> <?= htmlspecialchars($errors['phone'] ?? 'Valid 10-digit phone number required.') ?>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- 7. PASSWORD WITH EYE TOGGLE & STRENGTH BAR -->
+                            <!-- 5. PASSWORD WITH EYE TOGGLE & STRENGTH BAR -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group position-relative">
-                                    <label class="form-label-clean">PASSWORD *</label>
+                                    <label class="form-label-clean">ACCOUNT PASSWORD *</label>
                                     <input type="password" class="form-control-luxury <?= isset($errors['password']) ? 'is-invalid' : '' ?>" name="password" id="registerPassword" placeholder="Min 6 characters" oninput="checkPasswordStrength()" required>
                                     <button type="button" class="btn-eye-toggle" onclick="toggleRegisterPassword()">
                                         <i class="bi bi-eye" id="eyeIcon"></i>
@@ -523,25 +478,12 @@ include 'Header.php';
                                 </div>
                             </div>
 
-                            <!-- 8. GENDER & SEMESTER -->
-                            <div class="col-12 col-md-3">
+                            <!-- 6. COLLEGE LOGO UPLOAD -->
+                            <div class="col-12 col-md-6">
                                 <div class="register-input-group">
-                                    <label class="form-label-clean">GENDER *</label>
-                                    <select class="form-select-luxury" name="gender" id="gender" required>
-                                        <option value="male" <?= (isset($_POST['gender']) && $_POST['gender'] === 'male') ? 'selected' : '' ?>>Male</option>
-                                        <option value="female" <?= (isset($_POST['gender']) && $_POST['gender'] === 'female') ? 'selected' : '' ?>>Female</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-12 col-md-3">
-                                <div class="register-input-group">
-                                    <label class="form-label-clean">CURRENT SEMESTER *</label>
-                                    <select class="form-select-luxury" name="semester" id="semester" required>
-                                        <?php for ($i=1; $i<=8; $i++): ?>
-                                            <option value="<?= $i ?>" <?= (isset($_POST['semester']) && (int)$_POST['semester'] === $i) ? 'selected' : '' ?>>Semester <?= $i ?></option>
-                                        <?php endfor; ?>
-                                    </select>
+                                    <label class="form-label-clean">COLLEGE LOGO (OPTIONAL)</label>
+                                    <input type="file" class="form-control-luxury" name="logo" id="logo" accept="image/*">
+                                    <small class="text-muted" style="font-size: 11px;">JPG, PNG, WEBP, SVG up to 5MB</small>
                                 </div>
                             </div>
 
@@ -550,15 +492,15 @@ include 'Header.php';
                         <!-- SUBMIT BUTTON -->
                         <div class="pt-4">
                             <button type="submit" class="btn-capsule-dark w-100 justify-content-center py-3 fs-6">
-                                Register Student Account &rarr;
+                                Register College & Access Organizer Portal &rarr;
                             </button>
                         </div>
                     </form>
 
-                    <div class="mt-4 text-center text-xs text-muted pt-3 border-top d-flex justify-content-center gap-3 flex-wrap">
-                        <span>Already registered your profile? <a href="login.php" class="text-dark font-bold text-decoration-underline">Sign In Here</a></span>
+                    <div class="mt-4 text-center text-xs text-muted pt-3 border-top d-flex justify-content-center gap-3">
+                        <span>Already registered your college? <a href="login.php" class="text-dark font-bold text-decoration-underline">Sign In To Organizer Portal</a></span>
                         <span>&bull;</span>
-                        <span>Registering a College / Institution? <a href="register_college.php" class="text-dark font-bold text-decoration-underline">College Registration</a></span>
+                        <span>Student? <a href="register.php" class="text-dark font-bold text-decoration-underline">Register Student Profile</a></span>
                     </div>
 
                 </div>
@@ -570,18 +512,10 @@ include 'Header.php';
 
 <!-- CASCADING SEARCHABLE SELECT JAVASCRIPT -->
 <script>
-    let selectedUniversityId = null;
-
     function openDropdown(type) {
-        document.getElementById('universityDropdown').style.display = 'none';
-        document.getElementById('collegeDropdown').style.display = 'none';
-
         if (type === 'university') {
             document.getElementById('universityDropdown').style.display = 'block';
             filterDropdown('university');
-        } else if (type === 'college') {
-            document.getElementById('collegeDropdown').style.display = 'block';
-            filterDropdown('college');
         }
     }
 
@@ -617,84 +551,15 @@ include 'Header.php';
             } else if (noMatch) {
                 noMatch.style.display = 'none';
             }
-
-        } else if (type === 'college') {
-            const query = document.getElementById('collegeInput').value.toLowerCase().trim();
-            const items = document.querySelectorAll('#collegeDropdown .college-item');
-            const dropdown = document.getElementById('collegeDropdown');
-            dropdown.style.display = 'block';
-
-            let visibleCount = 0;
-            items.forEach(item => {
-                const text = item.innerText.toLowerCase();
-                const univId = item.getAttribute('data-univ');
-                const matchUniv = !selectedUniversityId || univId == selectedUniversityId;
-                const matchQuery = text.includes(query);
-
-                if (matchUniv && matchQuery) {
-                    item.style.display = 'block';
-                    visibleCount++;
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-
-            let noMatch = document.getElementById('noMatchCol');
-            if (visibleCount === 0) {
-                if (!noMatch) {
-                    noMatch = document.createElement('div');
-                    noMatch.id = 'noMatchCol';
-                    noMatch.className = 'searchable-select-item no-results opacity-70';
-                    noMatch.innerText = 'No matching college found';
-                    dropdown.appendChild(noMatch);
-                } else {
-                    noMatch.style.display = 'block';
-                }
-            } else if (noMatch) {
-                noMatch.style.display = 'none';
-            }
         }
     }
-
-    window.addEventListener('DOMContentLoaded', function() {
-        const selectedUnivId = document.getElementById('universitySelect').value;
-        if (selectedUnivId) {
-            const item = document.querySelector(`#universityDropdown .searchable-select-item[data-value="${selectedUnivId}"]`);
-            if (item) {
-                document.getElementById('universityInput').value = item.innerText.trim();
-                selectedUniversityId = selectedUnivId;
-            }
-        }
-
-        const selectedCollegeId = document.getElementById('collegeSelect').value;
-        if (selectedCollegeId) {
-            const item = document.querySelector(`#collegeDropdown .searchable-select-item[data-value="${selectedCollegeId}"]`);
-            if (item) {
-                document.getElementById('collegeInput').value = item.innerText.trim();
-            }
-        }
-    });
 
     function selectUniversity(id, name) {
         document.getElementById('universityInput').value = name;
         document.getElementById('universitySelect').value = id;
-        selectedUniversityId = id;
         document.getElementById('universityDropdown').style.display = 'none';
         document.getElementById('err_university_id').style.display = 'none';
         document.getElementById('universityInput').classList.remove('is-invalid');
-
-        // Reset college field and auto open college search
-        document.getElementById('collegeInput').value = '';
-        document.getElementById('collegeSelect').value = '';
-        openDropdown('college');
-    }
-
-    function selectCollege(id, name) {
-        document.getElementById('collegeInput').value = name;
-        document.getElementById('collegeSelect').value = id;
-        document.getElementById('collegeDropdown').style.display = 'none';
-        document.getElementById('err_college_id').style.display = 'none';
-        document.getElementById('collegeInput').classList.remove('is-invalid');
     }
 
     // Close dropdowns when clicking outside
@@ -702,10 +567,6 @@ include 'Header.php';
         if (!e.target.closest('#universityWrapper') && !e.target.closest('#universityDropdown')) {
             const univDropdown = document.getElementById('universityDropdown');
             if (univDropdown) univDropdown.style.display = 'none';
-        }
-        if (!e.target.closest('#collegeInput') && !e.target.closest('#collegeDropdown')) {
-            const collegeDropdown = document.getElementById('collegeDropdown');
-            if (collegeDropdown) collegeDropdown.style.display = 'none';
         }
     });
 
@@ -718,22 +579,16 @@ include 'Header.php';
         let isValid = true;
         let msg     = '';
 
-        if (fieldName === 'enrollment_no') {
+        if (fieldName === 'name') {
             if (field.value.trim() === '') {
-                isValid = false; msg = 'Enrollment / Roll number is required.';
+                isValid = false; msg = 'College name is required.';
             } else if (field.value.trim().length < 3) {
-                isValid = false; msg = 'Enrollment number must be at least 3 characters.';
-            }
-        } else if (fieldName === 'name') {
-            if (field.value.trim() === '') {
-                isValid = false; msg = 'Full name is required.';
-            } else if (field.value.trim().length < 2) {
-                isValid = false; msg = 'Full name must be at least 2 characters.';
+                isValid = false; msg = 'College name must be at least 3 characters.';
             }
         } else if (fieldName === 'email') {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (field.value.trim() === '') {
-                isValid = false; msg = 'Email address is required.';
+                isValid = false; msg = 'Official email address is required.';
             } else if (!emailRegex.test(field.value.trim())) {
                 isValid = false; msg = 'Please enter a valid email address.';
             }
@@ -793,6 +648,16 @@ include 'Header.php';
             err.style.display = 'none';
         }
     }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        const selectedUnivId = document.getElementById('universitySelect').value;
+        if (selectedUnivId) {
+            const item = document.querySelector(`#universityDropdown .searchable-select-item[data-value="${selectedUnivId}"]`);
+            if (item) {
+                document.getElementById('universityInput').value = item.innerText.trim();
+            }
+        }
+    });
 </script>
 
 <?php include 'Footer.php'; ?>
