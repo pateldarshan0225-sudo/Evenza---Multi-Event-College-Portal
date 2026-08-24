@@ -35,8 +35,8 @@ try {
    LOGO PATH
    ========================================================= */
 
-$LOGO_DIR = __DIR__ . '/assets/images/universities';
-$LOGO_WEB_PATH = 'assets/images/universities/';
+$LOGO_DIR = __DIR__ . '/../assets/images/universities';
+$LOGO_WEB_PATH = '../assets/images/universities/';
 
 /* =========================================================
    VALIDATION

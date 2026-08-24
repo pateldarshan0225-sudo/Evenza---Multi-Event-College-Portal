@@ -36,8 +36,8 @@ try {
     die('Database connection failed.');
 }
 
-$LOGO_DIR = __DIR__ . '/assets/images/colleges';
-$LOGO_WEB_PATH = 'assets/images/colleges/';
+$LOGO_DIR = __DIR__ . '/../assets/images/colleges';
+$LOGO_WEB_PATH = '../assets/images/colleges/';
 
 /* =========================================================
    VALIDATION HELPERS

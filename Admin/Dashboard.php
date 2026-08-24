@@ -1676,7 +1676,7 @@ $registration_goal = max(100, (int)($total_regs * 1.25));
 
             var html = '';
             displayList.forEach(function (r, index) {
-                var avatarSrc = r.avatar ? r.avatar : ('assets/images/user/avatar-' + ((index % 4) + 1) + '.jpg');
+                var avatarSrc = r.avatar ? r.avatar : ('../assets/images/user/avatar-' + ((index % 4) + 1) + '.jpg');
                 var title = r.participant_name;
                 var sub = r.event_title + ' • ' + r.college_name;
                 var regId = r.registration_id;
@@ -1837,13 +1837,13 @@ $registration_goal = max(100, (int)($total_regs * 1.25));
             regs.forEach(function (r) {
                 var st = r.status.toLowerCase();
                 var badgeClass = (st === 'approved' || st === 'confirmed') ? 'badge-success' : ((st === 'pending') ? 'badge-warning' : 'badge-danger');
-                var avatarSrc = r.avatar ? r.avatar : 'assets/images/user/avatar-1.jpg';
+                var avatarSrc = r.avatar ? r.avatar : '../assets/images/user/avatar-1.jpg';
 
                 regBody.innerHTML += `
                     <tr onclick="showRegDetails(${r.registration_id})">
                         <td class="ps-4">
                             <div class="d-flex align-items-center gap-3">
-                                <img class="rounded-circle" style="width: 36px; height: 36px; object-fit:cover; border:1px solid #e5e7eb;" src="${avatarSrc}" alt="avatar" onerror="this.src='assets/images/user/avatar-1.jpg'" />
+                                <img class="rounded-circle" style="width: 36px; height: 36px; object-fit:cover; border:1px solid #e5e7eb;" src="${avatarSrc}" alt="avatar" onerror="this.src='../assets/images/user/avatar-1.jpg'" />
                                 <div>
                                     <h6 class="mb-0 font-semibold text-dark" style="font-size:14px;">${r.participant_name}</h6>
                                     <span class="text-muted" style="font-size:12px;">REG#${r.registration_id} · ${r.registration_type}</span>
@@ -1915,7 +1915,7 @@ $registration_goal = max(100, (int)($total_regs * 1.25));
                 };
             }
 
-            var avatarSrc = reg.avatar ? reg.avatar : 'assets/images/user/avatar-1.jpg';
+            var avatarSrc = reg.avatar ? reg.avatar : '../assets/images/user/avatar-1.jpg';
             var st = (reg.status || 'approved').toLowerCase();
             var badgeClass = (st === 'approved' || st === 'confirmed') ? 'badge-success' : 'badge-warning';
 

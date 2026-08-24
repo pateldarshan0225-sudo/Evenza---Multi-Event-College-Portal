@@ -29,7 +29,7 @@ try {
     die('Database connection failed.');
 }
 
-$PHOTO_WEB_PATH = 'assets/images/user/';
+$PHOTO_WEB_PATH = '../assets/images/user/';
 
 /* =========================================================
    FETCH TEAM DETAILS
@@ -478,9 +478,9 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                             <?php 
                                 $leaderPhoto = !empty($team['leader_photo']) 
                                     ? $PHOTO_WEB_PATH . htmlspecialchars((string)$team['leader_photo']) 
-                                    : 'assets/images/user/avatar-1.jpg'; 
+                                    : '../assets/images/user/avatar-1.jpg'; 
                             ?>
-                            <img src="<?= $leaderPhoto ?>" class="leader-avatar" alt="Leader Photo" onerror="this.src='assets/images/user/avatar-1.jpg';" />
+                            <img src="<?= $leaderPhoto ?>" class="leader-avatar" alt="Leader Photo" onerror="this.src='../assets/images/user/avatar-1.jpg';" />
                             <div>
                                 <h4 class="mb-1 text-dark fw-bold"><?= htmlspecialchars((string)$team['leader_name']) ?></h4>
                                 <p class="mb-1 text-muted font-medium" style="font-size: 13px;"><strong>Enrollment:</strong> <?= htmlspecialchars((string)($team['leader_enrollment'] ?? 'N/A')) ?></p>
@@ -526,12 +526,12 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                                                 $isLeader = (int)$m['student_id'] === (int)$team['leader_id']; 
                                                 $photo = !empty($m['profile_photo']) 
                                                     ? $PHOTO_WEB_PATH . htmlspecialchars((string)$m['profile_photo']) 
-                                                    : 'assets/images/user/avatar-1.jpg';
+                                                    : '../assets/images/user/avatar-1.jpg';
                                             ?>
                                             <tr>
                                                 <td class="ps-4 font-semibold text-muted"><?= $index + 1 ?></td>
                                                 <td>
-                                                    <img src="<?= $photo ?>" class="member-avatar" alt="Member Photo" onerror="this.src='assets/images/user/avatar-1.jpg';" />
+                                                    <img src="<?= $photo ?>" class="member-avatar" alt="Member Photo" onerror="this.src='../assets/images/user/avatar-1.jpg';" />
                                                 </td>
                                                 <td class="fw-semibold text-dark"><?= htmlspecialchars((string)$m['name']) ?></td>
                                                 <td><?= htmlspecialchars((string)($m['enrollment_no'] ?? 'N/A')) ?></td>

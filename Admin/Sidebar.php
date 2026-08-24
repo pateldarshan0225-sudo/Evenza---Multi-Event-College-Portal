@@ -127,7 +127,7 @@ $admin_email  = $_SESSION['admin_email'] ?? 'admin@evenza.com';
     </div>
 
     <div class="dropdown">
-        <img src="assets/images/user/avatar-2.jpg" alt="Admin Avatar" class="berun-avatar-pill dropdown-toggle" data-bs-toggle="dropdown" onerror="this.src='https://ui-avatars.com/api/?name=<?php echo urlencode($admin_name); ?>&background=1c2024&color=ffd13b'" />
+        <img src="../assets/images/user/avatar-2.jpg" alt="Admin Avatar" class="berun-avatar-pill dropdown-toggle" data-bs-toggle="dropdown" onerror="this.src='https://ui-avatars.com/api/?name=<?php echo urlencode($admin_name); ?>&background=1c2024&color=ffd13b'" />
         <ul class="dropdown-menu shadow-sm border-0 rounded-4 p-2">
             <li class="px-3 py-2 border-bottom">
                 <span class="fw-bold text-dark d-block text-xs"><?php echo htmlspecialchars((string)$admin_name); ?></span>

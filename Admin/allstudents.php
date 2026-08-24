@@ -42,10 +42,10 @@ try {
     die('Database connection failed.');
 }
 
-$IDCARD_DIR      = __DIR__ . '/assets/images/students/idcards';
-$IDCARD_WEB_PATH = 'assets/images/students/idcards/';
-$PHOTO_DIR       = __DIR__ . '/assets/images/user';
-$PHOTO_WEB_PATH  = 'assets/images/user/';
+$IDCARD_DIR      = __DIR__ . '/../assets/images/students/idcards';
+$IDCARD_WEB_PATH = '../assets/images/students/idcards/';
+$PHOTO_DIR       = __DIR__ . '/../assets/images/user';
+$PHOTO_WEB_PATH  = '../assets/images/user/';
 
 /* =========================================================
    VALIDATION HELPERS

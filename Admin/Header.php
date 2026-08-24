@@ -59,7 +59,7 @@ $admin_name  = isset($_SESSION['admin_name'])
             <div class="dropdown-header flex items-center justify-between py-4 px-5 bg-primary-500">
               <div class="flex mb-1 items-center">
                 <div class="shrink-0">
-                  <img src="assets/images/user/avatar-2.jpg" alt="user-image" class="w-10 rounded-full" />
+                  <img src="../assets/images/user/avatar-2.jpg" alt="user-image" class="w-10 rounded-full" />
                 </div>
                 <div class="grow ms-3">
                   <h6 class="mb-1 text-white"><?php echo htmlspecialchars($admin_name); ?> 🖖</h6>
