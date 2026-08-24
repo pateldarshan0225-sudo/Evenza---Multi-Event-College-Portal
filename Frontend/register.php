@@ -400,18 +400,20 @@ include 'Header.php';
                     <form method="POST" id="studentRegisterForm" novalidate>
                         <div class="row g-4">
 
-                            <!-- 1. SEARCH UNIVERSITY (EXACT REFERENCE UI) -->
+                            <!-- 1. SEARCH UNIVERSITY (EXACT REFERENCE UI WITH LIVE CHAR-BY-CHAR SEARCH) -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
                                     <label class="form-label-clean">UNIVERSITY *</label>
-                                    <div class="searchable-select-wrapper">
+                                    <div class="searchable-select-wrapper" id="universityWrapper">
                                         <input type="text" 
                                                id="universityInput" 
                                                class="searchable-select-input <?= isset($errors['university_id']) ? 'is-invalid' : '' ?>" 
                                                placeholder="Search university..." 
                                                autocomplete="off"
                                                onfocus="openDropdown('university')" 
-                                               oninput="filterDropdown('university')">
+                                               onclick="openDropdown('university')"
+                                               oninput="openDropdown('university'); filterDropdown('university');"
+                                               onkeyup="openDropdown('university'); filterDropdown('university');">
                                         <i class="bi bi-caret-down-fill select-caret-icon"></i>
                                         <input type="hidden" name="university_id" id="universitySelect" value="<?= htmlspecialchars((string)($_POST['university_id'] ?? '')) ?>" required>
 
@@ -429,18 +431,20 @@ include 'Header.php';
                                 </div>
                             </div>
 
-                            <!-- 2. SEARCH COLLEGE (EXACT REFERENCE UI - CASCADING DEPENDENT) -->
+                            <!-- 2. SEARCH COLLEGE (EXACT REFERENCE UI - CASCADING DEPENDENT WITH LIVE CHAR-BY-CHAR SEARCH) -->
                             <div class="col-12 col-md-6">
                                 <div class="register-input-group">
                                     <label class="form-label-clean">COLLEGE *</label>
-                                    <div class="searchable-select-wrapper">
+                                    <div class="searchable-select-wrapper" id="collegeWrapper">
                                         <input type="text" 
                                                id="collegeInput" 
                                                class="searchable-select-input <?= isset($errors['college_id']) ? 'is-invalid' : '' ?>" 
                                                placeholder="Search college..." 
                                                autocomplete="off"
                                                onfocus="openDropdown('college')" 
-                                               oninput="filterDropdown('college')">
+                                               onclick="openDropdown('college')"
+                                               oninput="openDropdown('college'); filterDropdown('college');"
+                                               onkeyup="openDropdown('college'); filterDropdown('college');">
                                         <i class="bi bi-caret-down-fill select-caret-icon"></i>
                                         <input type="hidden" name="college_id" id="collegeSelect" value="<?= htmlspecialchars((string)($_POST['college_id'] ?? '')) ?>" required>
 
@@ -582,18 +586,43 @@ include 'Header.php';
     function filterDropdown(type) {
         if (type === 'university') {
             const query = document.getElementById('universityInput').value.toLowerCase().trim();
-            const items = document.querySelectorAll('#universityDropdown .searchable-select-item');
+            const items = document.querySelectorAll('#universityDropdown .searchable-select-item:not(.no-results)');
+            const dropdown = document.getElementById('universityDropdown');
+            dropdown.style.display = 'block';
+
+            let visibleCount = 0;
             items.forEach(item => {
                 const text = item.innerText.toLowerCase();
                 if (text.includes(query)) {
                     item.style.display = 'block';
+                    visibleCount++;
                 } else {
                     item.style.display = 'none';
                 }
             });
+
+            let noMatch = document.getElementById('noMatchUniv');
+            if (visibleCount === 0) {
+                if (!noMatch) {
+                    noMatch = document.createElement('div');
+                    noMatch.id = 'noMatchUniv';
+                    noMatch.className = 'searchable-select-item no-results opacity-70';
+                    noMatch.innerText = 'No matching university found';
+                    dropdown.appendChild(noMatch);
+                } else {
+                    noMatch.style.display = 'block';
+                }
+            } else if (noMatch) {
+                noMatch.style.display = 'none';
+            }
+
         } else if (type === 'college') {
             const query = document.getElementById('collegeInput').value.toLowerCase().trim();
             const items = document.querySelectorAll('#collegeDropdown .college-item');
+            const dropdown = document.getElementById('collegeDropdown');
+            dropdown.style.display = 'block';
+
+            let visibleCount = 0;
             items.forEach(item => {
                 const text = item.innerText.toLowerCase();
                 const univId = item.getAttribute('data-univ');
@@ -602,12 +631,47 @@ include 'Header.php';
 
                 if (matchUniv && matchQuery) {
                     item.style.display = 'block';
+                    visibleCount++;
                 } else {
                     item.style.display = 'none';
                 }
             });
+
+            let noMatch = document.getElementById('noMatchCol');
+            if (visibleCount === 0) {
+                if (!noMatch) {
+                    noMatch = document.createElement('div');
+                    noMatch.id = 'noMatchCol';
+                    noMatch.className = 'searchable-select-item no-results opacity-70';
+                    noMatch.innerText = 'No matching college found';
+                    dropdown.appendChild(noMatch);
+                } else {
+                    noMatch.style.display = 'block';
+                }
+            } else if (noMatch) {
+                noMatch.style.display = 'none';
+            }
         }
     }
+
+    window.addEventListener('DOMContentLoaded', function() {
+        const selectedUnivId = document.getElementById('universitySelect').value;
+        if (selectedUnivId) {
+            const item = document.querySelector(`#universityDropdown .searchable-select-item[data-value="${selectedUnivId}"]`);
+            if (item) {
+                document.getElementById('universityInput').value = item.innerText.trim();
+                selectedUniversityId = selectedUnivId;
+            }
+        }
+
+        const selectedCollegeId = document.getElementById('collegeSelect').value;
+        if (selectedCollegeId) {
+            const item = document.querySelector(`#collegeDropdown .searchable-select-item[data-value="${selectedCollegeId}"]`);
+            if (item) {
+                document.getElementById('collegeInput').value = item.innerText.trim();
+            }
+        }
+    });
 
     function selectUniversity(id, name) {
         document.getElementById('universityInput').value = name;
