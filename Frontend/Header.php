@@ -133,24 +133,32 @@ $current_page = strtolower(basename($_SERVER['PHP_SELF']));
         }
 
         .btn-signup-luxury {
-            background-color: #14171a;
-            color: #ffffff !important;
+            background-color: #ffd13b;
+            color: #14171a !important;
             border: 2px solid #14171a;
             border-radius: 9999px;
-            padding: 8px 20px;
+            padding: 8px 22px;
             font-size: 13.5px;
             font-weight: 800;
             cursor: pointer;
-            box-shadow: 3px 3px 0px #ffd13b;
+            box-shadow: 3px 3px 0px #14171a;
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .btn-signup-luxury.dropdown-toggle::after {
+            display: none !important;
         }
         .btn-signup-luxury:hover, .btn-signup-luxury:focus, .show > .btn-signup-luxury {
-            background-color: #ffd13b;
-            color: #14171a !important;
+            background-color: #14171a;
+            color: #ffd13b !important;
             border-color: #14171a;
             transform: translateY(-2px);
-            box-shadow: 4px 4px 0px #14171a;
+            box-shadow: 5px 5px 0px #14171a;
+        }
+        .btn-signup-luxury:hover i, .show > .btn-signup-luxury i {
+            color: #ffd13b !important;
         }
 
         .signup-menu-card {
@@ -216,8 +224,10 @@ $current_page = strtolower(basename($_SERVER['PHP_SELF']));
                         
                         <!-- SIGN UP DROPDOWN MENU (STUDENT, COLLEGE, UNIVERSITY) -->
                         <div class="dropdown">
-                            <button class="btn-signup-luxury dropdown-toggle d-inline-flex align-items-center" type="button" id="signUpDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="bi bi-person-plus-fill text-warning me-1"></i> Sign Up <i class="bi bi-chevron-down text-xs ms-1.5 opacity-80"></i>
+                            <button class="btn-signup-luxury dropdown-toggle" type="button" id="signUpDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-plus-fill text-dark me-1.5"></i>
+                                <span>Sign Up</span>
+                                <i class="bi bi-chevron-down text-xs ms-1.5"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end border-2 border-dark rounded-4 p-2 mt-2 shadow-lg" aria-labelledby="signUpDropdown" style="min-width: 310px; box-shadow: 6px 6px 0px #14171a !important;">
                                 <li class="px-3 py-2 border-bottom mb-2">
