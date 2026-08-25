@@ -94,12 +94,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
 
             $new_id = $pdo->lastInsertId();
-            $_SESSION['student_id']        = $new_id;
-            $_SESSION['student_name']      = $name;
-            $_SESSION['student_email']     = $email;
-            $_SESSION['college_id']        = $college_id;
-            $_SESSION['student_college_id'] = $college_id;
-            $_SESSION['student_logged_in']  = true;
+            $tab_id = get_current_tab_id();
+            if (!$tab_id) {
+                $tab_id = 'tab_' . bin2hex(random_bytes(16));
+                setcookie('evenza_tab_id', $tab_id, 0, '/');
+            }
+            set_tab_auth($tab_id, [
+                'user_id'    => $new_id,
+                'role'       => 'student',
+                'name'       => $name,
+                'email'      => $email,
+                'college_id' => $college_id
+            ]);
 
             header('Location: ../Student/Dashboard.php');
             exit;

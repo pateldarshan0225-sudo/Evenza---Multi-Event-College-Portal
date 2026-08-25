@@ -1,19 +1,13 @@
 <?php
 /**
  * Student/student_auth.php
- * Authentication Guard for Student Portal
+ * Tab-Isolated Authentication Guard for Student Portal
  */
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../tab_auth.php';
 
-if (empty($_SESSION['student_id'])) {
-    header("Location: ../Frontend/login.php");
-    exit();
-}
+$stu_auth = require_tab_role('student');
 
-$student_id    = (int)$_SESSION['student_id'];
-$student_name  = $_SESSION['student_name'] ?? 'Student User';
-$student_email = $_SESSION['student_email'] ?? '';
-$college_id    = (int)($_SESSION['college_id'] ?? 0);
-?>
+$student_id    = (int)$stu_auth['user_id'];
+$student_name  = $stu_auth['name'] ?? 'Student User';
+$student_email = $stu_auth['email'] ?? '';
+$college_id    = (int)($stu_auth['college_id'] ?? 0);

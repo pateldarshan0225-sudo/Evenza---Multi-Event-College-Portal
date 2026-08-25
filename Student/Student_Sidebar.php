@@ -12,6 +12,8 @@ $student_name  = $_SESSION['student_name'] ?? 'Student User';
 $student_email = $_SESSION['student_email'] ?? 'student@college.edu';
 $avatar_url    = 'https://ui-avatars.com/api/?name=' . urlencode($student_name) . '&background=14171a&color=ffd13b&bold=true';
 ?>
+<!-- Tab Authentication Client Helper -->
+<script src="../assets/js/tab-auth.js"></script>
 
 <style>
     .berun-sidebar-capsule {

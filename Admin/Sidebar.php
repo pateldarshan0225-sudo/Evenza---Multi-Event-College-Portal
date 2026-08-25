@@ -12,6 +12,8 @@ $current_page = strtolower(basename($_SERVER['PHP_SELF']));
 $admin_name   = $_SESSION['admin_name'] ?? 'Admin';
 $admin_email  = $_SESSION['admin_email'] ?? 'admin@evenza.com';
 ?>
+<!-- Tab Authentication Client Helper -->
+<script src="../assets/js/tab-auth.js"></script>
 
 <style>
     .berun-sidebar-capsule {

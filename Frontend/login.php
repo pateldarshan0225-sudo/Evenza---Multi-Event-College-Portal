@@ -9,23 +9,7 @@ include_once 'frontend_auth.php';
 
 // Support unsetting authentication session state when visiting login page with ?unset=1 or ?switch=1
 if (isset($_GET['unset']) || isset($_GET['switch']) || isset($_GET['logout'])) {
-    unset(
-        $_SESSION['admin_id'],
-        $_SESSION['admin_name'],
-        $_SESSION['admin_email'],
-        $_SESSION['admin_logged_in'],
-        $_SESSION['loggedin'],
-        $_SESSION['student_id'],
-        $_SESSION['student_name'],
-        $_SESSION['student_email'],
-        $_SESSION['student_logged_in'],
-        $_SESSION['student_college_id'],
-        $_SESSION['college_id'],
-        $_SESSION['college_name'],
-        $_SESSION['college_email'],
-        $_SESSION['college_logo'],
-        $_SESSION['organizer_logged_in']
-    );
+    unset_tab_auth();
     $is_logged_in = false;
     $user_role    = null;
 }
@@ -49,6 +33,12 @@ $error = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
+    $tab_id   = get_current_tab_id();
+
+    if (!$tab_id) {
+        $tab_id = 'tab_' . bin2hex(random_bytes(16));
+        setcookie('evenza_tab_id', $tab_id, 0, '/');
+    }
 
     if ($email === '' || $password === '') {
         $error = 'Please enter both your email address and password.';
@@ -59,12 +49,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $admin = $stmt->fetch();
 
         if ($admin && ($password === $admin['password'] || password_verify($password, $admin['password']))) {
-            unset($_SESSION['student_id'], $_SESSION['student_logged_in'], $_SESSION['organizer_logged_in']);
-            $_SESSION['admin_id']        = $admin['admin_id'];
-            $_SESSION['admin_name']      = $admin['name'] ?? $admin['admin_name'] ?? 'Administrator';
-            $_SESSION['admin_email']     = $admin['email'];
-            $_SESSION['admin_logged_in'] = true;
-            $_SESSION['loggedin']        = true;
+            set_tab_auth($tab_id, [
+                'user_id'    => $admin['admin_id'],
+                'role'       => 'admin',
+                'name'       => $admin['name'] ?? $admin['admin_name'] ?? 'Administrator',
+                'email'      => $admin['email'],
+                'college_id' => null
+            ]);
             header('Location: ../Admin/Dashboard.php');
             exit;
         }
@@ -75,12 +66,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $college = $stmt->fetch();
 
         if ($college && ($password === $college['password'] || password_verify($password, $college['password']))) {
-            unset($_SESSION['student_id'], $_SESSION['student_logged_in'], $_SESSION['admin_id'], $_SESSION['admin_logged_in']);
-            $_SESSION['college_id']           = $college['college_id'];
-            $_SESSION['college_name']         = $college['name'];
-            $_SESSION['college_email']        = $college['email'];
-            $_SESSION['college_logo']         = $college['logo'] ?? '';
-            $_SESSION['organizer_logged_in'] = true;
+            set_tab_auth($tab_id, [
+                'user_id'    => $college['college_id'],
+                'role'       => 'organizer',
+                'name'       => $college['name'],
+                'email'      => $college['email'],
+                'logo'       => $college['logo'] ?? '',
+                'college_id' => $college['college_id']
+            ]);
             header('Location: ../Organizer/Dashboard.php');
             exit;
         }
@@ -91,13 +84,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $student = $stmt->fetch();
 
         if ($student && ($password === $student['password'] || password_verify($password, $student['password']))) {
-            unset($_SESSION['organizer_logged_in'], $_SESSION['admin_id'], $_SESSION['admin_logged_in']);
-            $_SESSION['student_id']         = $student['student_id'];
-            $_SESSION['student_name']       = $student['name'];
-            $_SESSION['student_email']      = $student['email'];
-            $_SESSION['college_id']         = $student['college_id'];
-            $_SESSION['student_college_id'] = $student['college_id'];
-            $_SESSION['student_logged_in']  = true;
+            set_tab_auth($tab_id, [
+                'user_id'    => $student['student_id'],
+                'role'       => 'student',
+                'name'       => $student['name'],
+                'email'      => $student['email'],
+                'college_id' => $student['college_id']
+            ]);
             header('Location: ../Student/Dashboard.php');
             exit;
         }

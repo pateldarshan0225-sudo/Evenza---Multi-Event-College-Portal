@@ -113,9 +113,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
 
             $new_id = $pdo->lastInsertId();
-            $_SESSION['admin_email'] = $email;
-            $_SESSION['admin_name']  = $name;
-            $_SESSION['admin_logged_in'] = true;
+            $tab_id = get_current_tab_id();
+            if (!$tab_id) {
+                $tab_id = 'tab_' . bin2hex(random_bytes(16));
+                setcookie('evenza_tab_id', $tab_id, 0, '/');
+            }
+            set_tab_auth($tab_id, [
+                'user_id'    => $new_id,
+                'role'       => 'admin',
+                'name'       => $name,
+                'email'      => $email,
+                'college_id' => null
+            ]);
 
             header('Location: ../Admin/Dashboard.php');
             exit;

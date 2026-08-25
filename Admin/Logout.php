@@ -1,19 +1,11 @@
 <?php
 /**
  * Admin/Logout.php
- * Admin Session Cleanup Using unset() (Without session_destroy)
+ * Tab-Isolated Logout Handler for Admin Portal
  */
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../tab_auth.php';
 
-unset(
-    $_SESSION['admin_id'],
-    $_SESSION['admin_name'],
-    $_SESSION['admin_email'],
-    $_SESSION['admin_logged_in'],
-    $_SESSION['loggedin']
-);
+unset_tab_auth();
 
 header("Location: ../Frontend/login.php");
 exit();

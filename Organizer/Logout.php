@@ -1,19 +1,11 @@
 <?php
 /**
  * Organizer/Logout.php
- * Organizer Session Cleanup Using unset() (Without session_destroy)
+ * Tab-Isolated Logout Handler for Organizer Portal
  */
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once __DIR__ . '/../tab_auth.php';
 
-unset(
-    $_SESSION['college_id'],
-    $_SESSION['college_name'],
-    $_SESSION['college_email'],
-    $_SESSION['college_logo'],
-    $_SESSION['organizer_logged_in']
-);
+unset_tab_auth();
 
 header("Location: ../Frontend/login.php");
 exit();

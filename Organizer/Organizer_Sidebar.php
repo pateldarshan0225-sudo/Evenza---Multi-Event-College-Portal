@@ -10,6 +10,10 @@ if (session_status() === PHP_SESSION_NONE) {
 $current_page  = strtolower(basename($_SERVER['PHP_SELF']));
 $college_name  = $_SESSION['college_name'] ?? 'College Organizer';
 $college_email = $_SESSION['college_email'] ?? 'organizer@evenza.com';
+?>
+<!-- Tab Authentication Client Helper -->
+<script src="../assets/js/tab-auth.js"></script>
+<?php
 
 // Fetch fresh college logo from database if missing in session
 if (!empty($_SESSION['college_id'])) {
