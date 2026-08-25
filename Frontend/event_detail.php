@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_register'])) {
 
             $stmtReg = $pdo->prepare("
                 INSERT INTO registrations (event_id, student_id, team_id, registration_type, status, registered_at)
-                VALUES (:eid, :sid, :tid, :rtype, 'Approved', NOW())
+                VALUES (:eid, :sid, :tid, :rtype, 'approved', NOW())
             ");
             $stmtReg->execute([
                 'eid'   => $event_id,
@@ -82,15 +82,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action_register'])) {
             $reg_id = $pdo->lastInsertId();
 
             if ((float)$event['registration_fee'] > 0) {
-                $stmtPay = $pdo->prepare("INSERT INTO payments (registration_id, amount, payment_status, created_at) VALUES (:rid, :amt, 'Paid', NOW())");
-                $stmtPay->execute(['rid' => $reg_id, 'amt' => $event['registration_fee']]);
+                $txn_id = 'TXN-' . strtoupper(bin2hex(random_bytes(6)));
+                $stmtPay = $pdo->prepare("INSERT INTO payments (registration_id, amount, payment_method, transaction_id, payment_status, payment_date) VALUES (:rid, :amt, 'upi', :txnid, 'paid', NOW())");
+                $stmtPay->execute([
+                    'rid'   => $reg_id,
+                    'amt'   => $event['registration_fee'],
+                    'txnid' => $txn_id
+                ]);
             }
 
             $pdo->commit();
             $flash = 'Event registration confirmed for ' . htmlspecialchars((string)$event['title']) . '! Your pass is now active in your Student Portal.';
         } catch (Exception $ex) {
             $pdo->rollBack();
-            $error = 'We could not complete your registration request. Please try again.';
+            $error = 'We could not complete your registration request: ' . htmlspecialchars($ex->getMessage());
         }
     }
 }
