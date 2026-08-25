@@ -1222,7 +1222,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                         <input type="hidden" name="id" value="<?= (int)$e['event_id'] ?>">
 
                         <div class="modal-header">
-                            <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i> Edit Event — <?= htmlspecialchars($e['title']) ?></h5>
+                            <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i> Edit Event</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
 
@@ -1352,7 +1352,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
 
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-dark rounded-pill px-4">Update Event</button>
+                            <button type="submit" class="btn btn-dark rounded-pill px-4 btn-update-event" disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;">Update Event</button>
                         </div>
                     </form>
                 </div>
@@ -1565,6 +1565,77 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                 }
             });
         });
+
+    /* Enable/Disable Update Event Button on Change */
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll('form input[name="form_action"][value="update"]').forEach(actionInput => {
+            const form = actionInput.closest('form');
+            if (!form) return;
+
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (!submitBtn) return;
+
+            function storeInitialValues() {
+                const elements = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
+                elements.forEach(el => {
+                    if (el.type === 'file') {
+                        el.value = '';
+                        el.dataset.initialValue = '';
+                    } else if (el.type === 'checkbox' || el.type === 'radio') {
+                        el.dataset.initialValue = el.checked ? 'true' : 'false';
+                    } else {
+                        el.dataset.initialValue = el.value.trim();
+                    }
+                });
+                evaluateChanges();
+            }
+
+            function evaluateChanges() {
+                const elements = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
+                let isChanged = false;
+
+                elements.forEach(el => {
+                    if (el.type === 'file') {
+                        if (el.files && el.files.length > 0) {
+                            isChanged = true;
+                        }
+                    } else if (el.type === 'checkbox' || el.type === 'radio') {
+                        if ((el.checked ? 'true' : 'false') !== el.dataset.initialValue) {
+                            isChanged = true;
+                        }
+                    } else {
+                        if (el.value.trim() !== (el.dataset.initialValue || '')) {
+                            isChanged = true;
+                        }
+                    }
+                });
+
+                if (isChanged) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                    submitBtn.style.cursor = 'pointer';
+                    submitBtn.style.pointerEvents = 'auto';
+                } else {
+                    submitBtn.disabled = true;
+                    submitBtn.style.opacity = '0.5';
+                    submitBtn.style.cursor = 'not-allowed';
+                    submitBtn.style.pointerEvents = 'none';
+                }
+            }
+
+            storeInitialValues();
+
+            const modal = form.closest('.modal');
+            if (modal) {
+                modal.addEventListener('shown.bs.modal', function () {
+                    storeInitialValues();
+                });
+            }
+
+            form.addEventListener('input', evaluateChanges);
+            form.addEventListener('change', evaluateChanges);
+        });
+    });
 
         // Team size fields requirement toggling
         function syncTeamFieldRequirement(typeSelect, fieldsSelector) {
@@ -1798,6 +1869,18 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
             badge.classList.add(applyClass);
         }
 
+        function syncEventModalStatus(eventId, newStatus) {
+            const modal = document.getElementById('editEventModal' + eventId);
+            if (modal) {
+                const statusSelect = modal.querySelector('select[name="status"]');
+                if (statusSelect) {
+                    statusSelect.value = newStatus;
+                    statusSelect.dataset.initialValue = statusSelect.value;
+                    statusSelect.dispatchEvent(new Event('change'));
+                }
+            }
+        }
+
         document.querySelectorAll(".status-dropdown").forEach(dropdown => {
             let previousValue = dropdown.value;
 
@@ -1821,6 +1904,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                     if (data && data.success) {
                         updateBadgeColor(row, newValue);
                         adjustCounts(previousValue, newValue);
+                        syncEventModalStatus(eventId, newValue);
                         previousValue = newValue;
                         filterEvents();
                     } else {
@@ -1829,6 +1913,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                 })
                 .catch(() => {
                     this.value = previousValue;
+                    syncEventModalStatus(eventId, previousValue);
                     alert("Could not update status. Please try again.");
                 })
                 .finally(() => {
