@@ -1,22 +1,19 @@
 <?php
-session_start();
-
-$_SESSION = [];
-
-if (ini_get("session.use_cookies")) {
-    $params = session_get_cookie_params();
-    setcookie(
-        session_name(),
-        '',
-        time() - 42000,
-        $params["path"],
-        $params["domain"],
-        $params["secure"],
-        $params["httponly"]
-    );
+/**
+ * Admin/Logout.php
+ * Admin Session Cleanup Using unset() (Without session_destroy)
+ */
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-session_destroy();
+unset(
+    $_SESSION['admin_id'],
+    $_SESSION['admin_name'],
+    $_SESSION['admin_email'],
+    $_SESSION['admin_logged_in'],
+    $_SESSION['loggedin']
+);
 
-header("Location: Index.php");
+header("Location: ../Frontend/login.php");
 exit();

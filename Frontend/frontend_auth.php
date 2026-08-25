@@ -1,10 +1,31 @@
 <?php
 /**
  * Frontend/frontend_auth.php
- * Session Authentication & User State Helper (Fixed Role Priority)
+ * Session Authentication & User State Helper (Fixed Role Priority & Session Unset)
  */
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
+}
+
+// Support unsetting authentication session state without destroying session
+if (isset($_GET['unset_session']) || isset($_GET['unset'])) {
+    unset(
+        $_SESSION['admin_id'],
+        $_SESSION['admin_name'],
+        $_SESSION['admin_email'],
+        $_SESSION['admin_logged_in'],
+        $_SESSION['loggedin'],
+        $_SESSION['student_id'],
+        $_SESSION['student_name'],
+        $_SESSION['student_email'],
+        $_SESSION['student_logged_in'],
+        $_SESSION['student_college_id'],
+        $_SESSION['college_id'],
+        $_SESSION['college_name'],
+        $_SESSION['college_email'],
+        $_SESSION['college_logo'],
+        $_SESSION['organizer_logged_in']
+    );
 }
 
 $is_logged_in = false;

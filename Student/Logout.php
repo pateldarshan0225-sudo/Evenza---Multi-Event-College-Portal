@@ -1,19 +1,20 @@
 <?php
 /**
  * Student/Logout.php
- * Session Destruction for Student Portal
+ * Student Session Cleanup Using unset() (Without session_destroy)
  */
-session_start();
-$_SESSION = array();
-
-if (ini_get("session.use_cookies")) {
-    $params = session_get_cookie_params();
-    setcookie(session_name(), '', time() - 42000,
-        $params["path"], $params["domain"],
-        $params["secure"], $params["httponly"]
-    );
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-session_destroy();
+unset(
+    $_SESSION['student_id'],
+    $_SESSION['student_name'],
+    $_SESSION['student_email'],
+    $_SESSION['student_logged_in'],
+    $_SESSION['student_college_id'],
+    $_SESSION['college_id']
+);
+
 header("Location: ../Frontend/login.php");
 exit();

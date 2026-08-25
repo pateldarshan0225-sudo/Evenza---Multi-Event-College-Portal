@@ -216,6 +216,7 @@ $current_page = strtolower(basename($_SERVER['PHP_SELF']));
                                 <?php else: ?>
                                     <li><a class="dropdown-item rounded-3 py-2 text-xs" href="../Student/Dashboard.php"><i class="bi bi-journal-bookmark me-2"></i> Student Portal</a></li>
                                 <?php endif; ?>
+                                <li><a class="dropdown-item rounded-3 py-2 text-xs text-warning font-semibold" href="login.php?unset=1"><i class="bi bi-arrow-repeat me-2"></i> Switch Account</a></li>
                                 <li><a class="dropdown-item rounded-3 py-2 text-xs text-danger" href="logout.php"><i class="bi bi-box-arrow-right me-2"></i> Logout</a></li>
                             </ul>
                         </div>

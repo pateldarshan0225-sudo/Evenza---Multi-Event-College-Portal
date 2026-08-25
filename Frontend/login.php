@@ -7,8 +7,31 @@ $page_title = "Unified Portal Login";
 include 'connection.php';
 include_once 'frontend_auth.php';
 
-// If already logged in, redirect to appropriate role portal
-if ($is_logged_in) {
+// Support unsetting authentication session state when visiting login page with ?unset=1 or ?switch=1
+if (isset($_GET['unset']) || isset($_GET['switch']) || isset($_GET['logout'])) {
+    unset(
+        $_SESSION['admin_id'],
+        $_SESSION['admin_name'],
+        $_SESSION['admin_email'],
+        $_SESSION['admin_logged_in'],
+        $_SESSION['loggedin'],
+        $_SESSION['student_id'],
+        $_SESSION['student_name'],
+        $_SESSION['student_email'],
+        $_SESSION['student_logged_in'],
+        $_SESSION['student_college_id'],
+        $_SESSION['college_id'],
+        $_SESSION['college_name'],
+        $_SESSION['college_email'],
+        $_SESSION['college_logo'],
+        $_SESSION['organizer_logged_in']
+    );
+    $is_logged_in = false;
+    $user_role    = null;
+}
+
+// If already logged in and not unsetting session, redirect to appropriate role portal
+if ($is_logged_in && !isset($_GET['unset']) && !isset($_GET['switch'])) {
     if ($user_role === 'admin') {
         header('Location: ../Admin/Dashboard.php');
         exit;

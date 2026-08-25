@@ -1,18 +1,19 @@
 <?php
 /**
  * Organizer/Logout.php
- * Organizer Sign Out Handler
+ * Organizer Session Cleanup Using unset() (Without session_destroy)
  */
-session_start();
-$_SESSION = [];
-if (ini_get("session.use_cookies")) {
-    $params = session_get_cookie_params();
-    setcookie(session_name(), '', time() - 42000,
-        $params["path"], $params["domain"],
-        $params["secure"], $params["httponly"]
-    );
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
-session_destroy();
-header("Location: Index.php");
+
+unset(
+    $_SESSION['college_id'],
+    $_SESSION['college_name'],
+    $_SESSION['college_email'],
+    $_SESSION['college_logo'],
+    $_SESSION['organizer_logged_in']
+);
+
+header("Location: ../Frontend/login.php");
 exit();
-?>
