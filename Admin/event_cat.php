@@ -873,7 +873,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                         <input type="hidden" name="form_action" value="update">
                         <input type="hidden" name="id" value="<?= (int) $c['category_id'] ?>">
                         <div class="modal-header">
-                            <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i> Edit Category — <?= htmlspecialchars($c['name']) ?></h5>
+                            <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i> Edit Category</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
@@ -895,7 +895,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-outline-secondary rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-dark rounded-pill px-4">Update Category</button>
+                            <button type="submit" class="btn btn-dark rounded-pill px-4 btn-update-category" disabled style="opacity: 0.5; cursor: not-allowed; pointer-events: none;">Update Category</button>
                         </div>
                     </form>
                 </div>
@@ -915,6 +915,79 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                     e.stopPropagation();
                 }
                 form.classList.add("was-validated");
+            });
+        });
+    </script>
+
+    <!-- Enable/Disable Update Category Button on Change -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll('form input[name="form_action"][value="update"]').forEach(actionInput => {
+                const form = actionInput.closest('form');
+                if (!form) return;
+
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (!submitBtn) return;
+
+                function storeInitialValues() {
+                    const elements = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
+                    elements.forEach(el => {
+                        if (el.type === 'file') {
+                            el.value = '';
+                            el.dataset.initialValue = '';
+                        } else if (el.type === 'checkbox' || el.type === 'radio') {
+                            el.dataset.initialValue = el.checked ? 'true' : 'false';
+                        } else {
+                            el.dataset.initialValue = el.value.trim();
+                        }
+                    });
+                    evaluateChanges();
+                }
+
+                function evaluateChanges() {
+                    const elements = form.querySelectorAll('input:not([type="hidden"]), select, textarea');
+                    let isChanged = false;
+
+                    elements.forEach(el => {
+                        if (el.type === 'file') {
+                            if (el.files && el.files.length > 0) {
+                                isChanged = true;
+                            }
+                        } else if (el.type === 'checkbox' || el.type === 'radio') {
+                            if ((el.checked ? 'true' : 'false') !== el.dataset.initialValue) {
+                                isChanged = true;
+                            }
+                        } else {
+                            if (el.value.trim() !== (el.dataset.initialValue || '')) {
+                                isChanged = true;
+                            }
+                        }
+                    });
+
+                    if (isChanged) {
+                        submitBtn.disabled = false;
+                        submitBtn.style.opacity = '1';
+                        submitBtn.style.cursor = 'pointer';
+                        submitBtn.style.pointerEvents = 'auto';
+                    } else {
+                        submitBtn.disabled = true;
+                        submitBtn.style.opacity = '0.5';
+                        submitBtn.style.cursor = 'not-allowed';
+                        submitBtn.style.pointerEvents = 'none';
+                    }
+                }
+
+                storeInitialValues();
+
+                const modal = form.closest('.modal');
+                if (modal) {
+                    modal.addEventListener('shown.bs.modal', function () {
+                        storeInitialValues();
+                    });
+                }
+
+                form.addEventListener('input', evaluateChanges);
+                form.addEventListener('change', evaluateChanges);
             });
         });
     </script>
@@ -1064,6 +1137,18 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
             }
         }
 
+        function syncCategoryModalStatus(categoryId, isActive) {
+            const modal = document.getElementById('editCategoryModal' + categoryId);
+            if (modal) {
+                const statusSelect = modal.querySelector('select[name="status"]');
+                if (statusSelect) {
+                    statusSelect.value = isActive ? 'active' : 'inactive';
+                    statusSelect.dataset.initialValue = statusSelect.value;
+                    statusSelect.dispatchEvent(new Event('change'));
+                }
+            }
+        }
+
         document.querySelectorAll(".status-toggle").forEach(toggle => {
             toggle.addEventListener("change", function () {
                 const row = this.closest("tr");
@@ -1072,6 +1157,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
 
                 setBadge(row, isActive);
                 adjustCounts(isActive);
+                syncCategoryModalStatus(categoryId, isActive);
                 filterCategories();
                 this.disabled = true;
 
@@ -1091,6 +1177,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                     toggle.checked = !isActive;
                     setBadge(row, !isActive);
                     adjustCounts(!isActive);
+                    syncCategoryModalStatus(categoryId, !isActive);
                     filterCategories();
                     alert("Could not update status. Please try again.");
                 })
