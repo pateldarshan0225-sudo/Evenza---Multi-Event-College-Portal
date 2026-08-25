@@ -5,6 +5,7 @@
  */
 $page_title = "University Registration";
 include 'connection.php';
+require_once __DIR__ . '/../includes/phone_helper.php';
 include_once 'frontend_auth.php';
 
 if ($is_logged_in) {
@@ -78,8 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['email'] = 'Valid email address is required.';
     }
 
-    if ($phone === '') {
-        $errors['phone'] = 'Contact phone number is required.';
+    if ($phone === '' || !is_valid_phone_number($phone)) {
+        $errors['phone'] = 'Please enter a valid 10-digit Indian mobile number.';
     }
 
     if ($password === '') {
@@ -107,7 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'name'       => $name,
                 'short_name' => $short_name,
                 'email'      => $email,
-                'phone'      => $phone,
+                'phone'      => normalize_phone_number($phone),
                 'logo'       => $logo_filename,
                 'address'    => $address
             ]);

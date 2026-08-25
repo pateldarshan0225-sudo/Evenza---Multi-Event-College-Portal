@@ -5,6 +5,7 @@
  */
 $page_title = "Student Registration Gateway";
 include 'connection.php';
+require_once __DIR__ . '/../includes/phone_helper.php';
 include_once 'frontend_auth.php';
 
 if ($is_logged_in && $user_role === 'student') {
@@ -61,10 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors['password'] = 'Password must be at least 6 characters.';
     }
 
-    if ($phone === '') {
-        $errors['phone'] = 'Phone number is required.';
-    } elseif (!preg_match('/^[0-9+\-\s()]{10,15}$/', $phone)) {
-        $errors['phone'] = 'Please enter a valid 10-digit phone number.';
+    if ($phone === '' || !is_valid_phone_number($phone)) {
+        $errors['phone'] = 'Please enter a valid 10-digit Indian mobile number.';
     }
 
     // Email Uniqueness Check
@@ -88,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'name'     => $name,
                 'email'    => $email,
                 'pass'     => $password,
-                'phone'    => $phone,
+                'phone'    => normalize_phone_number($phone),
                 'gender'   => $gender,
                 'sem'      => $semester
             ]);

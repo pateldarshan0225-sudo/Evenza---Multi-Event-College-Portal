@@ -13,6 +13,7 @@
  */
 
 include 'auth_check.php';
+require_once __DIR__ . '/../includes/phone_helper.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -110,10 +111,8 @@ function validate_student(
         $errors[] = 'Enter a valid email address (max 100 characters).';
     }
 
-    if ($phone === '') {
-        $errors[] = 'Phone number is required.';
-    } elseif (!preg_match('/^[0-9+\-\s]{7,20}$/', $phone)) {
-        $errors[] = 'Enter a valid phone number.';
+    if ($phone === '' || !is_valid_phone_number($phone)) {
+        $errors[] = 'Enter a valid 10-digit Indian mobile number.';
     }
 
     if ($gender === '') {
@@ -343,7 +342,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
                     'name'                 => trim($_POST['name']),
                     'email'                => trim($_POST['email']),
                     'password'             => trim($_POST['password']),
-                    'phone'                => trim($_POST['phone']) !== '' ? trim($_POST['phone']) : null,
+                    'phone'                => normalize_phone_number($_POST['phone']),
                     'gender'               => trim($_POST['gender']) !== '' ? trim($_POST['gender']) : null,
                     'semester'             => trim($_POST['semester']) !== '' ? trim($_POST['semester']) : null,
                     'id_card_image'        => $idCard,
@@ -409,7 +408,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
                     'enrollment_no'       => trim($_POST['enrollment_no']),
                     'name'                => trim($_POST['name']),
                     'email'               => trim($_POST['email']),
-                    'phone'               => trim($_POST['phone']) !== '' ? trim($_POST['phone']) : null,
+                    'phone'               => normalize_phone_number($_POST['phone']),
                     'gender'              => trim($_POST['gender']) !== '' ? trim($_POST['gender']) : null,
                     'semester'            => trim($_POST['semester']) !== '' ? trim($_POST['semester']) : null,
                     'id_card_image'       => $idCardToStore,
@@ -1080,7 +1079,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                                             </td>
                                             <td class="text-dark font-medium"><?= htmlspecialchars($s['college_name'] ?? 'Unknown') ?></td>
                                             <td class="text-secondary"><?= htmlspecialchars($s['email']) ?></td>
-                                            <td class="text-secondary"><?= htmlspecialchars($s['phone'] ?? '—') ?></td>
+                                            <td class="text-secondary"><?= htmlspecialchars(format_phone_number($s['phone'] ?? '')) ?></td>
                                             <td class="text-secondary"><?= htmlspecialchars($s['semester'] ?? '—') ?></td>
                                             <td>
                                                 <span class="status-badge <?= $verifyClass ?> verification-badge">
@@ -1207,8 +1206,8 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label font-semibold text-xs text-uppercase text-muted">Phone</label>
-                                <input type="text" class="form-control" name="phone" required pattern="[0-9+\-\s]{7,20}" placeholder="9800000001">
-                                <div class="invalid-feedback">Enter a valid phone number.</div>
+                                <input type="tel" class="form-control" name="phone" required inputmode="tel" placeholder="+91 9876543210">
+                                <div class="invalid-feedback">Enter a valid 10-digit Indian mobile number.</div>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label font-semibold text-xs text-uppercase text-muted">Gender</label>
@@ -1326,8 +1325,8 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label font-semibold text-xs text-uppercase text-muted">Phone</label>
-                                    <input type="text" class="form-control" name="phone" required pattern="[0-9+\-\s]{7,20}" value="<?= htmlspecialchars($s['phone'] ?? '') ?>">
-                                    <div class="invalid-feedback">Enter a valid phone number.</div>
+                                    <input type="tel" class="form-control" name="phone" required inputmode="tel" value="<?= htmlspecialchars(format_phone_number($s['phone'] ?? '')) ?>">
+                                    <div class="invalid-feedback">Enter a valid 10-digit Indian mobile number.</div>
                                 </div>
                                 <div class="col-md-4">
                                     <label class="form-label font-semibold text-xs text-uppercase text-muted">Gender</label>

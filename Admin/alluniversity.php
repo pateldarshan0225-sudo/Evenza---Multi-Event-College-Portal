@@ -1,6 +1,7 @@
 <?php
 
 include 'auth_check.php';
+require_once __DIR__ . '/../includes/phone_helper.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -82,11 +83,8 @@ function validate_university(
     }
 
     /* Phone */
-    if (
-        $phone === '' ||
-        !preg_match('/^[0-9+\-\s]{7,20}$/', $phone)
-    ) {
-        $errors[] = 'Enter a valid phone number (7-20 characters).';
+    if ($phone === '' || !is_valid_phone_number($phone)) {
+        $errors[] = 'Enter a valid 10-digit Indian mobile number.';
     }
 
     /* Address */
@@ -269,7 +267,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
                     'name' => trim($_POST['name']),
                     'short_name' => trim($_POST['short_name']),
                     'email' => trim($_POST['email']),
-                    'phone' => trim($_POST['phone']),
+                    'phone' => normalize_phone_number($_POST['phone']),
                     'address' => trim($_POST['address']),
                     'logo' => $logo,
                     'status' => trim($_POST['status'])
@@ -329,7 +327,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
                     'name' => trim($_POST['name']),
                     'short_name' => trim($_POST['short_name']),
                     'email' => trim($_POST['email']),
-                    'phone' => trim($_POST['phone']),
+                    'phone' => normalize_phone_number($_POST['phone']),
                     'address' => trim($_POST['address']),
                     'logo' => $logoToStore,
                     'status' => trim($_POST['status']),
@@ -950,7 +948,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                                                 </div>
                                             </td>
                                             <td class="text-secondary"><?= htmlspecialchars($u['email']) ?></td>
-                                            <td class="text-secondary"><?= htmlspecialchars($u['phone']) ?></td>
+                                            <td class="text-secondary"><?= htmlspecialchars(format_phone_number($u['phone'])) ?></td>
                                             <td>
                                                 <span class="status-badge <?= $isActive ? 'badge-success' : 'badge-danger' ?>">
                                                     <?= $isActive ? 'Active' : 'Inactive' ?>
@@ -1038,8 +1036,8 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label font-semibold text-xs text-uppercase text-muted">Phone</label>
-                                <input type="text" class="form-control" name="phone" required pattern="[0-9+\-\s]{7,20}" placeholder="+91 820 292 2400">
-                                <div class="invalid-feedback">Enter a valid phone number.</div>
+                                <input type="tel" class="form-control" name="phone" required inputmode="tel" placeholder="+91 9876543210">
+                                <div class="invalid-feedback">Enter a valid 10-digit Indian mobile number.</div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label font-semibold text-xs text-uppercase text-muted">Status</label>
@@ -1080,7 +1078,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                         <input type="hidden" name="form_action" value="update">
                         <input type="hidden" name="id" value="<?= (int) $u['university_id'] ?>">
                         <div class="modal-header">
-                            <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i> Edit University — <?= htmlspecialchars($u['short_name']) ?></h5>
+                            <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i> Edit University</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
@@ -1102,8 +1100,8 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label font-semibold text-xs text-uppercase text-muted">Phone</label>
-                                    <input type="text" class="form-control" name="phone" required pattern="[0-9+\-\s]{7,20}" value="<?= htmlspecialchars($u['phone']) ?>">
-                                    <div class="invalid-feedback">Enter a valid phone number.</div>
+                                    <input type="tel" class="form-control" name="phone" required inputmode="tel" value="<?= htmlspecialchars(format_phone_number($u['phone'])) ?>">
+                                    <div class="invalid-feedback">Enter a valid 10-digit Indian mobile number.</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label font-semibold text-xs text-uppercase text-muted">Status</label>

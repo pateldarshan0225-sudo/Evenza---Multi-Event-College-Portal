@@ -7,6 +7,7 @@
  */
 
 include 'auth_check.php';
+require_once __DIR__ . '/../includes/phone_helper.php';
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -86,10 +87,8 @@ function validate_college(
         $errors[] = 'Enter a valid email address (max 100 characters).';
     }
 
-    if ($phone === '') {
-        $errors[] = 'Phone number is required.';
-    } elseif (!preg_match('/^[0-9+\-\s]{7,20}$/', $phone)) {
-        $errors[] = 'Enter a valid phone number.';
+    if ($phone === '' || !is_valid_phone_number($phone)) {
+        $errors[] = 'Enter a valid 10-digit Indian mobile number.';
     }
 
     if ($address === '' || mb_strlen($address) < 5) {
@@ -310,7 +309,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
                     'slug'          => trim($_POST['slug']),
                     'email'         => trim($_POST['email']),
                     'password'      => password_hash($_POST['password'], PASSWORD_DEFAULT),
-                    'phone'         => trim($_POST['phone']),
+                    'phone'         => normalize_phone_number($_POST['phone']),
                     'address'       => trim($_POST['address']),
                     'logo'          => $logo,
                     'status'        => trim($_POST['status']),
@@ -377,7 +376,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['form_action'])) {
                     'name'          => trim($_POST['name']),
                     'slug'          => trim($_POST['slug']),
                     'email'         => trim($_POST['email']),
-                    'phone'         => trim($_POST['phone']),
+                    'phone'         => normalize_phone_number($_POST['phone']),
                     'address'       => trim($_POST['address']),
                     'logo'          => $logoToStore,
                     'status'        => trim($_POST['status']),
@@ -1034,7 +1033,7 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                                             </td>
                                             <td class="text-dark font-medium"><?= htmlspecialchars($c['university_name'] ?? 'Unknown') ?></td>
                                             <td class="text-secondary"><?= htmlspecialchars($c['email']) ?></td>
-                                            <td class="text-secondary"><?= htmlspecialchars($c['phone'] ?? '—') ?></td>
+                                            <td class="text-secondary"><?= htmlspecialchars(format_phone_number($c['phone'] ?? '')) ?></td>
                                             <td>
                                                 <span class="status-badge <?= $isActive ? 'badge-success' : 'badge-danger' ?>">
                                                     <?= $isActive ? 'Active' : 'Inactive' ?>
@@ -1145,8 +1144,8 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label font-semibold text-xs text-uppercase text-muted">Phone</label>
-                                <input type="text" class="form-control" name="phone" required pattern="[0-9+\-\s]{7,20}" placeholder="+1 555 111 001">
-                                <div class="invalid-feedback">Phone number is required.</div>
+                                <input type="tel" class="form-control" name="phone" required inputmode="tel" placeholder="+91 9876543210">
+                                <div class="invalid-feedback">Enter a valid 10-digit Indian mobile number.</div>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label font-semibold text-xs text-uppercase text-muted">Status</label>
@@ -1232,8 +1231,8 @@ $admin_name  = $_SESSION['admin_name'] ?? 'Admin';
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label font-semibold text-xs text-uppercase text-muted">Phone</label>
-                                    <input type="text" class="form-control" name="phone" required pattern="[0-9+\-\s]{7,20}" value="<?= htmlspecialchars($c['phone'] ?? '') ?>">
-                                    <div class="invalid-feedback">Phone number is required.</div>
+                                    <input type="tel" class="form-control" name="phone" required inputmode="tel" value="<?= htmlspecialchars(format_phone_number($c['phone'] ?? '')) ?>">
+                                    <div class="invalid-feedback">Enter a valid 10-digit Indian mobile number.</div>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="form-label font-semibold text-xs text-uppercase text-muted">Status</label>
