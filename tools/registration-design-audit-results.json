@@ -1,0 +1,545 @@
+{
+  "checks": [
+    {
+      "page": "register",
+      "width": 320,
+      "name": "Responsive registration layout",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 320,
+      "name": "Three role links and current account type",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 320,
+      "name": "Password visibility control preserved",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 320,
+      "name": "Invalid registration blocked",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 320,
+      "name": "Signup role menu fits viewport",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 320,
+      "name": "Corrected fields pass client validation without submission",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 375,
+      "name": "Responsive registration layout",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 375,
+      "name": "Three role links and current account type",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 375,
+      "name": "Password visibility control preserved",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 375,
+      "name": "Invalid registration blocked",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 375,
+      "name": "Signup role menu fits viewport",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 375,
+      "name": "Corrected fields pass client validation without submission",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 768,
+      "name": "Responsive registration layout",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 768,
+      "name": "Three role links and current account type",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 768,
+      "name": "Password visibility control preserved",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 768,
+      "name": "Invalid registration blocked",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 768,
+      "name": "Signup role menu fits viewport",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 768,
+      "name": "Corrected fields pass client validation without submission",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 1024,
+      "name": "Responsive registration layout",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 1024,
+      "name": "Three role links and current account type",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 1024,
+      "name": "Password visibility control preserved",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 1024,
+      "name": "Invalid registration blocked",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 1024,
+      "name": "Signup role menu fits viewport",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 1024,
+      "name": "Corrected fields pass client validation without submission",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 1440,
+      "name": "Responsive registration layout",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 1440,
+      "name": "Three role links and current account type",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 1440,
+      "name": "Password visibility control preserved",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 1440,
+      "name": "Invalid registration blocked",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 1440,
+      "name": "Signup role menu fits viewport",
+      "pass": true
+    },
+    {
+      "page": "register",
+      "width": 1440,
+      "name": "Corrected fields pass client validation without submission",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 320,
+      "name": "Responsive registration layout",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 320,
+      "name": "Three role links and current account type",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 320,
+      "name": "Password visibility control preserved",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 320,
+      "name": "Invalid registration blocked",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 320,
+      "name": "Signup role menu fits viewport",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 320,
+      "name": "Corrected fields pass client validation without submission",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 375,
+      "name": "Responsive registration layout",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 375,
+      "name": "Three role links and current account type",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 375,
+      "name": "Password visibility control preserved",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 375,
+      "name": "Invalid registration blocked",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 375,
+      "name": "Signup role menu fits viewport",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 375,
+      "name": "Corrected fields pass client validation without submission",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 768,
+      "name": "Responsive registration layout",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 768,
+      "name": "Three role links and current account type",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 768,
+      "name": "Password visibility control preserved",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 768,
+      "name": "Invalid registration blocked",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 768,
+      "name": "Signup role menu fits viewport",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 768,
+      "name": "Corrected fields pass client validation without submission",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 1024,
+      "name": "Responsive registration layout",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 1024,
+      "name": "Three role links and current account type",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 1024,
+      "name": "Password visibility control preserved",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 1024,
+      "name": "Invalid registration blocked",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 1024,
+      "name": "Signup role menu fits viewport",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 1024,
+      "name": "Corrected fields pass client validation without submission",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 1440,
+      "name": "Responsive registration layout",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 1440,
+      "name": "Three role links and current account type",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 1440,
+      "name": "Password visibility control preserved",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 1440,
+      "name": "Invalid registration blocked",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 1440,
+      "name": "Signup role menu fits viewport",
+      "pass": true
+    },
+    {
+      "page": "register_college",
+      "width": 1440,
+      "name": "Corrected fields pass client validation without submission",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 320,
+      "name": "Responsive registration layout",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 320,
+      "name": "Three role links and current account type",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 320,
+      "name": "Password visibility control preserved",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 320,
+      "name": "Invalid registration blocked",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 320,
+      "name": "Signup role menu fits viewport",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 320,
+      "name": "Corrected fields pass client validation without submission",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 375,
+      "name": "Responsive registration layout",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 375,
+      "name": "Three role links and current account type",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 375,
+      "name": "Password visibility control preserved",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 375,
+      "name": "Invalid registration blocked",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 375,
+      "name": "Signup role menu fits viewport",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 375,
+      "name": "Corrected fields pass client validation without submission",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 768,
+      "name": "Responsive registration layout",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 768,
+      "name": "Three role links and current account type",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 768,
+      "name": "Password visibility control preserved",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 768,
+      "name": "Invalid registration blocked",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 768,
+      "name": "Signup role menu fits viewport",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 768,
+      "name": "Corrected fields pass client validation without submission",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 1024,
+      "name": "Responsive registration layout",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 1024,
+      "name": "Three role links and current account type",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 1024,
+      "name": "Password visibility control preserved",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 1024,
+      "name": "Invalid registration blocked",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 1024,
+      "name": "Signup role menu fits viewport",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 1024,
+      "name": "Corrected fields pass client validation without submission",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 1440,
+      "name": "Responsive registration layout",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 1440,
+      "name": "Three role links and current account type",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 1440,
+      "name": "Password visibility control preserved",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 1440,
+      "name": "Invalid registration blocked",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 1440,
+      "name": "Signup role menu fits viewport",
+      "pass": true
+    },
+    {
+      "page": "register_university",
+      "width": 1440,
+      "name": "Corrected fields pass client validation without submission",
+      "pass": true
+    }
+  ],
+  "errors": []
+}

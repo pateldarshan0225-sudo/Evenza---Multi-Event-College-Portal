@@ -1,0 +1,84 @@
+.passes-workspace { gap: 28px; }
+.passes-intro { display: flex; align-items: center; gap: 20px; padding: 28px 32px; border: 1px solid #dce6d5; border-radius: 22px; background: linear-gradient(110deg, #e9f0e1, #fafaf3); }
+.passes-intro-icon { display: grid; place-items: center; flex: 0 0 56px; height: 56px; border: 1px solid #d3dfc9; border-radius: 17px; background: #ffffffa8; color: #49663b; font-size: 26px; }
+.passes-eyebrow { font-size: 10px; font-weight: 700; letter-spacing: .12em; color: #627451; }
+.passes-intro h2 { font-size: clamp(21px, 2vw, 28px); margin: 7px 0; letter-spacing: -.04em; }
+.passes-intro p, .passes-section-heading p { margin: 0; color: #6a7563; font-size: 13px; }
+.passes-intro-copy { min-width: 0; }
+.passes-total { margin-left: auto; text-align: center; flex-shrink: 0; padding-left: 28px; border-left: 1px solid #d5dfcb; }
+.passes-total strong { display: block; font-size: 32px; font-weight: 750; letter-spacing: -.05em; line-height: 1.2; }
+.passes-total span { font-size: 11px; color: #6a7563; }
+.passes-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.passes-section-heading h2 { font-size: 19px; margin: 0 0 6px; }
+.passes-print { display: inline-flex; align-items: center; gap: 9px; border: 1px solid #dbe2d5; padding: 10px 15px; background: #fff; color: #44563b; border-radius: 11px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.passes-print:hover { background: #eaf0e3; }
+.passes-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: stretch; }
+.event-entry-ticket { min-width: 0; display: flex; flex-direction: column; background: #fff; border: 1px solid #e0e6da; border-radius: 22px; overflow: hidden; box-shadow: 0 8px 28px #19211f04; }
+.ticket-main { padding: 26px; flex: 1; }
+.ticket-topline { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+.ticket-format { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 600; color: #65705f; }
+.ticket-state { display: inline-flex; align-items: center; gap: 6px; border-radius: 7px; padding: 6px 9px; background: #eaf4ed; color: #32764b; font-size: 10px; font-weight: 650; }
+.ticket-state > span { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.ticket-state-used { color: #626c75; background: #edf0f3; }
+.ticket-state-cancelled { color: #aa4b4b; background: #fbeeed; }
+.ticket-state-pending { color: #8a6b28; background: #fbf3da; }
+.ticket-event-heading { display: flex; align-items: flex-start; gap: 17px; margin-bottom: 24px; }
+.ticket-event-heading > div:last-child { min-width: 0; }
+.ticket-date { flex: 0 0 58px; border-radius: 12px; overflow: hidden; border: 1px solid #ece3c9; text-align: center; background: #fffdf7; }
+.ticket-date > span { display: block; padding: 5px; color: #897134; background: #f9edc9; font-size: 10px; text-transform: uppercase; font-weight: 700; letter-spacing: .06em; }
+.ticket-date strong { display: block; padding: 5px; font-size: 24px; font-weight: 750; line-height: 1.25; }
+.ticket-event-heading h3 { font-size: 20px; font-weight: 700; letter-spacing: -.035em; line-height: 1.35; margin: 0 0 7px; overflow-wrap: anywhere; }
+.ticket-event-heading p { font-size: 12px; color: #75806e; margin: 0; line-height: 1.6; }
+.ticket-details { margin: 0; display: grid; gap: 15px; }
+.ticket-details > div { display: grid; grid-template-columns: 114px minmax(0, 1fr); gap: 12px; }
+.ticket-details dt { display: flex; align-items: baseline; gap: 8px; font-size: 11px; color: #7a8573; font-weight: 500; }
+.ticket-details dt i { color: #748769; }
+.ticket-details dd { margin: 0; font-size: 12px; font-weight: 500; color: #3b4835; overflow-wrap: anywhere; }
+.ticket-details dd span { display: inline-block; }
+.ticket-team { display: flex; align-items: center; gap: 11px; margin-top: 22px; padding: 12px; background: #f6f8f2; border-radius: 11px; border: 1px solid #edf0e7; }
+.ticket-team > i { color: #798b69; font-size: 19px; }
+.ticket-team > div { min-width: 0; }
+.ticket-team span { display: block; font-size: 9px; color: #7a8573; }
+.ticket-team strong { display: block; font-size: 12px; font-weight: 600; overflow-wrap: anywhere; }
+.ticket-team code { margin-left: auto; color: #6b795f; font-size: 10px; overflow-wrap: anywhere; }
+.ticket-stub { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 20px 26px; border-top: 1px dashed #d6dece; background: #fbfcf8; }
+.ticket-pass-code { display: flex; gap: 10px; align-items: center; min-width: 0; }
+.ticket-pass-code > i { font-size: 23px; color: #647a54; }
+.ticket-pass-code span { display: block; font-size: 9px; color: #89907f; letter-spacing: .08em; font-weight: 600; margin-bottom: 5px; }
+.ticket-pass-code code { color: #34492a; font-size: 13px; font-weight: 600; overflow-wrap: anywhere; }
+.ticket-fee { text-align: right; flex-shrink: 0; }
+.ticket-fee span { display: block; font-size: 10px; color: #849078; margin-bottom: 4px; }
+.ticket-fee strong { display: block; font-size: 16px; font-weight: 700; letter-spacing: -.025em; }
+.ticket-details-link { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 26px; border-top: 1px solid #edf0e7; color: #65765b; text-decoration: none; font-size: 11px; font-weight: 600; }
+.ticket-details-link:hover { background: #f0f5e9; color: #304d26; }
+.passes-empty { padding: 60px 28px; border: 1px solid #e0e6da; border-radius: 22px; text-align: center; background: #fff; }
+.passes-empty-icon { font-size: 36px; color: #7a926b; margin-bottom: 18px; }
+.passes-empty h3 { font-size: 22px; letter-spacing: -.035em; }
+.passes-empty p { color: #75806e; font-size: 13px; max-width: 440px; margin: 12px auto 24px; }
+@media (min-width: 1800px) { .passes-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 1100px) { .passes-grid { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 600px) {
+    .passes-intro { padding: 22px; gap: 14px; flex-wrap: wrap; }
+    .passes-intro-icon { display: none; }
+    .passes-intro-copy { flex: 1 1 180px; }
+    .passes-total { padding-left: 0; margin-left: 0; border-left: 0; display: flex; align-items: center; gap: 10px; }
+    .passes-total strong { font-size: 24px; }
+    .passes-section-heading { flex-wrap: wrap; }
+    .ticket-main { padding: 21px; }
+    .ticket-details > div { grid-template-columns: 90px minmax(0, 1fr); }
+    .ticket-event-heading h3 { font-size: 18px; }
+    .ticket-stub { padding: 18px 21px; flex-wrap: wrap; }
+    .ticket-team { flex-wrap: wrap; }
+    .ticket-pass-code code { font-size: 12px; }
+    .student-passes-page .berun-header > .d-flex:first-child { flex-wrap: wrap; gap: 16px !important; }
+    .student-passes-page .berun-header .ps-2 { padding-left: 0 !important; }
+}
+@media print {
+    .student-passes-page { background: #fff !important; padding: 0; }
+    .student-passes-page .berun-sidebar-capsule, .student-passes-page .berun-header, .passes-print, .ticket-details-link { display: none !important; }
+    .passes-intro { background: #fff; padding: 16px; }
+    .passes-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .event-entry-ticket { break-inside: avoid; box-shadow: none; }
+}
+.ticket-state-expired { background:#f1f2f3; color:#5c626a; }
+.ticket-state-expired > span { background:#777f87; }

@@ -1,0 +1,209 @@
+{
+  "checks": [
+    {
+      "page": "Organizer/Dashboard.php",
+      "width": 375,
+      "name": "Page stays within viewport",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Dashboard.php",
+      "width": 1440,
+      "name": "Page stays within viewport",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Registrations.php",
+      "width": 375,
+      "name": "Page stays within viewport",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Registrations.php",
+      "width": 375,
+      "name": "Every registration stays in main table; modals are outside tables",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Registrations.php",
+      "width": 375,
+      "name": "Roster rosterModal16 opens as dialog",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Registrations.php",
+      "width": 375,
+      "name": "Roster rosterModal5 opens as dialog",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Registrations.php",
+      "width": 375,
+      "name": "Registration status options use canonical values",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Registrations.php",
+      "width": 375,
+      "name": "Registration filter empty state",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Registrations.php",
+      "width": 1440,
+      "name": "Page stays within viewport",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Registrations.php",
+      "width": 1440,
+      "name": "Every registration stays in main table; modals are outside tables",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Registrations.php",
+      "width": 1440,
+      "name": "Roster rosterModal16 opens as dialog",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Registrations.php",
+      "width": 1440,
+      "name": "Roster rosterModal5 opens as dialog",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Registrations.php",
+      "width": 1440,
+      "name": "Registration status options use canonical values",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Registrations.php",
+      "width": 1440,
+      "name": "Registration filter empty state",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Profile.php",
+      "width": 375,
+      "name": "Page stays within viewport",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Profile.php",
+      "width": 375,
+      "name": "Unchanged profile button disabled",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Profile.php",
+      "width": 375,
+      "name": "Editing and reverting profile toggles save",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Profile.php",
+      "width": 375,
+      "name": "Password toggle works",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Profile.php",
+      "width": 375,
+      "name": "Password mismatch clears when new password is corrected",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Profile.php",
+      "width": 1440,
+      "name": "Page stays within viewport",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Profile.php",
+      "width": 1440,
+      "name": "Unchanged profile button disabled",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Profile.php",
+      "width": 1440,
+      "name": "Editing and reverting profile toggles save",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Profile.php",
+      "width": 1440,
+      "name": "Password toggle works",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Profile.php",
+      "width": 1440,
+      "name": "Password mismatch clears when new password is corrected",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Events.php",
+      "width": 375,
+      "name": "Page stays within viewport",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Events.php",
+      "width": 375,
+      "name": "Events grid and table show matching empty states",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Events.php",
+      "width": 375,
+      "name": "Table view switch works",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Events.php",
+      "width": 1440,
+      "name": "Page stays within viewport",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Events.php",
+      "width": 1440,
+      "name": "Events grid and table show matching empty states",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Events.php",
+      "width": 1440,
+      "name": "Table view switch works",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Students.php",
+      "width": 375,
+      "name": "Page stays within viewport",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Students.php",
+      "width": 375,
+      "name": "Student filter empty state",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Students.php",
+      "width": 1440,
+      "name": "Page stays within viewport",
+      "pass": true
+    },
+    {
+      "page": "Organizer/Students.php",
+      "width": 1440,
+      "name": "Student filter empty state",
+      "pass": true
+    }
+  ],
+  "errors": []
+}

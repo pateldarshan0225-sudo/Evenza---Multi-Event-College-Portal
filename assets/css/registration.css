@@ -1,0 +1,70 @@
+/* Shared registration presentation; existing form controls and handlers are retained. */
+.register-gateway-section { background: linear-gradient(115deg,#f1f5ea,#fbfcf8 60%,#faf8f0) !important; padding: 56px 0 72px !important; }
+.register-gateway-section > .container-xl > .row { align-items: flex-start !important; --bs-gutter-x: 1.5rem; }
+.registration-story { padding: 34px 26px 24px 0; }
+.registration-eyebrow { display: inline-flex; align-items: center; gap: 9px; border: 1px solid #d7e2cd; background: #fff9; color: #5c744a; padding: 8px 12px; font-size: 10px; font-weight: 650; border-radius: 8px; letter-spacing: .03em; }
+.registration-story h1 { font-size: clamp(2.2rem,3.4vw,3.5rem); font-weight: 750; letter-spacing: -.055em; line-height: 1.1; margin: 22px 0; max-width: 500px; }
+.registration-story h1 span { color: #71845d; }
+.registration-story > p { max-width: 430px; font-size: 14px; line-height: 1.85; color: #7b8573; margin-bottom: 30px; }
+.registration-benefits { display: grid; gap: 23px; padding: 8px 0 24px; }
+.registration-benefit { display: flex; gap: 14px; align-items: flex-start; }
+.registration-benefit > i { flex: 0 0 39px; height: 39px; display: grid; place-items: center; border: 1px solid #dfe6d6; background: #fff; color: #799162; border-radius: 12px; font-size: 17px; }
+.registration-benefit h2 { font-size: 13px; font-weight: 650 !important; letter-spacing: -.015em; margin: 0 0 5px; }
+.registration-benefit p { font-size: 11px; line-height: 1.65; color: #7b8573; margin: 0; max-width: 320px; }
+.registration-note { display: flex; align-items: center; gap: 10px; border-top: 1px solid #dfe6d6; padding-top: 20px; color: #7a886c; font-size: 11px; max-width: 430px; }
+.registration-note > i { font-size: 17px; color: #8b9c77; }
+.register-gateway-section .register-card-bespoke { padding: 28px 32px 30px !important; border-radius: 24px !important; border: 1px solid #e0e7d8 !important; box-shadow: 0 16px 45px #34492a08 !important; }
+.registration-role-tabs { display: flex; gap: 5px; padding: 5px; background: #f4f6ef; border: 1px solid #e7ecdf; border-radius: 13px; margin-bottom: 28px; }
+.registration-role-tabs a { flex: 1; min-width: 0; display: flex; align-items: center; justify-content: center; gap: 7px; text-decoration: none; color: #859079; font-size: 12px; font-weight: 600; padding: 10px 6px; border-radius: 9px; transition: background .16s,color .16s; }
+.registration-role-tabs a:hover { color: #445c32; background: #eaf0e0; }
+.registration-role-tabs a.active { color: #344c28; background: #fff; box-shadow: 0 2px 6px #34492a0b; }
+.registration-form-heading { display: block !important; border-color: #e5eadf !important; margin-bottom: 24px !important; padding-bottom: 22px !important; }
+.registration-form-heading > .d-flex > i, .registration-form-heading > .badge { display: none !important; }
+.registration-form-heading h3 { font-size: 22px !important; font-weight: 700 !important; letter-spacing: -.04em !important; margin-bottom: 7px !important; }
+.registration-form-heading p { font-size: 12px !important; line-height: 1.7; color: #849077 !important; }
+.register-card-bespoke .row { --bs-gutter-x: 1.15rem; --bs-gutter-y: 1.25rem; }
+.register-card-bespoke :is(.form-label-clean,.form-label) { font-family: inherit; font-size: 11px !important; font-weight: 600 !important; letter-spacing: .015em !important; color: #657458 !important; margin-bottom: 8px !important; }
+.register-card-bespoke :is(.form-control-luxury,.form-control,.form-select-luxury,.searchable-select-input) { border-radius: 11px !important; min-height: 46px; font-size: 12px !important; border: 1px solid #dce5d3; background-color: #fff; box-shadow: none; padding: 12px 14px !important; }
+.register-card-bespoke :is(input,textarea)::placeholder { color: #a0a995; opacity: 1; font-size: 12px; }
+.register-card-bespoke input[type=password], .register-card-bespoke input#registerPassword { padding-right: 44px !important; }
+.register-card-bespoke :is(.form-select-luxury,.form-select) { border-radius: 11px !important; }
+.register-card-bespoke .btn-eye-toggle { color: #8b9b7c; right: 13px; }
+.register-card-bespoke .password-strength-bar { height: 3px; margin-top: 6px; border-radius: 3px; background: #edf1e7; }
+.register-card-bespoke input[type=file] { padding: 7px !important; font-size: 11px !important; }
+.register-card-bespoke input[type=file]::file-selector-button { border: 1px solid #dde6d4; background: #f2f6eb; color: #6b8058; border-radius: 7px; padding: 8px 12px; margin-right: 10px; font-size: 11px; font-family: inherit; cursor: pointer; }
+.register-card-bespoke .searchable-select-dropdown { border: 1px solid #dfe7d5; border-radius: 13px; padding: 6px; box-shadow: 0 12px 28px #34492a15; }
+.register-card-bespoke .searchable-select-item { padding: 10px 12px; border-radius: 8px; font-size: 12px; white-space: normal; }
+.register-card-bespoke .searchable-select-item:hover { background: #edf3e5; color: #3f592f; }
+.register-card-bespoke .select-caret-icon { font-size: 9px; color: #9ca98e; }
+.register-card-bespoke button[type=submit] { min-height: 48px; font-size: 13px !important; font-weight: 650; padding: 13px 22px !important; box-shadow: none !important; border-radius: 11px !important; }
+.register-card-bespoke form > .pt-4 { display: flex; gap: 12px; align-items: center; }
+.register-card-bespoke form > .pt-4 button[type=submit] { flex: 1; }
+.register-card-bespoke form > .pt-4 a { font-size: 12px; border-color: #dfe7d5; border-radius: 11px !important; min-height: 46px; display: flex; align-items: center; }
+.registration-form-footer { margin-top: 22px; padding-top: 19px; border-top: 1px solid #e5eadf; text-align: center; color: #8b977f; font-size: 12px; }
+.registration-form-footer a { font-weight: 650; color: #3d5730; text-underline-offset: 3px; }
+.registration-story > p, .registration-benefit p, .registration-note { color: #6b785f; }
+.registration-form-heading p { color: #6b785f !important; }
+.register-card-bespoke :is(.form-label-clean,.form-label) { text-transform: none !important; color: #59694d !important; }
+.register-card-bespoke :is(input,textarea)::placeholder { color: #7d8971; }
+.register-card-bespoke :is(input,select,textarea).is-invalid { border-color: #d06b6b !important; background-color: #fffdfc; }
+.registration-form-footer { color: #6b785f; }
+.registration-client-error { font-size: 12px; line-height: 1.65; border-radius: 11px; padding: 12px 14px; }
+@media(max-width:1199px) {
+    .register-gateway-section > .container-xl > .row > :is(.col-lg-5,.col-lg-7) { width: 100%; }
+    .register-gateway-section { padding: 32px 0 44px !important; }
+    .registration-story { padding: 0; }
+    .registration-story h1 { max-width: 600px; font-size: clamp(2rem,5vw,3rem); margin: 17px 0; }
+    .registration-story > p { max-width: 620px; margin-bottom: 0; }
+    .registration-benefits, .registration-note { display: none; }
+    .register-gateway-section > .container-xl > .row { --bs-gutter-y: 28px; --bs-gutter-x: 1.5rem; }
+}
+@media(max-width:575px) {
+    .register-gateway-section .register-card-bespoke { padding: 20px 18px !important; }
+    .registration-role-tabs { gap: 2px; padding: 4px; }
+    .registration-role-tabs a { font-size: 11px; gap: 5px; padding: 10px 3px; }
+    .registration-form-heading h3 { font-size: 20px !important; }
+    .registration-story h1 { font-size: 32px; }
+    .register-card-bespoke form > .pt-4 { flex-wrap: wrap; }
+    .register-card-bespoke form > .pt-4 button[type=submit] { flex-basis: 100%; }
+    .register-card-bespoke form > .pt-4 a { order: 1; justify-content: center; width: 100%; border: 0; }
+}

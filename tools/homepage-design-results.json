@@ -1,0 +1,29 @@
+{
+  "checks": [
+    {
+      "name": "Search form preserves events GET route",
+      "pass": true
+    },
+    {
+      "name": "All six event links retain destination",
+      "pass": true
+    },
+    {
+      "name": "Sticky navigation reacts to scroll",
+      "pass": true
+    },
+    {
+      "name": "Reduced motion reveals pending content",
+      "pass": true
+    },
+    {
+      "name": "Local hero image loads",
+      "pass": true
+    },
+    {
+      "name": "No browser exceptions",
+      "pass": true
+    }
+  ],
+  "errors": []
+}

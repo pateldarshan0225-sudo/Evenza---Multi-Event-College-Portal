@@ -1,0 +1,37 @@
+{
+  "checks": [
+    {
+      "name": "Mobile menu opens",
+      "pass": true
+    },
+    {
+      "name": "Signup dropdown opens within viewport",
+      "pass": true
+    },
+    {
+      "name": "Password visibility toggle",
+      "pass": true
+    },
+    {
+      "name": "Invalid registration is blocked before submission",
+      "pass": true
+    },
+    {
+      "name": "Phone validation matches Indian normalization",
+      "pass": true
+    },
+    {
+      "name": "Editing university clears the stored selection",
+      "pass": true
+    },
+    {
+      "name": "Email validation feedback",
+      "pass": true
+    },
+    {
+      "name": "College live search empty state",
+      "pass": true
+    }
+  ],
+  "errors": []
+}

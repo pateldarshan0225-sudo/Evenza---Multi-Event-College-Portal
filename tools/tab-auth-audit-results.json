@@ -1,0 +1,58 @@
+[
+  {
+    "name": "admin refresh ignores another tab cookie, round 0",
+    "pass": true
+  },
+  {
+    "name": "student refresh ignores another tab cookie, round 0",
+    "pass": true
+  },
+  {
+    "name": "organizer refresh ignores another tab cookie, round 0",
+    "pass": true
+  },
+  {
+    "name": "admin refresh ignores another tab cookie, round 1",
+    "pass": true
+  },
+  {
+    "name": "student refresh ignores another tab cookie, round 1",
+    "pass": true
+  },
+  {
+    "name": "organizer refresh ignores another tab cookie, round 1",
+    "pass": true
+  },
+  {
+    "name": "Old organizer URL recovers its sessionStorage context",
+    "pass": true
+  },
+  {
+    "name": "Organizer cannot become admin through a role mismatch redirect",
+    "pass": true
+  },
+  {
+    "name": "Links and forms carry the organizer context",
+    "pass": true
+  },
+  {
+    "name": "Programmatic GET form submission preserves account",
+    "pass": true
+  },
+  {
+    "name": "Cookie alone cannot choose an account",
+    "pass": true
+  },
+  {
+    "name": "Organizer logout leaves admin signed in",
+    "pass": true
+  },
+  {
+    "name": "Organizer logout leaves student signed in",
+    "pass": true
+  },
+  {
+    "name": "Logged-out organizer stays on login instead of admin dashboard",
+    "pass": true
+  }
+]

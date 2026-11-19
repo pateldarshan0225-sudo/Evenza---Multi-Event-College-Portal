@@ -1,0 +1,85 @@
+{
+  "checks": [
+    {
+      "name": "Recent Registrations heading",
+      "pass": true
+    },
+    {
+      "name": "Only latest five rows shown",
+      "pass": true
+    },
+    {
+      "name": "Timeline totals equal registrations",
+      "pass": true
+    },
+    {
+      "name": "Monthly revenue equals actual paid transactions",
+      "pass": true
+    },
+    {
+      "name": "Pass counts equal source records",
+      "pass": true
+    },
+    {
+      "name": "Quarterly revenue preserves actual total",
+      "pass": true
+    },
+    {
+      "name": "Sorting keeps active status filter and five-row limit",
+      "pass": true
+    },
+    {
+      "name": "Date preset filters actual registration dates",
+      "pass": true
+    },
+    {
+      "name": "Empty search produces zero counts and empty charts",
+      "pass": true
+    },
+    {
+      "name": "Empty search displays an honest empty state",
+      "pass": true
+    },
+    {
+      "name": "Actual registration details open",
+      "pass": true
+    },
+    {
+      "name": "Reset restores actual totals",
+      "pass": true
+    },
+    {
+      "name": "Empty source records never produce demo data",
+      "pass": true
+    },
+    {
+      "name": "Participant text is rendered without executing markup",
+      "pass": true
+    },
+    {
+      "name": "Overview layout 320",
+      "pass": true
+    },
+    {
+      "name": "Overview layout 375",
+      "pass": true
+    },
+    {
+      "name": "Overview layout 768",
+      "pass": true
+    },
+    {
+      "name": "Overview layout 1024",
+      "pass": true
+    },
+    {
+      "name": "Overview layout 1440",
+      "pass": true
+    },
+    {
+      "name": "Overview layout 1920",
+      "pass": true
+    }
+  ],
+  "errors": []
+}

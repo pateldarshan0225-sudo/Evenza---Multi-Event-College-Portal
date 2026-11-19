@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 48" width="160" height="48" fill="none">
+  <!-- BESPOKE HANDCRAFTED BRAND MARK (White Theme) -->
+  <g transform="translate(4, 4)">
+    <rect x="0" y="0" width="40" height="40" rx="12" fill="#ffffff" opacity="0.12" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+    
+    <rect x="10" y="10" width="20" height="5" rx="2.5" fill="#ffd13b"/>
+    <rect x="10" y="17.5" width="14" height="5" rx="2.5" fill="#ffffff"/>
+    <rect x="10" y="25" width="20" height="5" rx="2.5" fill="#ffd13b"/>
+    <rect x="10" y="10" width="5" height="20" rx="2.5" fill="#ffd13b"/>
+  </g>
+
+  <!-- HAND-KERNED TYPOGRAPHY (White) -->
+  <text x="56" y="31" font-family="'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-weight="800" font-size="25" letter-spacing="-0.03em" fill="#ffffff">
+    Even<tspan fill="#ffd13b">za</tspan>
+  </text>
+</svg>

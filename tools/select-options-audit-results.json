@@ -1,0 +1,142 @@
+[
+  {
+    "page": "Admin/Dashboard.php",
+    "width": 375,
+    "selector": "#datePresetSelect",
+    "name": "Styled options open within viewport",
+    "pass": true
+  },
+  {
+    "page": "Admin/Dashboard.php",
+    "width": 375,
+    "selector": "#datePresetSelect",
+    "name": "Keyboard selection fires one native change",
+    "pass": true
+  },
+  {
+    "page": "Admin/Dashboard.php",
+    "width": 1440,
+    "selector": "#datePresetSelect",
+    "name": "Styled options open within viewport",
+    "pass": true
+  },
+  {
+    "page": "Admin/Dashboard.php",
+    "width": 1440,
+    "selector": "#datePresetSelect",
+    "name": "Keyboard selection fires one native change",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Events.php",
+    "width": 375,
+    "selector": "#statusFilter",
+    "name": "Styled options open within viewport",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Events.php",
+    "width": 375,
+    "selector": "#statusFilter",
+    "name": "Keyboard selection fires one native change",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Events.php",
+    "width": 1440,
+    "selector": "#statusFilter",
+    "name": "Styled options open within viewport",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Events.php",
+    "width": 1440,
+    "selector": "#statusFilter",
+    "name": "Keyboard selection fires one native change",
+    "pass": true
+  },
+  {
+    "page": "Student/Profile.php",
+    "width": 375,
+    "selector": "select[name=\"semester\"]",
+    "name": "Styled options open within viewport",
+    "pass": true
+  },
+  {
+    "page": "Student/Profile.php",
+    "width": 375,
+    "selector": "select[name=\"semester\"]",
+    "name": "Keyboard selection fires one native change",
+    "pass": true
+  },
+  {
+    "page": "Student/Profile.php",
+    "width": 1440,
+    "selector": "select[name=\"semester\"]",
+    "name": "Styled options open within viewport",
+    "pass": true
+  },
+  {
+    "page": "Student/Profile.php",
+    "width": 1440,
+    "selector": "select[name=\"semester\"]",
+    "name": "Keyboard selection fires one native change",
+    "pass": true
+  },
+  {
+    "page": "Frontend/register.php",
+    "width": 375,
+    "selector": "#gender",
+    "name": "Styled options open within viewport",
+    "pass": true
+  },
+  {
+    "page": "Frontend/register.php",
+    "width": 375,
+    "selector": "#gender",
+    "name": "Keyboard selection fires one native change",
+    "pass": true
+  },
+  {
+    "page": "Frontend/register.php",
+    "width": 1440,
+    "selector": "#gender",
+    "name": "Styled options open within viewport",
+    "pass": true
+  },
+  {
+    "page": "Frontend/register.php",
+    "width": 1440,
+    "selector": "#gender",
+    "name": "Keyboard selection fires one native change",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Events.php",
+    "width": 375,
+    "selector": "#createEventModal select[name=\"category_id\"]",
+    "name": "Styled options open within viewport",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Events.php",
+    "width": 375,
+    "selector": "#createEventModal select[name=\"category_id\"]",
+    "name": "Keyboard selection fires one native change",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Events.php",
+    "width": 1440,
+    "selector": "#createEventModal select[name=\"category_id\"]",
+    "name": "Styled options open within viewport",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Events.php",
+    "width": 1440,
+    "selector": "#createEventModal select[name=\"category_id\"]",
+    "name": "Keyboard selection fires one native change",
+    "pass": true
+  }
+]

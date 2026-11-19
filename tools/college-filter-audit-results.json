@@ -1,0 +1,66 @@
+{
+  "checks": [
+    {
+      "width": 320,
+      "layout": {
+        "pageWidth": 320,
+        "left": 49,
+        "right": 303,
+        "styled": true,
+        "focused": true
+      }
+    },
+    {
+      "width": 375,
+      "layout": {
+        "pageWidth": 375,
+        "left": 49,
+        "right": 358,
+        "styled": true,
+        "focused": true
+      }
+    },
+    {
+      "width": 768,
+      "layout": {
+        "pageWidth": 768,
+        "left": 397,
+        "right": 637,
+        "styled": true,
+        "focused": true
+      }
+    },
+    {
+      "width": 1024,
+      "layout": {
+        "pageWidth": 1009,
+        "left": 552.515625,
+        "right": 816.15625,
+        "styled": true,
+        "focused": true
+      }
+    },
+    {
+      "width": 1440,
+      "layout": {
+        "pageWidth": 1425,
+        "left": 760.515625,
+        "right": 1024.15625,
+        "styled": true,
+        "focused": true
+      }
+    },
+    {
+      "search": true
+    },
+    {
+      "keyboardSelectionAndLiveFilter": true
+    },
+    {
+      "emptyState": true,
+      "emptyText": "No universities found. Try another name.",
+      "searchValue": "zzzz-no-university"
+    }
+  ],
+  "errors": []
+}

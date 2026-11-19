@@ -1,0 +1,344 @@
+[
+  {
+    "url": "/Evenza/Admin/Dashboard.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "Reports & Analytics | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Admin/Colleges.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "All Colleges | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Admin/all_events.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "All Events | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Admin/allregistrations.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "All Registrations | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Admin/allstudents.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "All Students | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Admin/allteams.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "All Teams | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Admin/alluniversity.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "All Universities | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Admin/change_password.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "Change Password | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Admin/event_cat.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "Event Categories | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Admin/teamdetails.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "Team Details | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Student/Dashboard.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "Student Portal Dashboard | Evenza",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Student/MyEvents.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "My Events & Digital Passes | Evenza Student Portal",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Student/MyTeams.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "My Teams & Squads | Evenza Student Portal",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Student/Profile.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "My Profile & Security | Evenza Student Portal",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Organizer/Dashboard.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "Organizer Dashboard | Evenza Portal",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Organizer/Events.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "My Events | Organizer Portal",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Organizer/Registrations.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "Event Registrations | Organizer Portal",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Organizer/Students.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "College Students | Organizer Portal",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Organizer/Profile.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "College Profile & Security | Organizer Portal",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Admin/Dashboard.php",
+    "width": 1440,
+    "scroll": 1425,
+    "title": "Reports & Analytics | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Admin/Colleges.php",
+    "width": 1440,
+    "scroll": 1425,
+    "title": "All Colleges | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Admin/all_events.php",
+    "width": 1440,
+    "scroll": 1425,
+    "title": "All Events | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Admin/allregistrations.php",
+    "width": 1440,
+    "scroll": 1425,
+    "title": "All Registrations | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Admin/allstudents.php",
+    "width": 1440,
+    "scroll": 1425,
+    "title": "All Students | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Admin/allteams.php",
+    "width": 1440,
+    "scroll": 1440,
+    "title": "All Teams | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Admin/alluniversity.php",
+    "width": 1440,
+    "scroll": 1425,
+    "title": "All Universities | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Admin/change_password.php",
+    "width": 1440,
+    "scroll": 1425,
+    "title": "Change Password | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Admin/event_cat.php",
+    "width": 1440,
+    "scroll": 1425,
+    "title": "Event Categories | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Admin/teamdetails.php",
+    "width": 1440,
+    "scroll": 1440,
+    "title": "Team Details | Evenza Admin",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Student/Dashboard.php",
+    "width": 1440,
+    "scroll": 1425,
+    "title": "Student Portal Dashboard | Evenza",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Student/MyEvents.php",
+    "width": 1440,
+    "scroll": 1425,
+    "title": "My Events & Digital Passes | Evenza Student Portal",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Student/MyTeams.php",
+    "width": 1440,
+    "scroll": 1440,
+    "title": "My Teams & Squads | Evenza Student Portal",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Student/Profile.php",
+    "width": 1440,
+    "scroll": 1440,
+    "title": "My Profile & Security | Evenza Student Portal",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Organizer/Dashboard.php",
+    "width": 1440,
+    "scroll": 1425,
+    "title": "Organizer Dashboard | Evenza Portal",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Organizer/Events.php",
+    "width": 1440,
+    "scroll": 1440,
+    "title": "My Events | Organizer Portal",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Organizer/Registrations.php",
+    "width": 1440,
+    "scroll": 1440,
+    "title": "Event Registrations | Organizer Portal",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Organizer/Students.php",
+    "width": 1440,
+    "scroll": 1440,
+    "title": "College Students | Organizer Portal",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  },
+  {
+    "url": "/Evenza/Organizer/Profile.php",
+    "width": 1440,
+    "scroll": 1425,
+    "title": "College Profile & Security | Organizer Portal",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  }
+]

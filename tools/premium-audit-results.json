@@ -1,0 +1,110 @@
+[
+  {
+    "page": "Admin/Dashboard.php",
+    "width": 375,
+    "name": "Local font and visible navigation labels",
+    "pass": true
+  },
+  {
+    "page": "Admin/Dashboard.php",
+    "width": 375,
+    "name": "Keyboard account menu stays inside viewport",
+    "pass": true
+  },
+  {
+    "page": "Admin/Dashboard.php",
+    "width": 1440,
+    "name": "Local font and visible navigation labels",
+    "pass": true
+  },
+  {
+    "page": "Admin/Dashboard.php",
+    "width": 1440,
+    "name": "Keyboard account menu stays inside viewport",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Dashboard.php",
+    "width": 375,
+    "name": "Local font and visible navigation labels",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Dashboard.php",
+    "width": 375,
+    "name": "Keyboard account menu stays inside viewport",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Dashboard.php",
+    "width": 1440,
+    "name": "Local font and visible navigation labels",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Dashboard.php",
+    "width": 1440,
+    "name": "Keyboard account menu stays inside viewport",
+    "pass": true
+  },
+  {
+    "page": "Student/Dashboard.php",
+    "width": 375,
+    "name": "Local font and visible navigation labels",
+    "pass": true
+  },
+  {
+    "page": "Student/Dashboard.php",
+    "width": 375,
+    "name": "Keyboard account menu stays inside viewport",
+    "pass": true
+  },
+  {
+    "page": "Student/Dashboard.php",
+    "width": 1440,
+    "name": "Local font and visible navigation labels",
+    "pass": true
+  },
+  {
+    "page": "Student/Dashboard.php",
+    "width": 1440,
+    "name": "Keyboard account menu stays inside viewport",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Events.php",
+    "width": 375,
+    "name": "Local font and visible navigation labels",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Events.php",
+    "width": 375,
+    "name": "Keyboard account menu stays inside viewport",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Events.php",
+    "width": 375,
+    "name": "Create event dialog opens within viewport",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Events.php",
+    "width": 1440,
+    "name": "Local font and visible navigation labels",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Events.php",
+    "width": 1440,
+    "name": "Keyboard account menu stays inside viewport",
+    "pass": true
+  },
+  {
+    "page": "Organizer/Events.php",
+    "width": 1440,
+    "name": "Create event dialog opens within viewport",
+    "pass": true
+  }
+]

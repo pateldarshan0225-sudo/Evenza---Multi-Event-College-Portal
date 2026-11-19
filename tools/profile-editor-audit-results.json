@@ -1,0 +1,149 @@
+{
+  "checks": [
+    {
+      "role": "Student",
+      "width": 375,
+      "name": "Editable details and protected admin fields",
+      "pass": true
+    },
+    {
+      "role": "Student",
+      "width": 375,
+      "name": "Profile and sidebar images load",
+      "pass": true
+    },
+    {
+      "role": "Student",
+      "width": 375,
+      "name": "Valid image preview and upload form",
+      "pass": true
+    },
+    {
+      "role": "Student",
+      "width": 375,
+      "name": "Unsupported image is blocked",
+      "pass": true
+    },
+    {
+      "role": "Student",
+      "width": 375,
+      "name": "Reset restores image and file validity",
+      "pass": true
+    },
+    {
+      "role": "Student",
+      "width": 375,
+      "name": "No page overflow",
+      "pass": true
+    },
+    {
+      "role": "Student",
+      "width": 1440,
+      "name": "Editable details and protected admin fields",
+      "pass": true
+    },
+    {
+      "role": "Student",
+      "width": 1440,
+      "name": "Profile and sidebar images load",
+      "pass": true
+    },
+    {
+      "role": "Student",
+      "width": 1440,
+      "name": "Valid image preview and upload form",
+      "pass": true
+    },
+    {
+      "role": "Student",
+      "width": 1440,
+      "name": "Unsupported image is blocked",
+      "pass": true
+    },
+    {
+      "role": "Student",
+      "width": 1440,
+      "name": "Reset restores image and file validity",
+      "pass": true
+    },
+    {
+      "role": "Student",
+      "width": 1440,
+      "name": "No page overflow",
+      "pass": true
+    },
+    {
+      "role": "Organizer",
+      "width": 375,
+      "name": "Editable details and protected admin fields",
+      "pass": true
+    },
+    {
+      "role": "Organizer",
+      "width": 375,
+      "name": "Profile and sidebar images load",
+      "pass": true
+    },
+    {
+      "role": "Organizer",
+      "width": 375,
+      "name": "Valid image preview and upload form",
+      "pass": true
+    },
+    {
+      "role": "Organizer",
+      "width": 375,
+      "name": "Unsupported image is blocked",
+      "pass": true
+    },
+    {
+      "role": "Organizer",
+      "width": 375,
+      "name": "Reset restores image and file validity",
+      "pass": true
+    },
+    {
+      "role": "Organizer",
+      "width": 375,
+      "name": "No page overflow",
+      "pass": true
+    },
+    {
+      "role": "Organizer",
+      "width": 1440,
+      "name": "Editable details and protected admin fields",
+      "pass": true
+    },
+    {
+      "role": "Organizer",
+      "width": 1440,
+      "name": "Profile and sidebar images load",
+      "pass": true
+    },
+    {
+      "role": "Organizer",
+      "width": 1440,
+      "name": "Valid image preview and upload form",
+      "pass": true
+    },
+    {
+      "role": "Organizer",
+      "width": 1440,
+      "name": "Unsupported image is blocked",
+      "pass": true
+    },
+    {
+      "role": "Organizer",
+      "width": 1440,
+      "name": "Reset restores image and file validity",
+      "pass": true
+    },
+    {
+      "role": "Organizer",
+      "width": 1440,
+      "name": "No page overflow",
+      "pass": true
+    }
+  ],
+  "errors": []
+}

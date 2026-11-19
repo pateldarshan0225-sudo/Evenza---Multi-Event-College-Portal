@@ -1,0 +1,8 @@
+/* Consistent field feedback across public and all three portals. */
+.ev-field-error { color:#c22637!important; font-size:12px!important; line-height:1.5; font-weight:500; gap:5px; align-items:flex-start; margin-top:6px; width:100%; }
+.ev-field-error:not(:empty)::before { content:'\00d7'; background:#c22637; color:white; font:bold 11px/13px sans-serif; border-radius:50%; flex:0 0 13px; width:13px; height:13px; text-align:center; margin-top:2px; }
+.ev-validation-summary { color:#8c2331; background:#fce8eb; border:1px solid #efb9c2; border-radius:12px; padding:12px 14px; font-size:13px; line-height:1.6; margin-bottom:20px; }
+.ev-validation-summary[hidden] { display:none!important; }
+:is(input,select,textarea).is-invalid { border-color:#d7495b!important; background-image:none!important; }
+:is(input,select,textarea).is-invalid:focus { box-shadow:0 0 0 3px #d7495b15!important; }
+@media(prefers-reduced-motion:reduce){.ev-field-error,.ev-validation-summary{transition:none}}

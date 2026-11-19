@@ -1,0 +1,4 @@
+.event-time-control { flex-wrap:nowrap; }
+.event-time-control > input.form-control { min-width:0; width:65%; }
+.event-time-control > select.form-select { flex:0 0 82px; width:82px; min-width:0; padding-right:26px; }
+.event-time-format-note { font-size:11px; color:#626d67; margin-top:5px; }

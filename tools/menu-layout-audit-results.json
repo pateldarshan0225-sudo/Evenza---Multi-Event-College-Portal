@@ -1,0 +1,72 @@
+[
+  {
+    "kind": "actions",
+    "width": 280,
+    "pass": true
+  },
+  {
+    "kind": "actions",
+    "width": 280,
+    "pass": true
+  },
+  {
+    "kind": "admin",
+    "width": 280,
+    "pass": true
+  },
+  {
+    "kind": "admin",
+    "width": 280,
+    "pass": true
+  },
+  {
+    "kind": "organizer",
+    "width": 280,
+    "pass": true
+  },
+  {
+    "kind": "organizer",
+    "width": 280,
+    "pass": true
+  },
+  {
+    "kind": "student",
+    "width": 280,
+    "pass": true
+  },
+  {
+    "kind": "student",
+    "width": 280,
+    "pass": true
+  },
+  {
+    "kind": "public-admin",
+    "width": 280,
+    "pass": true
+  },
+  {
+    "kind": "public-admin",
+    "width": 280,
+    "pass": true
+  },
+  {
+    "kind": "public-organizer",
+    "width": 280,
+    "pass": true
+  },
+  {
+    "kind": "public-organizer",
+    "width": 280,
+    "pass": true
+  },
+  {
+    "kind": "public-student",
+    "width": 280,
+    "pass": true
+  },
+  {
+    "kind": "public-student",
+    "width": 280,
+    "pass": true
+  }
+]

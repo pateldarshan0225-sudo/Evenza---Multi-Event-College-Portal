@@ -1,0 +1,20 @@
+[
+  {
+    "url": "/Evenza/Frontend/event_detail.php",
+    "width": 375,
+    "scroll": 375,
+    "title": "Event Details | Evenza",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 375
+  },
+  {
+    "url": "/Evenza/Frontend/event_detail.php",
+    "width": 1440,
+    "scroll": 1425,
+    "title": "Event Details | Evenza",
+    "errors": false,
+    "overflow": [],
+    "requestedWidth": 1440
+  }
+]

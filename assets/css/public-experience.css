@@ -1,0 +1,59 @@
+/* Shared public experience. Scoped to the public portal; dashboard styles are independent. */
+.evenza-public{--ev-accent:#ffc928;--public-cream:#faf9f3;--public-mint:#eaf8f5;--public-border:#e7e7e2;--public-shadow:0 12px 36px #11151409;background:var(--public-cream)!important}
+.evenza-public .evenza-navbar{position:sticky;top:0;z-index:1030;background:rgba(250,249,243,.97)!important;transition:background .3s,box-shadow .3s}
+.evenza-public .evenza-navbar.is-scrolled{background:rgba(250,249,243,.92)!important;backdrop-filter:blur(16px);box-shadow:0 6px 28px #11151409}
+.evenza-public .evenza-nav-link{position:relative;transition:color .25s,background .25s}
+.evenza-public .evenza-nav-link::after{content:"";position:absolute;left:18%;right:18%;bottom:5px;height:2px;background:var(--ev-accent);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+.evenza-public .evenza-nav-link:hover::after,.evenza-public .evenza-nav-link.active::after{transform:scaleX(1)}
+.evenza-public :is(.events-hero-section,.colleges-hero-section,.categories-hero-section,.about-hero-section,.contact-hero-section,.login-hero-section){background:radial-gradient(ellipse at 85% 10%,#ffedb63d,transparent 60%),var(--public-cream)!important;padding-block:76px!important}
+.evenza-public :is(.events-grid-canvas,.colleges-grid-canvas,.categories-grid-canvas,.about-grid-canvas,.contact-grid-canvas,.login-grid-canvas){background:#fafbf8!important;padding-block:72px!important}
+.evenza-public :is(.events-hero-section,.colleges-hero-section,.categories-hero-section,.about-hero-section,.contact-hero-section) h1{font-size:clamp(2.25rem,4.5vw,4rem)!important;line-height:1.12;letter-spacing:-.05em;max-width:1000px;margin-inline:auto}
+.evenza-public :is(h1,h2,h3,h4,h5,h6){overflow-wrap:anywhere}
+.evenza-public :is(.hero-kpi-pill-badge,.category-chip){border:1px solid var(--public-border)!important;box-shadow:none!important}
+.evenza-public :is(.btn-capsule-dark,.btn-capsule-outline,.btn-search-capsule-dark,.btn-signup-luxury,.ez-cta-button,button.btn-warning){min-height:46px;transition:transform .25s,background .25s,box-shadow .25s!important}
+.evenza-public :is(.btn-capsule-dark,.btn-search-capsule-dark,.ez-cta-button){background:#111b17!important;color:white!important;border-radius:13px!important}
+.evenza-public :is(.btn-capsule-dark,.btn-capsule-outline,.btn-search-capsule-dark,.btn-signup-luxury,.ez-cta-button,button.btn-warning):hover{transform:translateY(-2px);box-shadow:0 9px 22px #11151413!important}
+.evenza-public :is(a,button) .bi-arrow-right{display:inline-block;transition:transform .25s}
+.evenza-public :is(a,button):hover .bi-arrow-right{transform:translateX(4px)}
+.evenza-public :is(button,[class*=btn-capsule]):active{transform:translateY(0) scale(.98)}
+.evenza-public :is(.event-card-bespoke,.college-card-bespoke,.category-card-bespoke,.about-card-luxury,.pillar-card-bespoke,.contact-info-card-luxury,.contact-form-card-bespoke,.login-card-bespoke,.ez-content-card,.ez-register-card){border:1px solid var(--public-border)!important;border-radius:20px!important;box-shadow:var(--public-shadow)!important;transition:transform .3s,border-color .3s,box-shadow .3s!important}
+.evenza-public :is(.event-card-bespoke,.college-card-bespoke,.category-card-bespoke,.pillar-card-bespoke):hover{transform:translateY(-5px)!important;border-color:#d6b64b!important;box-shadow:0 18px 40px #1115140d!important}
+.evenza-public :is(.category-icon-box,.pillar-icon-box){transition:transform .3s}
+.evenza-public :is(.category-card-bespoke,.pillar-card-bespoke):hover :is(.category-icon-box,.pillar-icon-box){transform:scale(1.05) rotate(-3deg)}
+.evenza-public .category-card-bespoke:hover{background:linear-gradient(145deg,#fffdf2,white)!important}
+.evenza-public :is(.venue-date-pill-box,.contact-info-pill-box,.college-host-row){background:#f5f8f6!important;border-color:#eaf0eb!important;padding:14px!important;line-height:1.65}
+.evenza-public .venue-date-pill-box{gap:12px;flex-wrap:wrap}
+.evenza-public .college-card-bespoke :is(h5,h6){line-height:1.5;overflow-wrap:anywhere}
+.evenza-public .college-card-bespoke :is(a[href^="mailto:"],.contact-info-pill-box){overflow-wrap:anywhere;min-width:0}
+.evenza-public .search-filter-capsule-luxury:focus-within{border-color:#ac8c25!important;box-shadow:0 0 0 4px #ffc9281c,0 12px 36px #11151408!important}
+.evenza-public :is(input,textarea,select){transition:border-color .25s,box-shadow .25s}
+.evenza-public :is(input,textarea,select):focus{outline-offset:3px;box-shadow:0 0 0 3px #ffc9281f!important}
+.evenza-public :is(.form-control-luxury,.form-select-luxury){min-height:46px;border-radius:12px!important}
+.evenza-public .form-label-clean{letter-spacing:.01em;text-transform:none!important;color:#43534b!important}
+.evenza-public .login-info-card-luxury{background:linear-gradient(145deg,#eaf8f5,#faf9f3)!important;border:1px solid #e1ebe4!important;padding:36px!important}
+.evenza-public .login-card-bespoke{padding:36px!important}
+.evenza-public .register-gateway-section{background:radial-gradient(ellipse at 0 0,#eaf8f594,transparent 55%),var(--public-cream)!important}
+.evenza-public .registration-story h1 span{color:#527466}
+.evenza-public .registration-role-tabs a.active{box-shadow:0 3px 14px #11151407}
+.evenza-public .registration-form-heading{border-bottom-color:var(--public-border)}
+.evenza-public .ez-hero-banner{background:radial-gradient(ellipse at 100% 0,#476c5a85,transparent 65%),#111b17!important;border-radius:24px;box-shadow:0 16px 40px #11151412}
+.evenza-public .ez-highlight-card{border:1px solid var(--public-border);border-radius:18px;box-shadow:0 8px 24px #11151405}
+.evenza-public .ez-highlight-value{white-space:normal!important;max-width:none!important;overflow-wrap:anywhere}
+.evenza-public .ez-sidebar-sticky{top:110px!important}
+.evenza-public .ez-price-tag{letter-spacing:-.045em}
+.evenza-public footer{padding-top:64px!important;margin-top:0!important;border-top-left-radius:28px!important;border-top-right-radius:28px!important}
+.evenza-public footer .text-secondary{color:#bec8c1!important}
+.evenza-public footer a{display:inline-block;transition:color .25s,transform .25s}
+.evenza-public footer a:hover{color:#ffc928!important;transform:translateX(3px)}
+.evenza-public footer input{min-height:46px;min-width:0}
+.evenza-public footer input::placeholder{color:#bac4be;opacity:1}
+.evenza-public :focus-visible{outline:3px solid #997613!important;outline-offset:4px}
+.evenza-skip-link{position:fixed;top:10px;left:16px;z-index:1100;transform:translateY(-160%);background:#111b17;color:white;padding:12px 20px;border-radius:12px}
+.evenza-skip-link:focus{transform:none;color:white}
+.public-motion-ready .home-reveal{transition:opacity .65s cubic-bezier(.22,1,.36,1),translate .65s cubic-bezier(.22,1,.36,1);transition-delay:var(--reveal-delay,0ms)}
+.public-motion-ready .home-reveal.is-pending{opacity:0;translate:0 18px}
+@media(prefers-reduced-motion:no-preference){html:has(.evenza-public){scroll-behavior:smooth;scroll-padding-top:110px}#evenzaMobileNav.show>div{animation:public-menu-in .25s ease-out}@keyframes public-menu-in{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}}
+@media(max-width:991px){.evenza-public :is(.events-hero-section,.colleges-hero-section,.categories-hero-section,.about-hero-section,.contact-hero-section,.login-hero-section){padding-block:52px!important}.evenza-public :is(.events-grid-canvas,.colleges-grid-canvas,.categories-grid-canvas,.about-grid-canvas,.contact-grid-canvas,.login-grid-canvas){padding-block:52px!important}.evenza-public .ez-sidebar-sticky{position:static!important}.evenza-public .evenza-navbar{backdrop-filter:none}}
+@media(max-width:575px){.evenza-public :is(.events-hero-section,.colleges-hero-section,.categories-hero-section,.about-hero-section,.contact-hero-section,.login-hero-section){padding-block:40px!important}.evenza-public :is(.login-card-bespoke,.login-info-card-luxury,.contact-form-card-bespoke,.ez-register-card,.ez-content-card){padding:24px!important}.evenza-public .event-card-bespoke{padding:24px!important}.evenza-public footer form{flex-wrap:wrap}.evenza-public footer form input{flex-basis:100%}.evenza-public .evenza-nav-link{min-height:44px}.evenza-public .ez-event-hero-title{font-size:clamp(1.8rem,8vw,2.5rem)}.evenza-public .event-detail-section{padding-block:32px!important}}
+@media(prefers-reduced-motion:reduce){html:has(.evenza-public){scroll-behavior:auto!important}.evenza-public *{animation:none!important;transition:none!important}.public-motion-ready .home-reveal.is-pending{opacity:1;translate:none}}
+@media print{.evenza-public .evenza-navbar{position:static}.evenza-skip-link{display:none}.public-motion-ready .home-reveal.is-pending{opacity:1;translate:none}}

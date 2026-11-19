@@ -1,0 +1,14 @@
+const {spawnSync}=require('node:child_process');
+(async()=>{
+ const target=await(await fetch('http://127.0.0.1:9228/json/new?about:blank',{method:'PUT'})).json();const ws=new WebSocket(target.webSocketDebuggerUrl);await new Promise(r=>ws.addEventListener('open',r,{once:true}));let id=0;const pending=new Map();ws.addEventListener('message',e=>{const m=JSON.parse(e.data);if(pending.has(m.id)){pending.get(m.id)(m.result);pending.delete(m.id)}});const call=(method,params={})=>new Promise(r=>{pending.set(++id,r);ws.send(JSON.stringify({id,method,params}))});await call('Page.enable');
+ const checks=[];
+ for(const page of ['Frontend/login.php','Frontend/contact.php','Organizer/Events.php','Admin/all_events.php','Student/Profile.php','Organizer/Profile.php']){
+ let html=spawnSync('C:/wamp64/bin/php/php8.3.28/php.exe',['-d','xdebug.mode=off','tools/render-audit.php',page],{encoding:'utf8',maxBuffer:20*1024*1024}).stdout;
+ if(page.startsWith('Frontend/')) html=await(await fetch('http://localhost/Evenza/'+page+'?evenza_tab_id=audit_inline_01234567890123456789')).text();
+ await call('Fetch.enable',{patterns:[{urlPattern:'*'+page+'*',resourceType:'Document'}]});
+ const listener=async e=>{const m=JSON.parse(e.data);if(m.method==='Fetch.requestPaused')await call('Fetch.fulfillRequest',{requestId:m.params.requestId,responseCode:200,responseHeaders:[{name:'Content-Type',value:'text/html; charset=utf-8'}],body:Buffer.from(html).toString('base64')})};ws.addEventListener('message',listener);
+ await call('Page.navigate',{url:'http://localhost/Evenza/'+page+'?evenza_tab_id=audit_tab_0123456789abcdef'});await new Promise(r=>setTimeout(r,650));
+ const result=await call('Runtime.evaluate',{returnByValue:true,expression:`(()=>{const form=[...document.forms].find(f=>f.querySelector('input[required]:not([type=hidden]):not([disabled])'));const field=form.querySelector('input[required]:not([type=hidden]):not([disabled])');field.value='';const prevented=!form.dispatchEvent(new Event('submit',{bubbles:true,cancelable:true}));const error=document.getElementById(field.dataset.inlineError);const blocked=prevented&&field.getAttribute('aria-invalid')==='true'&&!!error?.textContent;field.value=field.type==='email'?'valid@example.invalid':field.type==='password'?'Example12345':'Example value';field.dispatchEvent(new Event('input',{bubbles:true}));return {noNativePopup:form.noValidate,inlineError:blocked,clearsError:field.getAttribute('aria-invalid')==='false',summary:!!form.querySelector('.ev-validation-summary')}})()`});checks.push({page,...result.result.value});await call('Fetch.disable');ws.removeEventListener('message',listener);
+ }
+ console.log(JSON.stringify(checks,null,2));await call('Target.closeTarget',{targetId:target.id});ws.close();if(checks.some(c=>!c.noNativePopup||!c.inlineError||!c.clearsError||!c.summary))process.exitCode=1;
+})().catch(e=>{console.error(e);process.exitCode=1});

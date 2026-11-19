@@ -1,0 +1,85 @@
+[
+  {
+    "width": 320,
+    "field": "eventCategoryFilter",
+    "pass": true
+  },
+  {
+    "width": 320,
+    "field": "eventFormatFilter",
+    "pass": true
+  },
+  {
+    "width": 320,
+    "name": "All format options remain readable",
+    "pass": true
+  },
+  {
+    "width": 375,
+    "field": "eventCategoryFilter",
+    "pass": true
+  },
+  {
+    "width": 375,
+    "field": "eventFormatFilter",
+    "pass": true
+  },
+  {
+    "width": 375,
+    "name": "All format options remain readable",
+    "pass": true
+  },
+  {
+    "width": 768,
+    "field": "eventCategoryFilter",
+    "pass": true
+  },
+  {
+    "width": 768,
+    "field": "eventFormatFilter",
+    "pass": true
+  },
+  {
+    "width": 768,
+    "name": "All format options remain readable",
+    "pass": true
+  },
+  {
+    "width": 1024,
+    "field": "eventCategoryFilter",
+    "pass": true
+  },
+  {
+    "width": 1024,
+    "field": "eventFormatFilter",
+    "pass": true
+  },
+  {
+    "width": 1024,
+    "name": "All format options remain readable",
+    "pass": true
+  },
+  {
+    "width": 1440,
+    "field": "eventCategoryFilter",
+    "pass": true
+  },
+  {
+    "width": 1440,
+    "field": "eventFormatFilter",
+    "pass": true
+  },
+  {
+    "width": 1440,
+    "name": "All format options remain readable",
+    "pass": true
+  },
+  {
+    "name": "Category search empty state",
+    "pass": true
+  },
+  {
+    "name": "Keyboard format selection updates live results",
+    "pass": true
+  }
+]

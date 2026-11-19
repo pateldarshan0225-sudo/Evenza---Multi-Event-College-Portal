@@ -1,0 +1,42 @@
+/* Shared layout safeguards for public pages and the three role portals. */
+img, video { max-width: 100%; }
+.container-xl > .row.g-5 { --bs-gutter-x: 1.5rem; }
+.pagination-wrapper { max-width: 100%; flex-wrap: wrap; gap: 12px; }
+.pagination-wrapper > .d-flex { flex-wrap: wrap; justify-content: center; max-width: 100%; }
+.college-card-bespoke, .event-card-bespoke { overflow-wrap: anywhere; }
+.college-card-bespoke > .d-flex, .college-card-bespoke > .border-top { flex-wrap: wrap; gap: 12px; }
+.berun-main-grid, .berun-main-content, .berun-content, .berun-layout-body > :not(nav) { min-width: 0; }
+.berun-row-top > *, .berun-row-bottom > * { min-width: 0; }
+.table-responsive { max-width: 100%; }
+.dropdown-menu { max-width: calc(100vw - 24px); }
+.dropdown-item { white-space: normal; overflow-wrap: anywhere; }
+.form-control, .form-select, .form-control-luxury { min-width: 0; max-width: 100%; }
+:where(a, button, input, select, textarea):focus-visible { outline: 3px solid #b77900; outline-offset: 3px; }
+@media (max-width: 768px) {
+    .berun-header { flex-wrap: wrap; gap: 12px; }
+    .berun-header > .d-flex { flex-wrap: wrap; min-width: 0; max-width: 100%; }
+    .berun-header .berun-logo-brand { min-width: 0; flex-wrap: wrap; }
+    .berun-header .berun-search-wrapper { max-width: 100%; }
+    .berun-main-grid .berun-card-panel > .d-flex { flex-wrap: wrap; gap: 12px; }
+    .berun-main-grid .berun-card-panel > .d-flex > .d-flex { flex-wrap: wrap; max-width: 100%; }
+    .berun-sidebar-capsule { gap: 8px; padding: 0 8px; max-width: 100%; }
+    .berun-sidebar-capsule .berun-nav-group { overflow-x: auto; justify-content: flex-start; min-width: 0; gap: 4px; padding: 8px 0; }
+    .berun-sidebar-capsule .berun-nav-item { flex: 0 0 40px; width: 40px; height: 40px; }
+    .berun-sidebar-capsule > .dropdown { flex-shrink: 0; }
+    .berun-sidebar-capsule .dropdown-menu { right: 0; left: auto; }
+    .register-card-bespoke { overflow-wrap: anywhere; }
+    .register-card-bespoke > .d-flex { flex-wrap: wrap; gap: 12px; }
+    .custom-file-upload-box { min-width: 0; }
+    #fileNameDisplay { min-width: 0; overflow-wrap: anywhere; }
+    .evenza-navbar-row { flex-wrap: wrap; gap: 12px; }
+    .evenza-auth-actions { gap: 8px !important; margin-left: auto; }
+    .evenza-auth-actions .btn-capsule-dark { max-width: 210px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    footer form.d-flex { flex-wrap: wrap; }
+    footer form .form-control { flex: 1 1 160px; }
+}
+@media (max-width: 380px) {
+    .evenza-navbar-row > a img { height: 32px !important; }
+    .evenza-auth-actions > a { padding-left: 4px !important; padding-right: 4px !important; }
+    .evenza-auth-actions .btn-signup-luxury { padding: 8px 10px; }
+    .register-card-bespoke { padding: 18px !important; }
+}

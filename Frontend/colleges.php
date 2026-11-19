@@ -1,0 +1,633 @@
+<?php
+require_once __DIR__ . '/../includes/event_lifecycle.php';
+$active_event_sql = evenza_active_event_sql();
+require_once __DIR__ . '/../includes/connection.php';
+$conn = get_evenza_connection();
+
+/**
+ * Frontend/colleges.php
+ * Ultra-Premium Partner Colleges Directory for Evenza (with Live Debounced AJAX Search & Pagination)
+ */
+$page_title = "Partner Colleges";
+require_once __DIR__ . '/connection.php';
+
+// Fetch Universities for Filter Dropdown
+$res_uni = mysqli_query($conn, "SELECT * FROM universities ORDER BY name ASC");
+$universities = [];
+if ($res_uni) {
+    while ($r = mysqli_fetch_assoc($res_uni)) {
+        $universities[] = $r;
+    }
+}
+
+// Dynamic Search & Filter Logic
+$where = ["c.status = 'active'"];
+
+if (!empty($_GET['search'])) {
+    $search_term = mysqli_real_escape_string($conn, strtolower(trim($_GET['search'])));
+    $where[] = "(LOWER(c.name) LIKE '%$search_term%' OR LOWER(c.email) LIKE '%$search_term%')";
+}
+
+if (!empty($_GET['university']) && $_GET['university'] !== 'all') {
+    $uni_filter = mysqli_real_escape_string($conn, trim($_GET['university']));
+    $where[] = "u.name = '$uni_filter'";
+}
+
+$whereClause = implode(' AND ', $where);
+
+// PAGINATION LOGIC (Default 6 colleges per page)
+$limit = 6;
+$page  = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
+$page  = max(1, $page);
+
+// Count Total Records
+$count_sql = "
+    SELECT COUNT(*) AS total
+    FROM colleges c
+    LEFT JOIN universities u ON c.university_id = u.university_id
+    WHERE {$whereClause}
+";
+$count_res = mysqli_query($conn, $count_sql);
+$count_row = $count_res ? mysqli_fetch_assoc($count_res) : null;
+$total_records = (int)($count_row['total'] ?? 0);
+
+$total_pages = max(1, (int)ceil($total_records / $limit));
+if ($page > $total_pages) {
+    $page = $total_pages;
+}
+$offset = ($page - 1) * $limit;
+
+// Fetch Paginated Active Colleges with University Name and Hosted Events Count
+$sql = "
+    SELECT c.*, u.name AS university_name,
+    (SELECT COUNT(*) FROM events e WHERE e.college_id = c.college_id AND {$active_event_sql}) AS event_count
+    FROM colleges c
+    LEFT JOIN universities u ON c.university_id = u.university_id
+    WHERE {$whereClause}
+    ORDER BY event_count DESC, c.name ASC
+    LIMIT $limit OFFSET $offset
+";
+
+$res_colleges = mysqli_query($conn, $sql);
+$colleges = [];
+if ($res_colleges) {
+    while ($r = mysqli_fetch_assoc($res_colleges)) {
+        $colleges[] = $r;
+    }
+}
+
+// College Logo Resolver Helper
+function resolve_college_logo_src($logoName) {
+    if (!empty($logoName)) {
+        if (file_exists(__DIR__ . '/../assets/images/colleges/' . $logoName)) {
+            return '../assets/images/colleges/' . htmlspecialchars($logoName);
+        }
+        if (file_exists(__DIR__ . '/../uploads/colleges/' . $logoName)) {
+            return '../uploads/colleges/' . htmlspecialchars($logoName);
+        }
+    }
+    return null;
+}
+
+// Helper to build URL query strings for pagination links
+function get_page_url($pageNumber) {
+    $queryParams = $_GET;
+    $queryParams['page'] = $pageNumber;
+    return 'colleges.php?' . http_build_query($queryParams);
+}
+
+include 'Header.php';
+?>
+
+<style>
+    :root {
+        --bg-cream-canvas: #fdfbf7;
+        --bg-dark-accent: #14171a;
+        --color-gold-accent: #ffd13b;
+    }
+
+    /* HERO & BESPOKE SEARCH CAPSULE STYLING */
+    .colleges-hero-section {
+        background-color: #fffdf7;
+        padding: 56px 0 48px 0;
+        position: relative;
+    }
+
+    .hero-kpi-pill-badge {
+        background: #ffffff;
+        border: 1.5px solid #14171a;
+        box-shadow: 3px 3px 0px #ffd13b;
+        color: #14171a;
+        font-weight: 800;
+        font-size: 11px;
+        padding: 6px 16px;
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .search-filter-capsule-luxury {
+        background: #ffffff;
+        border-radius: 9999px;
+        padding: 10px 14px 10px 24px;
+        border: 2px solid #14171a;
+        box-shadow: 6px 6px 0px #14171a;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .search-filter-capsule-luxury:focus-within,
+    .search-filter-capsule-luxury:hover {
+        box-shadow: 8px 8px 0px #ffd13b;
+        border-color: #14171a;
+    }
+
+    .search-filter-capsule-luxury input.form-control {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+        font-size: 13px;
+        color: #14171a;
+    }
+
+    .search-filter-capsule-luxury select.form-select {
+        background-color: #ffffff !important;
+        border: 1.5px solid #cbd5e1 !important;
+        border-radius: 12px !important;
+        padding: 8px 32px 8px 14px !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        color: #0f172a !important;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04) !important;
+        transition: all 0.2s ease !important;
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%230f172a' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") !important;
+        background-repeat: no-repeat !important;
+        background-position: right 12px center !important;
+    }
+
+    .search-filter-capsule-luxury input.form-control:focus {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    .search-filter-capsule-luxury select.form-select:focus,
+    .search-filter-capsule-luxury select.form-select:hover {
+        border-color: #0f172a !important;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08) !important;
+        outline: none !important;
+    }
+
+    select.form-select option, .form-select option {
+        background-color: #ffffff !important;
+        color: #0f172a !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        padding: 10px 14px !important;
+    }
+
+    .search-filter-capsule-luxury .input-group-text {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: #14171a;
+        font-size: 15px;
+    }
+
+    .btn-search-capsule-dark {
+        background: #14171a;
+        color: #ffffff;
+        border-radius: 9999px;
+        font-size: 12px;
+        font-weight: 800;
+        padding: 10px 24px;
+        border: 1.5px solid #14171a;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .btn-search-capsule-dark:hover {
+        background: #ffd13b;
+        color: #14171a;
+        border-color: #14171a;
+    }
+
+    /* CANVAS GRID SECTION */
+    .colleges-grid-canvas {
+        background-color: var(--bg-cream-canvas);
+        padding: 64px 0 80px 0;
+        border-top: 1px solid #f1f5f9;
+        min-height: 500px;
+    }
+
+    .college-card-bespoke {
+        background: #ffffff;
+        border-radius: 28px;
+        padding: 28px;
+        border: 1.5px solid #eae6df;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        position: relative;
+    }
+
+    .college-card-bespoke:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 20px 42px rgba(0, 0, 0, 0.08);
+        border-color: #14171a;
+    }
+
+    .college-avatar-pod {
+        width: 58px;
+        height: 58px;
+        border-radius: 18px;
+        background: #ffd13b;
+        border: 2px solid #14171a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        font-weight: 800;
+        color: #14171a;
+        flex-shrink: 0;
+        overflow: hidden;
+        box-shadow: 3px 3px 0px #14171a;
+    }
+
+    .college-avatar-pod img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .university-pill-tag {
+        font-size: 11px;
+        font-weight: 700;
+        color: #2563eb;
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        padding: 3px 12px;
+        border-radius: 9999px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        max-width: 190px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .contact-info-pill-box {
+        background: #f8fafc;
+        border: 1px solid #f1f5f9;
+        border-radius: 18px;
+        padding: 12px 16px;
+        font-size: 12px;
+        color: #475569;
+    }
+
+    .events-count-chip {
+        background: #ffd13b;
+        color: #14171a;
+        font-size: 11px;
+        font-weight: 800;
+        padding: 5px 14px;
+        border-radius: 9999px;
+        border: 1.5px solid #14171a;
+    }
+
+    /* BESPOKE PAGINATION CONTROLS */
+    .pagination-wrapper {
+        margin-top: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: gap-3;
+    }
+
+    .pagination-btn {
+        background: #ffffff;
+        color: #14171a;
+        border: 1.5px solid #14171a;
+        border-radius: 9999px;
+        padding: 8px 20px;
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .pagination-btn:hover:not(.disabled) {
+        background: #14171a;
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+
+    .pagination-btn.disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+        pointer-events: none;
+        border-color: #cbd5e1;
+    }
+
+    .page-number-pill {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 1.5px solid #e2e8f0;
+        background: #ffffff;
+        color: #14171a;
+        font-weight: 700;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .page-number-pill:hover, .page-number-pill.active {
+        background: #14171a;
+        color: #ffd13b;
+        border-color: #14171a;
+        box-shadow: 0 4px 12px rgba(20, 23, 26, 0.15);
+    }
+
+    #ajaxCollegesContainer {
+        transition: opacity 0.2s ease;
+    }
+</style>
+<link rel="stylesheet" href="../assets/css/select2.min.css">
+<link rel="stylesheet" href="../assets/css/college-filters.css">
+
+<!-- PAGE HERO -->
+<section class="colleges-hero-section">
+    <div class="container-xl">
+        <div class="text-center mb-4">
+            <span class="hero-kpi-pill-badge mb-3">
+                <i class="bi bi-bank2 text-warning"></i> 160+ Accredited Campuses • 85+ Live Fests
+            </span>
+            <h1 class="fw-black text-dark display-5 mb-2" style="letter-spacing: -1.5px;">Partner Colleges & Institutions</h1>
+            <p class="text-muted text-xs mx-auto" style="max-width: 580px;">
+                Explore accredited colleges hosting inter-college fests, technical hackathons, and national competitions on Evenza.
+            </p>
+        </div>
+
+        <!-- BESPOKE LUXURY SEARCH & FILTER CAPSULE -->
+        <div class="search-filter-capsule-luxury mx-auto" style="max-width: 920px;">
+            <form method="GET" class="row g-2 align-items-center" id="collegesFilterForm">
+                <div class="col-12 col-md-6">
+                    <div class="input-group college-search-field">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <div class="college-search-content">
+                            <label for="collegeSearchInput" class="college-filter-label">Find your campus</label>
+                            <input id="collegeSearchInput" type="text" class="form-control" name="search" autocomplete="off" value="<?= htmlspecialchars((string)($_GET['search'] ?? '')) ?>" placeholder="College name, city or email">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="university-filter-field">
+                        <label for="collegeUniversityFilter" class="college-filter-label">Affiliated university</label>
+                        <select id="collegeUniversityFilter" class="form-select text-xs py-2" name="university">
+                            <option value="all">All Affiliated Universities</option>
+                            <?php foreach ($universities as $u): ?>
+                                <option value="<?= htmlspecialchars((string)$u['name']) ?>" <?= (($_GET['university'] ?? '') === $u['name']) ? 'selected' : '' ?>><?= htmlspecialchars((string)$u['name']) ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-12 col-md-2 text-end">
+                    <button type="submit" class="btn-search-capsule-dark w-100">
+                        Filter <i class="bi bi-arrow-right"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- COLLEGES GRID CANVAS SECTION -->
+<section class="colleges-grid-canvas" id="collegesGridCanvas">
+    <div class="container-xl" id="ajaxCollegesContainer">
+        
+        <!-- Executive Results Counter Bar -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-dark text-white font-bold px-3 py-1.5 rounded-pill text-xs">
+                    Showing <?= empty($colleges) ? 0 : ($offset + 1) ?> – <?= min($offset + $limit, $total_records) ?>
+                </span>
+                <span class="text-secondary text-xs font-semibold">
+                    of <strong class="text-dark"><?= number_format($total_records) ?></strong> Partner Colleges
+                </span>
+            </div>
+            <div class="badge bg-warning text-dark border border-dark px-3.5 py-1.5 rounded-pill text-xs font-bold shadow-sm">
+                Page <?= $page ?> of <?= $total_pages ?>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <?php if (empty($colleges)): ?>
+                <div class="col-12 text-center py-5 text-muted">
+                    <i class="bi bi-building-x fs-1 d-block mb-2 text-muted opacity-50"></i>
+                    No partner colleges match your search criteria.
+                </div>
+            <?php else: ?>
+                <?php foreach ($colleges as $c): 
+                    $logo_src = resolve_college_logo_src($c['logo'] ?? '');
+                    
+                    // Generate 2-letter Initials for Avatar Fallback
+                    $words = explode(' ', trim($c['name']));
+                    $initials = strtoupper(substr($words[0], 0, 1) . (isset($words[1]) ? substr($words[1], 0, 1) : ''));
+                ?>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="college-card-bespoke">
+                            <div>
+                                <!-- Header Logo & Name -->
+                                <div class="d-flex align-items-start gap-3 mb-4">
+                                    <div class="college-avatar-pod">
+                                        <?php if ($logo_src): ?>
+                                            <img src="<?= $logo_src ?>" alt="College Logo" onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=<?= urlencode($c['name']) ?>&background=ffd13b&color=14171a&bold=true';">
+                                        <?php else: ?>
+                                            <span><?= $initials ?></span>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="overflow-hidden">
+                                        <h5 class="fw-black text-dark mb-1 fs-6" style="line-height: 1.35; letter-spacing: -0.3px;">
+                                            <?= htmlspecialchars((string)$c['name']) ?>
+                                        </h5>
+                                        <span class="university-pill-tag" title="<?= htmlspecialchars((string)($c['university_name'] ?? 'Main University')) ?>">
+                                            <i class="bi bi-mortarboard-fill"></i> <?= htmlspecialchars((string)($c['university_name'] ?? 'Main University')) ?>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Contact Info Box -->
+                                <div class="contact-info-pill-box mb-4">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <i class="bi bi-envelope-fill text-primary"></i>
+                                        <span class="text-truncate"><?= htmlspecialchars((string)$c['email']) ?></span>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <i class="bi bi-telephone-fill text-success"></i>
+                                        <span><?= htmlspecialchars((string)($c['phone'] ?? 'N/A')) ?></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Footer Action Bar -->
+                            <div class="pt-3 border-top border-dark border-opacity-10 d-flex align-items-center justify-content-between">
+                                <span class="events-count-chip">
+                                    <i class="bi bi-calendar-event me-1"></i> <?= $c['event_count'] ?> Hosted Event<?= $c['event_count'] == 1 ? '' : 's' ?>
+                                </span>
+                                <a href="events.php?college=<?= urlencode($c['name']) ?>" class="btn-capsule-dark text-xs py-2 px-3">
+                                    Explore Fests <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php endif; ?>
+        </div>
+
+        <!-- BESPOKE 6-CARD PAGINATION BAR -->
+        <?php if ($total_pages > 1): ?>
+            <div class="pagination-wrapper">
+                <!-- Previous Button -->
+                <a href="<?= get_page_url($page - 1) ?>" class="pagination-btn ajax-page-link <?= $page <= 1 ? 'disabled' : '' ?>">
+                    <i class="bi bi-arrow-left"></i> Previous
+                </a>
+
+                <!-- Number Pills -->
+                <div class="d-flex align-items-center gap-2">
+                    <?php for ($p = 1; $p <= $total_pages; $p++): ?>
+                        <a href="<?= get_page_url($p) ?>" class="page-number-pill ajax-page-link <?= $p === $page ? 'active' : '' ?>">
+                            <?= $p ?>
+                        </a>
+                    <?php endfor; ?>
+                </div>
+
+                <!-- Next Button -->
+                <a href="<?= get_page_url($page + 1) ?>" class="pagination-btn ajax-page-link <?= $page >= $total_pages ? 'disabled' : '' ?>">
+                    Next <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        <?php endif; ?>
+
+    </div>
+</section>
+
+<!-- SEAMLESS LIVE REAL-TIME AJAX SEARCH & PAGINATION SCRIPT -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const container = document.getElementById('ajaxCollegesContainer');
+    const filterForm = document.getElementById('collegesFilterForm');
+    const searchInput = filterForm ? filterForm.querySelector('input[name="search"]') : null;
+    const universitySelect = filterForm ? filterForm.querySelector('select[name="university"]') : null;
+
+    let debounceTimer = null;
+
+    function fetchFilteredColleges(url, pushHistory = true) {
+        if (!container) return;
+        container.style.opacity = '0.4';
+
+        fetch(url)
+            .then(response => response.text())
+            .then(htmlText => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(htmlText, 'text/html');
+                const newContent = doc.getElementById('ajaxCollegesContainer');
+
+                if (newContent) {
+                    container.innerHTML = newContent.innerHTML;
+                    if (pushHistory) {
+                        history.replaceState({}, '', url);
+                    }
+                    bindAjaxPagination();
+                }
+            })
+            .catch(err => console.error('Live Search AJAX error:', err))
+            .finally(() => {
+                container.style.opacity = '1';
+            });
+    }
+
+    function triggerLiveSearch() {
+        if (!filterForm) return;
+        const formData = new FormData(filterForm);
+        const searchParams = new URLSearchParams();
+        
+        for (const [key, value] of formData.entries()) {
+            if (value && value !== 'all') {
+                searchParams.set(key, value);
+            }
+        }
+        searchParams.set('page', '1');
+
+        const targetUrl = 'colleges.php?' + searchParams.toString();
+        fetchFilteredColleges(targetUrl, true);
+    }
+
+    // Live debounced search on typing (250ms)
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(triggerLiveSearch, 250);
+        });
+    }
+
+    // Live filter on university select dropdown change
+    if (universitySelect) {
+        universitySelect.addEventListener('change', function () {
+            triggerLiveSearch();
+        });
+    }
+
+    // Prevent full-page form submit on Enter key
+    if (filterForm) {
+        filterForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            triggerLiveSearch();
+        });
+    }
+
+    function bindAjaxPagination() {
+        if (!container) return;
+
+        const links = container.querySelectorAll('.ajax-page-link');
+        links.forEach(function (link) {
+            link.addEventListener('click', function (e) {
+                if (this.classList.contains('disabled')) return;
+                e.preventDefault();
+
+                const targetUrl = this.getAttribute('href');
+                if (!targetUrl) return;
+
+                fetchFilteredColleges(targetUrl, true);
+                document.getElementById('collegesGridCanvas').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    }
+
+    bindAjaxPagination();
+});
+</script>
+<script src="../assets/js/jquery.min.js"></script>
+<script src="../assets/js/select2.min.js"></script>
+<script src="../assets/js/college-filters.js"></script>
+
+<?php include 'Footer.php'; ?>

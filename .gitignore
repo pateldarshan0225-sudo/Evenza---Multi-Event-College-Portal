@@ -1,0 +1,10 @@
+﻿# Private configuration and local data
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+vendor/
+node_modules/
+.idea/
+.vscode/
